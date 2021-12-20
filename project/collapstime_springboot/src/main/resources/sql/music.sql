@@ -55,15 +55,15 @@ CREATE TABLE `collect` (
   `song_list_id` int(11) DEFAULT NULL COMMENT '歌单id',
   `singer_id` int(11) DEFAULT NULL COMMENT '歌手Id',
   PRIMARY KEY (`id`),
+  KEY `collect_user_id_fk` (`user_id`),
   KEY `collect_singer_id_fk` (`singer_id`),
   KEY `collect_song_id_fk` (`song_id`),
   KEY `collect_song_list_id_fk` (`song_list_id`),
-  KEY `collect_user_id_fk` (`user_id`),
-  CONSTRAINT `collect_singer_id_fk` FOREIGN KEY (`singer_id`) REFERENCES `singer` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `collect_song_id_fk` FOREIGN KEY (`song_id`) REFERENCES `song` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `collect_song_list_id_fk` FOREIGN KEY (`song_list_id`) REFERENCES `song_list` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `collect_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='个人收藏';
+  CONSTRAINT `collect_singer_id_fk` FOREIGN KEY (`singer_id`) REFERENCES `singer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `collect_song_id_fk` FOREIGN KEY (`song_id`) REFERENCES `song` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `collect_song_list_id_fk` FOREIGN KEY (`song_list_id`) REFERENCES `song_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `collect_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COMMENT='个人收藏';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,7 @@ CREATE TABLE `collect` (
 
 LOCK TABLES `collect` WRITE;
 /*!40000 ALTER TABLE `collect` DISABLE KEYS */;
-INSERT INTO `collect` VALUES (3,1,0,1,NULL,NULL),(4,1,2,NULL,NULL,2),(5,1,1,NULL,1,NULL),(6,1,0,1,NULL,NULL),(7,1,2,NULL,NULL,2),(8,1,0,2,NULL,NULL);
+INSERT INTO `collect` VALUES (3,1,0,1,NULL,NULL),(6,1,0,1,NULL,NULL),(8,1,0,2,NULL,NULL),(10,1,0,88,NULL,NULL),(11,1,1,NULL,11,NULL),(12,1,1,NULL,16,NULL),(13,1,1,NULL,6,NULL),(15,1,1,NULL,9,NULL),(17,1,1,NULL,17,NULL),(18,1,1,NULL,23,NULL),(20,1,1,NULL,22,NULL),(21,1,1,NULL,24,NULL),(22,1,1,NULL,13,NULL),(23,1,1,NULL,74,NULL),(24,1,1,NULL,10,NULL),(25,1,1,NULL,83,NULL),(26,1,1,NULL,81,NULL),(27,1,1,NULL,1,NULL),(28,1,1,NULL,2,NULL),(29,1,1,NULL,3,NULL),(30,1,1,NULL,4,NULL),(31,1,1,NULL,5,NULL),(32,1,1,NULL,7,NULL),(33,1,1,NULL,8,NULL),(34,1,1,NULL,12,NULL),(35,1,1,NULL,14,NULL),(36,1,1,NULL,20,NULL),(37,1,1,NULL,18,NULL),(38,1,1,NULL,15,NULL),(39,1,1,NULL,21,NULL),(40,1,1,NULL,25,NULL),(41,1,1,NULL,73,NULL),(42,1,1,NULL,76,NULL),(43,1,1,NULL,75,NULL),(44,1,1,NULL,47,NULL),(45,1,1,NULL,28,NULL),(46,1,1,NULL,42,NULL),(47,1,2,NULL,NULL,1),(48,1,2,NULL,NULL,2),(49,1,2,NULL,NULL,3),(50,1,2,NULL,NULL,4),(51,1,2,NULL,NULL,5),(52,1,2,NULL,NULL,6),(53,1,2,NULL,NULL,7),(54,1,2,NULL,NULL,8),(55,1,2,NULL,NULL,9),(56,1,2,NULL,NULL,10),(57,1,2,NULL,NULL,11),(58,1,2,NULL,NULL,12),(59,1,2,NULL,NULL,13),(60,1,2,NULL,NULL,14),(61,1,2,NULL,NULL,15),(62,1,2,NULL,NULL,20),(63,1,2,NULL,NULL,19),(64,1,2,NULL,NULL,18),(65,1,2,NULL,NULL,17),(66,1,2,NULL,NULL,16);
 /*!40000 ALTER TABLE `collect` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,12 +94,12 @@ CREATE TABLE `comment` (
   `up` int(11) DEFAULT '0' COMMENT '点赞数',
   PRIMARY KEY (`id`),
   KEY `comment_song_id_fk` (`song_id`),
-  KEY `comment_user_id_fk` (`user_id`),
   KEY `comment_song_list_id_fk` (`song_list_id`),
-  CONSTRAINT `comment_song_id_fk` FOREIGN KEY (`song_id`) REFERENCES `song` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `comment_song_list_id_fk` FOREIGN KEY (`song_list_id`) REFERENCES `song_list` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `comment_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='评论表';
+  KEY `comment_user_id_fk` (`user_id`),
+  CONSTRAINT `comment_song_id_fk` FOREIGN KEY (`song_id`) REFERENCES `song` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `comment_song_list_id_fk` FOREIGN KEY (`song_list_id`) REFERENCES `song_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `comment_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='评论表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,7 +108,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,2,NULL,1,'这个歌单好棒啊','2021-11-25 21:05:40',1,1),(2,1,NULL,1,'我好喜欢这个歌单啊','2021-11-25 21:05:40',1,2),(3,1,1,NULL,'好喜欢张杰啊','2021-11-28 21:50:48',0,6),(4,1,1,NULL,'这首歌简直我的最爱，杰哥哥我好爱','2021-12-13 17:48:54',0,0),(5,1,1,NULL,'这首歌简直我的最爱，杰哥哥我好爱','2021-12-13 17:53:25',0,0),(6,1,NULL,1,'这个歌单太棒了吧','2021-12-14 00:31:12',1,0),(7,1,1,NULL,'我好喜欢这首歌啊','2021-12-14 14:18:22',0,0),(8,1,NULL,1,'最好听的歌单','2021-12-14 14:18:55',1,0),(9,1,NULL,5,'贼爱','2021-12-14 23:54:20',1,0),(10,2,NULL,5,'爱啦','2021-12-14 23:54:49',1,0);
+INSERT INTO `comment` VALUES (1,2,NULL,1,'这个歌单好棒啊','2021-12-16 17:01:01',1,2),(2,1,NULL,1,'我好喜欢这个歌单啊','2021-11-25 21:05:40',1,2),(3,1,1,NULL,'好喜欢张杰啊','2021-11-28 21:50:48',0,6),(4,1,1,NULL,'这首歌简直我的最爱，杰哥哥我好爱','2021-12-13 17:48:54',0,0),(5,1,1,NULL,'这首歌简直我的最爱，杰哥哥我好爱','2021-12-13 17:53:25',0,0),(6,1,NULL,1,'这个歌单太棒了吧','2021-12-14 00:31:12',1,0),(7,1,1,NULL,'我好喜欢这首歌啊','2021-12-14 14:18:22',0,0),(8,1,NULL,1,'最好听的歌单','2021-12-14 14:18:55',1,0),(9,1,NULL,5,'贼爱','2021-12-17 00:14:34',1,2),(10,2,NULL,5,'爱啦','2021-12-14 23:54:49',1,0),(14,1,NULL,10,'太兴奋了，哈哈哈！','2021-12-16 23:28:56',1,1),(15,1,NULL,8,'这个歌单好棒啊，就是歌曲有点少','2021-12-16 23:31:05',1,1);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,10 +124,10 @@ CREATE TABLE `list_song` (
   `song_list_id` int(11) DEFAULT NULL,
   `song_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `list_song_song_list_id_fk` (`song_list_id`),
   KEY `list_song_song_id_fk` (`song_id`),
-  CONSTRAINT `list_song_song_id_fk` FOREIGN KEY (`song_id`) REFERENCES `song` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `list_song_song_list_id_fk` FOREIGN KEY (`song_list_id`) REFERENCES `song_list` (`id`) ON DELETE CASCADE
+  KEY `list_song_song_list_id_fk` (`song_list_id`),
+  CONSTRAINT `list_song_song_id_fk` FOREIGN KEY (`song_id`) REFERENCES `song` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `list_song_song_list_id_fk` FOREIGN KEY (`song_list_id`) REFERENCES `song_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=214 DEFAULT CHARSET=utf8 COMMENT='歌单中对应的歌曲';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -139,6 +139,36 @@ LOCK TABLES `list_song` WRITE;
 /*!40000 ALTER TABLE `list_song` DISABLE KEYS */;
 INSERT INTO `list_song` VALUES (1,1,36),(3,2,5),(4,2,7),(5,2,11),(6,6,38),(7,6,39),(8,1,44),(9,2,22),(10,12,22),(11,5,38),(12,5,39),(13,5,38),(14,5,39),(15,4,45),(16,12,45),(17,13,10),(18,2,10),(19,3,28),(20,3,10),(22,10,31),(23,6,82),(24,6,83),(25,6,84),(26,6,85),(27,7,99),(28,8,100),(29,9,78),(32,7,86),(33,7,87),(34,8,88),(35,7,100),(36,11,82),(37,11,65),(38,11,50),(39,14,67),(40,14,78),(41,14,26),(42,15,4),(43,15,7),(44,15,21),(45,16,24),(46,16,40),(47,16,50),(48,16,70),(49,17,72),(50,17,73),(51,18,51),(52,18,52),(53,18,65),(54,18,67),(55,19,2),(56,19,7),(57,19,55),(58,19,53),(59,19,54),(60,20,4),(61,20,7),(62,20,11),(63,20,26),(64,21,99),(65,21,100),(66,21,86),(67,22,91),(68,22,94),(69,22,77),(70,22,68),(71,22,50),(72,17,76),(73,15,93),(74,15,92),(75,72,78),(78,71,64),(79,71,65),(80,71,50),(81,71,51),(82,70,51),(83,70,50),(84,62,64),(85,62,65),(87,62,67),(88,63,25),(89,63,26),(91,64,65),(92,64,64),(94,65,25),(95,65,64),(96,67,67),(97,67,64),(98,67,25),(99,69,25),(100,69,24),(101,69,25),(102,69,26),(105,68,64),(106,68,25),(107,66,67),(108,66,64),(110,23,102),(112,25,101),(113,30,102),(114,32,102),(115,34,101),(116,36,42),(117,36,43),(118,36,41),(119,38,36),(120,38,37),(121,38,101),(122,37,101),(123,39,102),(124,40,37),(125,40,108),(126,40,102),(127,41,112),(128,41,102),(129,42,102),(130,24,41),(131,23,100),(132,47,98),(133,47,61),(134,47,62),(136,49,68),(138,49,23),(140,50,21),(141,52,61),(142,52,62),(143,60,21),(144,60,22),(145,60,23),(146,58,63),(147,58,98),(148,53,63),(150,56,61),(151,56,63),(152,57,98),(153,54,32),(154,57,22),(155,59,98),(156,59,63),(157,61,62),(158,61,22),(159,51,68),(161,51,32),(163,43,86),(164,44,100),(165,45,87),(166,45,86),(167,44,100),(168,46,88),(169,73,99),(170,74,88),(171,74,99),(172,73,88),(173,78,103),(174,84,103),(175,75,103),(176,76,103),(177,77,103),(178,79,103),(179,80,88),(180,80,99),(181,80,103),(182,80,104),(183,81,104),(184,82,88),(185,82,99),(186,83,105),(187,48,99),(188,26,95),(189,27,96),(190,26,97),(191,28,95),(192,29,98),(193,29,62),(194,31,87),(195,31,61),(196,31,63),(197,55,87),(198,55,96),(199,33,98),(200,33,63),(201,83,105),(202,83,106),(203,53,107),(204,60,107),(205,8,108),(206,24,112),(207,40,113),(208,8,109),(209,23,107),(211,4,49),(212,10,69),(213,13,19);
 /*!40000 ALTER TABLE `list_song` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `play`
+--
+
+DROP TABLE IF EXISTS `play`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `play` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `song_id` int(11) DEFAULT NULL COMMENT '歌曲id',
+  `play_count` int(11) DEFAULT '0',
+  `user_id` int(11) DEFAULT NULL COMMENT '用户id',
+  PRIMARY KEY (`id`),
+  KEY `play_song_id_fk` (`song_id`),
+  KEY `play_user_id_fk` (`user_id`),
+  CONSTRAINT `play_song_id_fk` FOREIGN KEY (`song_id`) REFERENCES `song` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `play_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COMMENT='播放表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `play`
+--
+
+LOCK TABLES `play` WRITE;
+/*!40000 ALTER TABLE `play` DISABLE KEYS */;
+INSERT INTO `play` VALUES (2,28,2,NULL),(3,10,1,NULL),(4,38,2,NULL),(5,39,2,NULL),(6,1,1,NULL),(7,4,2,NULL),(8,3,1,NULL),(9,6,1,NULL),(10,2,3,NULL),(11,5,1,NULL),(12,7,4,NULL),(13,8,1,NULL),(14,64,1,NULL),(15,65,3,NULL),(16,67,1,NULL),(17,68,3,NULL),(18,71,2,NULL),(19,72,3,NULL),(20,73,3,NULL),(21,82,2,NULL),(22,50,3,NULL),(23,33,1,NULL),(24,35,1,NULL),(25,34,1,NULL),(26,55,1,NULL),(27,54,1,NULL),(28,53,1,NULL),(29,76,1,NULL),(30,63,1,NULL),(31,92,1,NULL),(32,9,1,1),(33,83,1,NULL),(34,84,1,NULL),(35,85,1,NULL),(36,11,1,NULL),(37,26,1,NULL),(38,91,1,NULL),(39,77,1,NULL),(40,94,1,NULL),(41,21,1,NULL),(42,105,1,NULL),(43,106,1,NULL),(44,22,1,NULL),(45,45,1,NULL),(46,99,2,NULL),(47,100,1,NULL),(48,86,1,NULL),(49,88,1,NULL),(50,23,1,NULL),(51,41,1,NULL),(52,112,1,NULL),(53,97,1,NULL),(54,95,1,NULL);
+/*!40000 ALTER TABLE `play` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -187,7 +217,7 @@ CREATE TABLE `song` (
   `url` varchar(255) DEFAULT NULL COMMENT '歌曲地址',
   PRIMARY KEY (`id`),
   KEY `song_singer_id_fk` (`singer_id`),
-  CONSTRAINT `song_singer_id_fk` FOREIGN KEY (`singer_id`) REFERENCES `singer` (`id`) ON DELETE CASCADE
+  CONSTRAINT `song_singer_id_fk` FOREIGN KEY (`singer_id`) REFERENCES `singer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8 COMMENT='歌曲';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -249,7 +279,7 @@ CREATE TABLE `user` (
   `topping` tinyint(4) DEFAULT '0' COMMENT '0非置顶1置顶',
   `frozen` tinyint(4) DEFAULT '0' COMMENT '0非冻结1冻结',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='会员表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='会员表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,12 +288,12 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'123456','1912080054','1912080054',1,NULL,NULL,'河南省','2312306353@qq.com',0,0),(2,'summer','2312306353','123456',1,NULL,NULL,'河南省','2312306353@qq.com',0,0),(4,'summer123','2312','123456',1,NULL,NULL,'河南省','123',0,0);
+INSERT INTO `user` VALUES (1,'123456','1912080054','1912080054',1,NULL,NULL,'河南省','2312306353@qq.com',0,0),(2,'summer','2312306353','123456',1,NULL,NULL,'河南省','2312306353@qq.com',0,0),(4,'summer123','2312','123456',1,NULL,NULL,'河南省','123',0,0),(5,'aaa','123','123',1,NULL,NULL,'河南省','3478922570@qq.com',0,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 DROP FUNCTION IF EXISTS `GET_FIRST_PINYIN_CHAR`;
-CREATE FUNCTION `GET_FIRST_PINYIN_CHAR`(PARAM VARCHAR(255)) RETURNS VARCHAR(2) CHARSET utf8
+CREATE FUNCTION `GET_FIRST_PINYIN_CHAR`(PARAM VARCHAR(255) CHARSET utf8) RETURNS VARCHAR(2) CHARSET utf8
   DETERMINISTIC
 BEGIN
 	DECLARE V_RETURN VARCHAR(255);
@@ -287,4 +317,4 @@ END;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-16 15:37:47
+-- Dump completed on 2021-12-21  1:13:28
