@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="henu.javaweb.collapstime.mapper.SongListMapper">
+    <insert id="addSongListComment" parameterType="henu.javaweb.collapstime.model.Comment">
+        insert into comment(user_id,song_list_id,content,type) values (#{userId},#{songListId},#{content},1);
+    </insert>
+    <insert id="collectSongList" parameterType="henu.javaweb.collapstime.model.Collect">
+        insert into collect (user_id,song_list_id,type) values (#{userId},#{songListId},1);
+    </insert>
+    <update id="upSongListCommment" parameterType="java.lang.Integer">
+        update comment set up = up + 1 where id = #{commentId} and type = 1;
+    </update>
+    <update id="dismissUpSongListComment" parameterType="java.lang.Integer">
+        update comment set up = up - 1 where id = #{commentId} and type = 1;
+    </update>
+    <delete id="dismissCollectSongList" parameterType="henu.javaweb.collapstime.model.Collect">
+        delete from collect where user_id = #{userId} and song_list_id = #{songListId};
+    </delete>
+    <select id="querySongListAllStyle" resultType="string">
+        select group_concat(distinct style) styleList
+        from song_list;
+    </select>
+    <select id="getSongListCommentCount" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select count(id) from comment where type = 1 and song_list_id = #{songListId};
+    </select>
+    <select id="getSongListCollectCount" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select count(id) from collect where type = 1 and song_list_id = #{songListId};
+    </select>
+    <select id="getSongListCommentUser" resultType="henu.javaweb.collapstime.model.User">
+        select * from user
+        <where>
+            user.id in (
+            select user_id from comment where type = 1 and song_list_id=#{songListId}
+            )
+        </where>;
+    </select>
+    <select id="getSongOfSongList" resultType="henu.javaweb.collapstime.model.Song">
+        select * from song
+        <where>
+            song.id in (
+            select song_id from list_song where song_list_id = #{songListId}
+            )
+        </where>;
+    </select>
+    <select id="getSongListComment" resultType="henu.javaweb.collapstime.model.SongListComment">
+        select id,content,create_time,up,user_id from comment where type = 1 and song_list_id = #{songListId};
+    </select>
+    <select id="getSongListOfUserCollect" resultType="java.lang.Integer">
+        select song_list_id from collect where user_id = #{userId} and type = 1;
+    </select>
+    <select id="getCollectSongListCount" resultType="java.lang.Integer">
+        select count(distinct user_id) from collect where type = 1 and song_list_id = #{songListId};
+    </select>
+    <select id="getSongListCommentUpCount" resultType="java.lang.Integer">
+        select up from comment where id = #{commentId} and type = 1;
+    </select>
+</mapper>

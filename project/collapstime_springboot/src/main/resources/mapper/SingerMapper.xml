@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="henu.javaweb.collapstime.mapper.SingerMapper">
+    <insert id="followSinger" parameterType="henu.javaweb.collapstime.model.Collect">
+        insert into collect (user_id,singer_id,type) values (#{userId},#{singerId},2);
+    </insert>
+    <delete id="dismissFollowSinger" parameterType="henu.javaweb.collapstime.model.Collect">
+        delete from collect where user_id = #{userId} and singer_id = #{singerId};
+    </delete>
+    <select id="getSingerNameById" resultType="java.lang.String">
+        select name from singer where id = #{id};
+    </select>
+    <select id="getSingerById" resultType="henu.javaweb.collapstime.model.Singer">
+        select * from singer where id = #{singerId};
+    </select>
+    <select id="getSongBySingerId" resultType="henu.javaweb.collapstime.model.Song">
+        select * from song where singer_id = #{singerId};
+    </select>
+    <select id="getSingerOfUserCollect" resultType="java.lang.Integer">
+        select singer_id from collect where type = 2 and user_id = #{userId};
+    </select>
+    <select id="getCollectSingerCount" resultType="java.lang.Integer">
+        select count(distinct user_id) from collect where singer_id = #{singId} and type = 2;
+    </select>
+
+</mapper>

@@ -1,0 +1,12 @@
+@font-face {  
+    font-family: 'HanYiZhongSongJian';
+    src: url('汉仪中宋简.ttf');
+    font-weight: normal;  
+    font-style: normal;  
+}
+@font-face {  
+    font-family: 'HanYiZhongSongFan';
+    src: url('汉仪中宋繁.ttf');
+    font-weight: normal;  
+    font-style: normal;  
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="henu.javaweb.collapstime.mapper.SongMapper">
+    <insert id="addComment"  parameterType="henu.javaweb.collapstime.model.Comment">
+        insert into comment (user_id,song_id,content,type) values (#{userId},#{songId},#{content},0);
+    </insert>
+    <insert id="collectSong" parameterType="henu.javaweb.collapstime.model.Collect">
+        insert into collect (user_id,song_id,type) values (#{userId},#{songId},0);
+    </insert>
+    <update id="upSongCommment">
+        update comment set up = up+1 where id = #{commentId};
+    </update>
+    <delete id="dismissCollectSong" parameterType="henu.javaweb.collapstime.model.Collect">
+        delete from collect where user_id = #{userId} and song_id = #{songId};
+    </delete>
+    <select id="getSongById" resultType="henu.javaweb.collapstime.model.Song">
+        select * from song where id = #{songId};
+    </select>
+    <select id="getSongCollectCount" resultType="java.lang.Integer">
+        select count(id) from collect where type = 0 and song_id = #{songId};;
+    </select>
+    <select id="getSongCommentCount" resultType="java.lang.Integer">
+        select count(id) from comment where type = 0 and song_id = #{songId};
+    </select>
+    <select id="getSongComment" resultType="henu.javaweb.collapstime.model.SongComment">
+        select id,content,create_time,up,user_id from comment where type = 0 and song_id = #{songId};
+    </select>
+    <select id="getSongOfCommentUser" resultType="henu.javaweb.collapstime.model.User">
+        select * from user
+        <where>
+            user.id in (
+            select user_id from comment where type = 0 and song_id = #{songId}
+            )
+        </where>;
+    </select>
+    <select id="getSongIdOfUserCollect" resultType="java.lang.Integer">
+        select song_id from collect where type = 0 and user_id = #{userId};
+    </select>
+    <select id="getSongNameBySongId" resultType="java.lang.String">
+        select name from song where id = #{songId};
+    </select>
+    <select id="getLyricBySongId" resultType="java.lang.String">
+        select lyric from song where id = #{songId}
+    </select>
+    <select id="getSongOfUserCollect" resultType="java.lang.Integer">
+        select song_id from collect where type = 0 and user_id = #{songId};
+    </select>
+    <select id="getCollectSongCount" resultType="java.lang.Integer">
+        select count(distinct user_id) from collect where type = 0 and song_id = #{songId};
+    </select>
+    <select id="getSongCommentUpCount" resultType="java.lang.Integer">
+        select up from comment where id = #{commentId} and type = 0;
+    </select>
+</mapper>
