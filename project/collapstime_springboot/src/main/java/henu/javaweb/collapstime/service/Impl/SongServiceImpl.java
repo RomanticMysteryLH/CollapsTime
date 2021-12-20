@@ -23,9 +23,9 @@ public class SongServiceImpl implements SongService {
     private SingerMapper singerMapper;
 
     @Override
-    public PageVo<SongShowInList> songPage(Integer currentPage, Integer pageSize) {
-        PageVo<SongShowInList> songVo = new PageVo<>();
-        IPage<SongShowInList> page = new Page<>(currentPage, pageSize);
+    public PageVo<Song> songPage(Integer currentPage, Integer pageSize) {
+        PageVo<Song> songVo = new PageVo<>();
+        IPage<Song> page = new Page<>(currentPage, pageSize);
         songMapper.selectPage(page,null);
         songVo.setTotal(page.getTotal());
         songVo.setCurrent(currentPage);

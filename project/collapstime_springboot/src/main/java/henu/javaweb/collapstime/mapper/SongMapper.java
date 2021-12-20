@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 @Mapper
 @Repository
-public interface SongMapper extends BaseMapper<SongShowInList> {
+public interface SongMapper extends BaseMapper<Song> {
     /**
      * 根据歌曲id查询歌曲
      * @param songId

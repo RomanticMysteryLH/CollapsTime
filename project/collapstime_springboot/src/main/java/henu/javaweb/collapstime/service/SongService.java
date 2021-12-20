@@ -11,7 +11,7 @@ public interface SongService {
      * @param pageSize
      * @return
      */
-    public PageVo<SongShowInList> songPage(Integer currentPage, Integer pageSize);
+    public PageVo<Song> songPage(Integer currentPage, Integer pageSize);
 
     /**
      * 获取歌曲详情页面的所需信息
