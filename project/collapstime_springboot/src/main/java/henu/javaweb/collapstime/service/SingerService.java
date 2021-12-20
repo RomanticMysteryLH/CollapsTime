@@ -9,4 +9,5 @@ public interface SingerService {
     public PageVo<Singer> singerPageByInitialAndCategory(Integer currentPage, Integer pageSize,String initial,Integer category);
     public SingerDetail getSingerDetail(Integer singerId,Integer userId);
     public Integer followSinger(Collect collect);
+    public PageVo<Singer> singerPageByCollections(Integer currentPage, Integer pageSize);
 }

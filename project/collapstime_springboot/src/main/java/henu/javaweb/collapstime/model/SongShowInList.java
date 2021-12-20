@@ -4,11 +4,17 @@ package henu.javaweb.collapstime.model;
  * 存储歌曲在歌单和歌手详情页面中歌曲的展示信息
  */
 public class SongShowInList {
+    //歌曲id
     private Integer id;
+    //歌名
     private String name;
+    //时长
     private String duration;
+    //歌手名
     private String singerName;
+    //歌手id
     private Integer singerId;
+    //歌曲路径
     private String url;
     //歌曲图片
     private String cover;

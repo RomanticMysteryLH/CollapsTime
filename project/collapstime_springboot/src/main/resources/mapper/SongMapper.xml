@@ -7,8 +7,14 @@
     <insert id="collectSong" parameterType="henu.javaweb.collapstime.model.Collect">
         insert into collect (user_id,song_id,type) values (#{userId},#{songId},0);
     </insert>
+    <insert id="addPlayCount">
+        insert into play (song_id,play_count,user_id) values(#{songId},1,#{userId});
+    </insert>
     <update id="upSongCommment">
         update comment set up = up+1 where id = #{commentId};
+    </update>
+    <update id="updatePlayCount">
+        update play set play_count = play_count+1 where song_id = #{songId};
     </update>
     <delete id="dismissCollectSong" parameterType="henu.javaweb.collapstime.model.Collect">
         delete from collect where user_id = #{userId} and song_id = #{songId};
@@ -50,5 +56,24 @@
     </select>
     <select id="getSongCommentUpCount" resultType="java.lang.Integer">
         select up from comment where id = #{commentId} and type = 0;
+    </select>
+    <select id="queryAllSongIdOfPlay" resultType="java.lang.Integer">
+        select distinct song_id from play;
+    </select>
+    <select id="querySongTop50"  resultType="henu.javaweb.collapstime.model.Song">
+     select * from song
+     where song.id in
+        <foreach collection="songIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="songIds!= null and songIds.size>0">
+            order by field( song.id,
+            <foreach collection="songIds" index="index" item="item" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="querySongTop50OfId" resultType="java.lang.Integer">
+        select song_id from play order by play.play_count desc limit 50;
     </select>
 </mapper>

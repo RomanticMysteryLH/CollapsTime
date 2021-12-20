@@ -198,4 +198,17 @@ public class SongListController {
             return upCommentResult;
         }
     }
+
+    /**
+     * 获取热门歌单前30个
+     * 分页展示
+     * @param current
+     * @param size
+     * @return
+     */
+    @PostMapping("/getHotSongList")
+    @ResponseBody
+    public PageVo<SongList> getHotSongList(Integer current,Integer size){
+        return songListService.songListPageByCollections(current, size);
+    }
 }

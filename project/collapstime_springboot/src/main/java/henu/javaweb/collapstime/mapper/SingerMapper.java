@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import henu.javaweb.collapstime.model.Collect;
 import henu.javaweb.collapstime.model.Singer;
 import henu.javaweb.collapstime.model.Song;
+import henu.javaweb.collapstime.model.SongList;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -61,5 +62,16 @@ public interface SingerMapper extends BaseMapper<Singer>{
      * @return
      */
     public int getCollectSingerCount(Integer singerId);
+
+    /**
+     * 获取最热的前二十个歌手
+     * @return
+     */
+    public LinkedList<Singer> querySingerTop20(LinkedList<Integer> singerIds);
+
+    /**
+     * 获取热门歌手id
+     */
+    public LinkedList<Integer> querySingerTop20OfId();
 
 }

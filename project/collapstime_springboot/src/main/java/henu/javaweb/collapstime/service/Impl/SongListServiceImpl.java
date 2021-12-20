@@ -218,5 +218,25 @@ public class SongListServiceImpl implements SongListService {
         return songListMapper.collectSongList(collect);
     }
 
-
+    /**
+     * 获取热门歌单前三十个
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageVo<SongList> songListPageByCollections(Integer currentPage, Integer pageSize) {
+        //获取热门歌单三十个
+        LinkedList<SongList> songLists = songListMapper.querySongListTop30(songListMapper.querySongListTop30OfId());
+        LinkedList<SongList> songListOfPart = new LinkedList<>();
+        for(int i = (currentPage - 1)*pageSize;i < currentPage*pageSize;i++){
+            songListOfPart.add(songLists.get(i));
+        }
+        PageVo<SongList> pageVo = new PageVo<>();
+        pageVo.setTotal((long) songLists.size());
+        pageVo.setSize(pageSize);
+        pageVo.setDataList(songListOfPart);
+        pageVo.setCurrent(currentPage);
+        return pageVo;
+    }
 }

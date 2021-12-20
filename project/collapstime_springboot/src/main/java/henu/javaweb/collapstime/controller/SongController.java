@@ -57,11 +57,11 @@ public class SongController {
      * @param size
      * @return
      */
-    @GetMapping("/songPage")
-    @ResponseBody
-    public PageVo<Song> queryAllSong(Integer current, Integer size) {
-        return songService.songPage(current,size);
-    }
+//    @GetMapping("/songPage")
+//    @ResponseBody
+//    public PageVo<Song> queryAllSong(Integer current, Integer size) {
+//        return songService.songPage(current,size);
+//    }
 
     /**
      * 获取歌曲详情页的所有信息
@@ -141,16 +141,31 @@ public class SongController {
     }
 
     /**
-     * 根据歌曲id获取歌词
+     * 根据歌曲id获取歌词并且增加歌曲播放量
+     * 因为我们都是在点击播放的时候发送获取歌词请求所以用此统计歌曲播放量
      * @param songId
      * @return
      */
     @PostMapping("/getLyric")
     @ResponseBody
-    public Map<String, String> getLyric(Integer songId){
+    public Map<String, String> getLyric(Integer songId,Integer userId){
         String lyric = songMapper.getLyricBySongId(songId);
         Map<String, String> result = new HashMap<>();
         result.put("lyric",lyric);
+        LinkedList<Integer> songIds = songMapper.queryAllSongIdOfPlay();
+        boolean flag = false;
+        for(int i = 0; i < songIds.size(); i++) {
+            if (songId.equals(songIds.get(i))) {
+                flag = true;
+                //更新歌曲播放量  +1
+                songMapper.updatePlayCount(songId);
+                break;
+            }
+        }
+        if(!flag){
+            //添加播放记录 并初始化播放量为1
+            songMapper.addPlayCount(songId,userId);
+        }
         return result;
     }
 
@@ -190,6 +205,16 @@ public class SongController {
             upCommentResult.setMsg("出错了");
             return upCommentResult;
         }
+    }
+
+    /**
+     * 获取热门歌曲前五十首
+     * @return
+     */
+    @PostMapping("/getHotSong")
+    @ResponseBody
+    public PageVo<SongShowInList> getHotSong(Integer current,Integer size,Integer userId){
+        return songService.getHotSongTop50(current, size, userId);
     }
 
 }

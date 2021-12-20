@@ -131,4 +131,16 @@ public class SingerController {
         return followResult;
     }
 
+    /**
+     * 获取热门歌手前二十
+     * @param current
+     * @param size
+     * @return
+     */
+    @PostMapping("/getHotSinger")
+    @ResponseBody
+    public PageVo<Singer> getHotSinger(Integer current,Integer size){
+        return singerService.singerPageByCollections(current, size);
+    }
+
 }

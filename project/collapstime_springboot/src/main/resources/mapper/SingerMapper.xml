@@ -22,5 +22,21 @@
     <select id="getCollectSingerCount" resultType="java.lang.Integer">
         select count(distinct user_id) from collect where singer_id = #{singId} and type = 2;
     </select>
+    <select id="querySingerTop20OfId" resultType="java.lang.Integer">
+        select singer_id from collect where type = 2 group by singer_id order by  count(distinct user_id) limit 20;
+    </select>
+    <select id="querySingerTop20" resultType="henu.javaweb.collapstime.model.Singer">
+        select * from singer
+        where singer.id in
+        <foreach collection="singerIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="singerIds!= null and singerIds.size>0">
+            order by field( singer.id,
+            <foreach collection="singerIds" index="index" item="item" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
 
 </mapper>

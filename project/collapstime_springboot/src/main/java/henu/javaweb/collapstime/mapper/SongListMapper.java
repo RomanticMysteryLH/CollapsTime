@@ -106,4 +106,16 @@ public interface SongListMapper extends BaseMapper<SongList> {
      * @return
      */
     public int getSongListCommentUpCount(Integer commentId);
+
+
+    /**
+     * 获取最热的前三十首歌单
+     * @return
+     */
+    public LinkedList<SongList> querySongListTop30(LinkedList<Integer> songListIds);
+
+    /**
+     * 获取热门歌单id
+     */
+    public LinkedList<Integer> querySongListTop30OfId();
 }

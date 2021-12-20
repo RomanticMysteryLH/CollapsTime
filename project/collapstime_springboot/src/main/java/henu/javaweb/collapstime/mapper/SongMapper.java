@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 @Mapper
 @Repository
-public interface SongMapper extends BaseMapper<Song> {
+public interface SongMapper extends BaseMapper<SongShowInList> {
     /**
      * 根据歌曲id查询歌曲
      * @param songId
@@ -114,5 +114,36 @@ public interface SongMapper extends BaseMapper<Song> {
      * @return
      */
     public int upSongCommment(Integer commentId);
+
+    /**
+     * 向播放表中插入一条数据
+     * @param songId
+     * @return
+     */
+    public int addPlayCount(Integer songId,Integer userId);
+
+    /**
+     * 查询播放表中的所有歌曲id
+     * @return
+     */
+    public LinkedList<Integer> queryAllSongIdOfPlay();
+
+    /**
+     * 更新歌曲播放量
+     * @param songId
+     * @return
+     */
+    public int updatePlayCount(Integer songId);
+
+    /**
+     * 获取最热的前五十首歌
+     * @return
+     */
+    public LinkedList<Song> querySongTop50(LinkedList<Integer> songIds);
+
+    /**
+     * 获取最热的前五十首歌的id
+     */
+    public LinkedList<Integer> querySongTop50OfId();
 
 }

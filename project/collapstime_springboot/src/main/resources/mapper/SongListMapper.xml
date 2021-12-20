@@ -54,4 +54,20 @@
     <select id="getSongListCommentUpCount" resultType="java.lang.Integer">
         select up from comment where id = #{commentId} and type = 1;
     </select>
+    <select id="querySongListTop30OfId" resultType="java.lang.Integer">
+        select song_list_id from collect where type = 1 group by song_list_id order by  count(distinct user_id) limit 30;
+    </select>
+    <select id="querySongListTop30" resultType="henu.javaweb.collapstime.model.SongList">
+        select * from song_list
+        where song_list.id in
+        <foreach collection="songListIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="songListIds!= null and songListIds.size>0">
+            order by field( song_list.id,
+            <foreach collection="songListIds" index="index" item="item" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
 </mapper>

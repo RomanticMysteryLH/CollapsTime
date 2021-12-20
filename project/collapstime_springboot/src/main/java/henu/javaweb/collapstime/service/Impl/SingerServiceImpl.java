@@ -210,4 +210,26 @@ public class SingerServiceImpl implements SingerService {
     public Integer followSinger(Collect collect) {
         return singerMapper.followSinger(collect);
     }
+
+    /**
+     * 获取热门歌手前二十
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageVo<Singer> singerPageByCollections(Integer currentPage, Integer pageSize) {
+        //获取热门歌手二十个
+        LinkedList<Singer> singers = singerMapper.querySingerTop20(singerMapper.querySingerTop20OfId());
+        LinkedList<Singer> singerOfPart = new LinkedList<>();
+        for(int i = (currentPage - 1)*pageSize;i < currentPage*pageSize;i++){
+            singerOfPart.add(singers.get(i));
+        }
+        PageVo<Singer> pageVo = new PageVo<>();
+        pageVo.setTotal((long) singers.size());
+        pageVo.setSize(pageSize);
+        pageVo.setDataList(singerOfPart);
+        pageVo.setCurrent(currentPage);
+        return pageVo;
+    }
 }
