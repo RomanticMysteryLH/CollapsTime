@@ -137,7 +137,7 @@ public class SingerController {
      * @param size
      * @return
      */
-    @PostMapping("/getHotSinger")
+    @GetMapping("/getHotSinger")
     @ResponseBody
     public PageVo<Singer> getHotSinger(Integer current,Integer size){
         return singerService.singerPageByCollections(current, size);

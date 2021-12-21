@@ -206,7 +206,7 @@ public class SongListController {
      * @param size
      * @return
      */
-    @PostMapping("/getHotSongList")
+    @GetMapping("/getHotSongList")
     @ResponseBody
     public PageVo<SongList> getHotSongList(Integer current,Integer size){
         return songListService.songListPageByCollections(current, size);
