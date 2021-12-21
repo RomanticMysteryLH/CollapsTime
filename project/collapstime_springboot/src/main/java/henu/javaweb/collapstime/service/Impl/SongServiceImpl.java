@@ -11,6 +11,7 @@ import henu.javaweb.collapstime.utils.MusicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 @Service
@@ -180,5 +181,27 @@ public class SongServiceImpl implements SongService {
         songShowInListPageVo.setSize(size);
         songShowInListPageVo.setDataList(list);
         return songShowInListPageVo;
+    }
+
+    /**
+     * 获取用户播放次数最多的五首歌的信息
+     * 歌曲id
+     * 歌曲名字
+     * 播放数量
+     * 用户总共的播放数量total
+     * @param userId
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> getTop5OfUserPlayCount(Integer userId) {
+        LinkedList<Play> plays = songMapper.getTop5OfUserPlayCount(userId);
+        for(int i = 0; i < plays.size(); i++){
+            plays.get(i).setName(songMapper.getSongNameBySongId(plays.get(i).getSongId()).split("-")[1]);
+        }
+        int count = songMapper.getAllPlaySongCountOfUser(userId);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("songs",plays);
+        return map;
     }
 }

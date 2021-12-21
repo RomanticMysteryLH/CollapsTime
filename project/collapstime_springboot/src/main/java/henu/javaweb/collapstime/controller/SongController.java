@@ -217,6 +217,16 @@ public class SongController {
         return songService.getHotSongTop50(current, size, userId);
     }
 
+    /**
+     * 获取用户听歌排行
+     * @param userId
+     * @return
+     */
+    @PostMapping("/getSongRank")
+    @ResponseBody
+    public HashMap<String, Object> getSongRank(Integer userId){
+        return songService.getTop5OfUserPlayCount(userId);
+    }
 }
 
 

@@ -74,4 +74,11 @@ public interface SingerMapper extends BaseMapper<Singer>{
      */
     public LinkedList<Integer> querySingerTop20OfId();
 
+    /**
+     * 根据歌曲id查询歌手id
+     * @param songId
+     * @return
+     */
+    public Integer fromSongIdToSingerId(Integer songId);
+
 }

@@ -76,4 +76,14 @@
     <select id="querySongTop50OfId" resultType="java.lang.Integer">
         select song_id from play order by play.play_count desc limit 50;
     </select>
+    <select id="getAllPlaySongCountOfUser" resultType="java.lang.Integer">
+        select sum(play_count) from play where user_id = #{userId} group by user_id;
+    </select>
+    <select id="getTop5OfUserPlayCount" resultType="henu.javaweb.collapstime.model.Play">
+        select song_id,play_count from play where user_id = #{userId} order by play_count limit 5;
+    </select>
+    <select id="getSongIdAndPlayCountOfUserPlay" resultType="java.util.HashMap">
+        select song_id 'songId',play_count 'playCount' from play where user_id = #{userId};
+    </select>
+
 </mapper>

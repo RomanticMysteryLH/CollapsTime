@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class SingerServiceImpl implements SingerService {
@@ -231,5 +229,58 @@ public class SingerServiceImpl implements SingerService {
         pageVo.setDataList(singerOfPart);
         pageVo.setCurrent(currentPage);
         return pageVo;
+    }
+
+    /**
+     * 获取用户听歌手排行
+     * @param userId
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> getTop5SingerOfUserPlay(Integer userId) {
+        //songId   playCount
+        LinkedList<HashMap<String, Integer>> play = songMapper.getSongIdAndPlayCountOfUserPlay(userId);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        LinkedList<HashMap<String, Object>> singers = new LinkedList<>();
+        //获取用户播放歌手的次数
+        for(int i = 0;i < play.size(); i++){
+            Integer singerId = singerMapper.fromSongIdToSingerId(play.get(i).get("songId"));
+            if(map.containsKey(singerId)){
+                Integer playCount = play.get(i).get("playCount");
+                Integer nowPlayCount = map.get(singerId);
+                Integer newPlayCount = playCount+nowPlayCount;
+                map.put(singerId,newPlayCount);
+            }else {
+                Integer newPlayCount = play.get(i).get("playCount");
+                map.put(singerId,newPlayCount);
+            }
+        }
+        //根据歌手播放次数从大到小排序
+        Set<Map.Entry<Integer, Integer>> entrySet = map.entrySet();
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>()
+        {
+            @Override
+            public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2)
+            {
+                //按照value值，从大到小排序
+                return o2.getValue() - o1.getValue();
+            }
+        });
+        Integer total = 0;
+        for(int i = 0; i <list.size();i++) {
+            total += (Integer) list.get(i).getValue();
+            if(singers.size() < 5) {
+                HashMap<String,Object> singer = new HashMap<>();
+                singer.put("singerId", list.get(i).getKey());
+                singer.put("singerName", singerMapper.getSingerNameById((Integer) list.get(i).getKey()));
+                singer.put("times", list.get(i).getValue());
+                singers.add(singer);
+            }
+        }
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("total",total);
+        result.put("singers",singers);
+        return result;
     }
 }

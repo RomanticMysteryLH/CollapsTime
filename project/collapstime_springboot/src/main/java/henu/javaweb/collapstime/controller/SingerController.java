@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.HashMap;
+
 @Controller
 @RequestMapping("/singer")
 public class SingerController {
@@ -141,6 +143,17 @@ public class SingerController {
     @ResponseBody
     public PageVo<Singer> getHotSinger(Integer current,Integer size){
         return singerService.singerPageByCollections(current, size);
+    }
+
+    /**
+     * 获取歌手排行
+     * @param userId
+     * @return
+     */
+    @PostMapping("/getSingerRank")
+    @ResponseBody
+    public HashMap<String, Object> getSingerRank(Integer userId){
+        return singerService.getTop5SingerOfUserPlay(userId);
     }
 
 }

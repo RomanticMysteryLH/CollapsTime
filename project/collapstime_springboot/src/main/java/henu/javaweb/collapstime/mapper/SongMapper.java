@@ -5,6 +5,7 @@ import henu.javaweb.collapstime.model.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 @Mapper
@@ -145,5 +146,26 @@ public interface SongMapper extends BaseMapper<Song> {
      * 获取最热的前五十首歌的id
      */
     public LinkedList<Integer> querySongTop50OfId();
+
+    /**
+     * 获取用户所有的听歌次数
+     * @param userId
+     * @return
+     */
+    public int getAllPlaySongCountOfUser(Integer userId);
+
+    /**
+     * 获取用户播放次数最多的五首歌
+     * @param userId
+     * @return
+     */
+    public LinkedList<Play> getTop5OfUserPlayCount(Integer userId);
+
+    /**
+     * 获取用户播放过的歌曲的id和播放数
+     * @param userId
+     * @return
+     */
+    public LinkedList<HashMap<String,Integer>> getSongIdAndPlayCountOfUserPlay(Integer userId);
 
 }

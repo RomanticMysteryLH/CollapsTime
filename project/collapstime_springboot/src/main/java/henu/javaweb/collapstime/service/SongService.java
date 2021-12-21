@@ -2,6 +2,7 @@ package henu.javaweb.collapstime.service;
 
 import henu.javaweb.collapstime.model.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public interface SongService {
@@ -40,4 +41,11 @@ public interface SongService {
      * @return
      */
     public PageVo<SongShowInList> getHotSongTop50(Integer current,Integer size,Integer userId);
+
+    /**
+     * 获取用户播放最多的前五首歌
+     * @param userId
+     * @return
+     */
+    public HashMap<String, Object> getTop5OfUserPlayCount(Integer userId);
 }
