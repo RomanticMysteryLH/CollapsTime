@@ -168,4 +168,19 @@ public interface SongMapper extends BaseMapper<Song> {
      */
     public LinkedList<HashMap<String,Integer>> getSongIdAndPlayCountOfUserPlay(Integer userId);
 
+    /**
+     * 获取去用户收藏的歌曲
+     * @param userId
+     * @return
+     */
+    public LinkedList<Song> getSongInfoOfUserCollect(Integer userId);
+
+    /**
+     * 删除用户收藏的歌曲
+     * @param songId
+     * @param userId
+     * @return
+     */
+    public int deleteCollectSongById(Integer songId,Integer userId);
+
 }

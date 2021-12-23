@@ -19,6 +19,9 @@
     <delete id="dismissCollectSong" parameterType="henu.javaweb.collapstime.model.Collect">
         delete from collect where user_id = #{userId} and song_id = #{songId};
     </delete>
+    <delete id="deleteCollectSongById">
+        delete from collect where song_id = #{songId} and user_id = #{userId} and type = 0;
+    </delete>
     <select id="getSongById" resultType="henu.javaweb.collapstime.model.Song">
         select * from song where id = #{songId};
     </select>
@@ -80,10 +83,13 @@
         select sum(play_count) from play where user_id = #{userId} group by user_id;
     </select>
     <select id="getTop5OfUserPlayCount" resultType="henu.javaweb.collapstime.model.Play">
-        select song_id,play_count from play where user_id = #{userId} order by play_count limit 5;
+        select song_id,play_count from play where user_id = #{userId}  order by play_count  desc limit 5;
     </select>
     <select id="getSongIdAndPlayCountOfUserPlay" resultType="java.util.HashMap">
         select song_id 'songId',play_count 'playCount' from play where user_id = #{userId};
+    </select>
+    <select id="getSongInfoOfUserCollect" resultType="henu.javaweb.collapstime.model.Song">
+        select * from song where id in (select song_id from collect where type = 0 and user_id = #{userId});
     </select>
 
 </mapper>
