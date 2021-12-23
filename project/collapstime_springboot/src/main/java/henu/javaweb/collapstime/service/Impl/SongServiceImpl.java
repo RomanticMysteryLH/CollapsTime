@@ -233,7 +233,14 @@ public class SongServiceImpl implements SongService {
         LinkedList<SongShowInList> list = new LinkedList<>();
         LinkedList<Song> userCollect = songMapper.getSongInfoOfUserCollect(userId);
         String os = System.getProperty("os.name");
-        for(int i = (current-1)*size;i < current*size; i++){
+        int end = 0;
+        if((current*size) > userCollect.size())
+        {
+            end = userCollect.size();
+        }else {
+            end = current*size;
+        }
+        for(int i = (current-1)*size;i < end; i++){
             String path = null;
             if (os.toLowerCase().startsWith("win")){
                 path = Cons.RESOURCE_WIN_PATH;

@@ -229,7 +229,14 @@ public class SongListServiceImpl implements SongListService {
         //获取热门歌单三十个
         LinkedList<SongList> songLists = songListMapper.querySongListTop30(songListMapper.querySongListTop30OfId());
         LinkedList<SongList> songListOfPart = new LinkedList<>();
-        for(int i = (currentPage - 1)*pageSize;i < currentPage*pageSize;i++){
+        int end = 0;
+        if((currentPage*pageSize) > songLists.size())
+        {
+            end = songLists.size();
+        }else {
+            end = currentPage*pageSize;
+        }
+        for(int i = (currentPage - 1)*pageSize;i < end;i++){
             songListOfPart.add(songLists.get(i));
         }
         PageVo<SongList> pageVo = new PageVo<>();

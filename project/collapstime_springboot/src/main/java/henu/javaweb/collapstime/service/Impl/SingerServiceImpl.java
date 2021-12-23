@@ -220,7 +220,14 @@ public class SingerServiceImpl implements SingerService {
         //获取热门歌手二十个
         LinkedList<Singer> singers = singerMapper.querySingerTop20(singerMapper.querySingerTop20OfId());
         LinkedList<Singer> singerOfPart = new LinkedList<>();
-        for(int i = (currentPage - 1)*pageSize;i < currentPage*pageSize;i++){
+        int end = 0;
+        if((currentPage*pageSize) > singers.size())
+        {
+            end = singers.size();
+        }else {
+            end = currentPage*pageSize;
+        }
+        for(int i = (currentPage - 1)*pageSize;i < end;i++){
             singerOfPart.add(singers.get(i));
         }
         PageVo<Singer> pageVo = new PageVo<>();
