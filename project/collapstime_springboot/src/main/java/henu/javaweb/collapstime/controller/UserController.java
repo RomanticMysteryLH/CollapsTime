@@ -270,4 +270,10 @@ public class UserController {
         }
     }
 
+    @PostMapping("/search")
+    @ResponseBody
+    public HashMap<String, Object> search(String key){
+        return userService.search(key);
+    }
+
 }

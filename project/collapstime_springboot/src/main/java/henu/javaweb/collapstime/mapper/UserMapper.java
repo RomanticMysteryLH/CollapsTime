@@ -5,6 +5,7 @@ import henu.javaweb.collapstime.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 @Mapper
@@ -23,4 +24,41 @@ public interface UserMapper extends BaseMapper<User> {
 
     //更新用户数据
     int updateUserdata(User user);
+
+    /**
+     * 根据关键字搜索歌曲
+     *
+     * {
+     *     id:
+     *     name:
+     * }
+     *
+     * @param key
+     * @return
+     */
+    LinkedList<HashMap<String,Object>> searchSong(String key);
+
+    /**
+     * 搜索歌手
+     * {
+     *     id:
+     *     name:
+     * }
+     * @param key
+     * @return
+     */
+    LinkedList<HashMap<String, Object>> searchSinger(String key);
+
+    /**
+     * 搜索歌单
+     * {
+     *     id:
+     *     title:
+     *     style:
+     * }
+     * @param key
+     * @return
+     */
+    LinkedList<HashMap<String, Object>> searchSongList(String key);
+
 }

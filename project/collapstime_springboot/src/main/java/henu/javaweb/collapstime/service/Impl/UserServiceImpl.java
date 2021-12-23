@@ -10,6 +10,7 @@ import henu.javaweb.collapstime.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 @Service
@@ -50,6 +51,23 @@ public class UserServiceImpl implements UserService {
     public int updateUser(User user) {
         int i = userMapper.updateUserdata(user);
         return i;
+    }
+
+    /**
+     * 根据关键字进行全局搜索
+     * @param key
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> search(String key) {
+        HashMap<String,Object> result = new HashMap<>();
+        LinkedList<HashMap<String, Object>> singers = userMapper.searchSinger(key);
+        LinkedList<HashMap<String, Object>> songs = userMapper.searchSong(key);
+        LinkedList<HashMap<String, Object>> songLists = userMapper.searchSongList(key);
+        result.put("songs",songs);
+        result.put("singers",singers);
+        result.put("songLists",songLists);
+        return result;
     }
 
 

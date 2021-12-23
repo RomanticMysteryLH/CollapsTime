@@ -83,6 +83,15 @@
   <select id="queryAllUser" resultType="henu.javaweb.collapstime.model.User">
     select * from user;
   </select>
+    <select id="searchSong" resultType="java.util.HashMap">
+      select id,name from song where SUBSTRING_INDEX(name,'-',-1) like CONCAT('%',#{key},'%');
+    </select>
+  <select id="searchSinger" resultType="java.util.HashMap">
+    select id,name from singer where name like CONCAT('%',#{key},'%');
+  </select>
+  <select id="searchSongList" resultType="java.util.HashMap">
+    select id,title,style from song_list where title like CONCAT('%',#{key},'%');
+  </select>
   <update id="updateUserdata" parameterType="henu.javaweb.collapstime.model.User">
     update user
     set username=#{username},account=#{account},sex=#{sex},avator=#{avator},location=#{location},email=#{email},introduction=#{introduction},topping=#{topping}
