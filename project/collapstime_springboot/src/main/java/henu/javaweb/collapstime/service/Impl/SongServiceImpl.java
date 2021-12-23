@@ -204,4 +204,14 @@ public class SongServiceImpl implements SongService {
         map.put("songs",plays);
         return map;
     }
+
+    @Override
+    public int deleteCollectSong(Integer songId, Integer userId) {
+        return 0;
+    }
+
+    @Override
+    public LinkedList<Song> queryCollectSong(Integer userId) {
+        return null;
+    }
 }

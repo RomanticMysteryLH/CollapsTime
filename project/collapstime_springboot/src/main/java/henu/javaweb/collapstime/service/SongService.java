@@ -48,4 +48,17 @@ public interface SongService {
      * @return
      */
     public HashMap<String, Object> getTop5OfUserPlayCount(Integer userId);
+
+    /**
+     * 删除用户收藏的歌曲
+     * @param songId
+     * @param userId
+     */
+    public int deleteCollectSong(Integer songId, Integer userId);
+
+    /**
+     * 获取用户收藏的歌曲
+     * @param userId
+     */
+    public LinkedList<Song> queryCollectSong(Integer userId);
 }

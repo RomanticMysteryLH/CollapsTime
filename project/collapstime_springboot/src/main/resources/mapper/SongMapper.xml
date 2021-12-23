@@ -14,7 +14,17 @@
         update comment set up = up+1 where id = #{commentId};
     </update>
     <update id="updatePlayCount">
-        update play set play_count = play_count+1 where song_id = #{songId};
+        update play set play_count = play_count+1
+         <where>
+                song_id = #{songId} and
+                <if test="userId == null">
+                    user_id is null
+                </if>
+             <if test="userId != null">
+                 user_id = #{userId}
+             </if>
+         </where>
+         ;
     </update>
     <delete id="dismissCollectSong" parameterType="henu.javaweb.collapstime.model.Collect">
         delete from collect where user_id = #{userId} and song_id = #{songId};

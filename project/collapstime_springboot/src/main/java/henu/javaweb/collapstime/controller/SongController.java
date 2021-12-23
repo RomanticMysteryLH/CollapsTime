@@ -158,7 +158,7 @@ public class SongController {
             if (songId.equals(songIds.get(i))) {
                 flag = true;
                 //更新歌曲播放量  +1
-                songMapper.updatePlayCount(songId);
+                songMapper.updatePlayCount(songId,userId);
                 break;
             }
         }

@@ -124,7 +124,7 @@ public interface SongMapper extends BaseMapper<Song> {
     public int addPlayCount(Integer songId,Integer userId);
 
     /**
-     * 查询播放表中的所有歌曲id
+     * 查询播放表中的所有歌曲id根据用户id
      * @return
      */
     public LinkedList<Integer> queryAllSongIdOfPlay();
@@ -134,7 +134,7 @@ public interface SongMapper extends BaseMapper<Song> {
      * @param songId
      * @return
      */
-    public int updatePlayCount(Integer songId);
+    public int updatePlayCount(Integer songId,Integer userId);
 
     /**
      * 获取最热的前五十首歌
