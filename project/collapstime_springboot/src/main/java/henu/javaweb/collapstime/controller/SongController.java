@@ -229,6 +229,40 @@ public class SongController {
     public HashMap<String, Object> getSongRank(Integer userId){
         return songService.getTop5OfUserPlayCount(userId);
     }
+
+    /**
+     * 获取用户收藏的歌曲
+     * @param current
+     * @param size
+     * @param userId
+     * @return
+     */
+    @PostMapping("/getUserCollectSong")
+    @ResponseBody
+    public PageVo<SongShowInList> getUserCollectSong(Integer current,Integer size,Integer userId){
+        return songService.queryCollectSong(current, size, userId);
+    }
+
+    /**
+     * 删除用户收藏的歌曲
+     * @param songId
+     * @param userId
+     * @return
+     */
+    @PostMapping("/deleteCollectSong")
+    @ResponseBody
+    public HashMap<String, String> deleteCollectSong(Integer songId,Integer userId){
+        int delete = songService.deleteCollectSong(songId, userId);
+        HashMap<String, String> result = new HashMap<>();
+        if(delete > 0){
+            result.put("state","success");
+            result.put("msg","取消收藏成功");
+        }else {
+            result.put("state","fail");
+            result.put("msg","出错了");
+        }
+        return result;
+    }
 }
 
 

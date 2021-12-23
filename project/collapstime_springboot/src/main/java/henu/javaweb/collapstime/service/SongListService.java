@@ -15,4 +15,6 @@ public interface SongListService {
     public Integer addSongListComment(Comment comment);
     public Integer collectSongList(Collect collect);
     public PageVo<SongList> songListPageByCollections(Integer currentPage, Integer pageSize);
+    public PageVo<SongList> queryUserCollectSongList(Integer current,Integer size,Integer userId);
+    public int deleteUserCollectSongList(Integer songListId,Integer userId);
 }

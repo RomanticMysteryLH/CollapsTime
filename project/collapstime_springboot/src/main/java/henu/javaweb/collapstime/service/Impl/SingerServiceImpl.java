@@ -283,4 +283,31 @@ public class SingerServiceImpl implements SingerService {
         result.put("singers",singers);
         return result;
     }
+
+    @Override
+    public PageVo<Singer> queryUserCollectSinger(Integer current, Integer size, Integer userId) {
+        LinkedList<Singer> singers = singerMapper.getUserCollectSinger(userId);
+        LinkedList<Singer> singerOfPart = new LinkedList<>();
+        int end = 0;
+        if((current*size) > singers.size())
+        {
+            end = singers.size();
+        }else {
+            end = current*size;
+        }
+        for(int i = (current - 1)*size;i < end;i++){
+            singerOfPart.add(singers.get(i));
+        }
+        PageVo<Singer> pageVo = new PageVo<>();
+        pageVo.setTotal((long) singers.size());
+        pageVo.setSize(size);
+        pageVo.setDataList(singerOfPart);
+        pageVo.setCurrent(current);
+        return pageVo;
+    }
+
+    @Override
+    public int deleteUserCollectSinger(Integer singerId, Integer userId) {
+        return singerMapper.deleteCollectSinger(singerId, userId);
+    }
 }

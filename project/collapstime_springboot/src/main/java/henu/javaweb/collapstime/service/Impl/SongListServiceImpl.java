@@ -239,4 +239,40 @@ public class SongListServiceImpl implements SongListService {
         pageVo.setCurrent(currentPage);
         return pageVo;
     }
+
+    /**
+     * 获取用户收藏的歌单   分页形式
+     * @param current
+     * @param size
+     * @param userId
+     * @return
+     */
+    @Override
+    public PageVo<SongList> queryUserCollectSongList(Integer current,Integer size,Integer userId){
+        LinkedList<SongList> songLists = songListMapper.getUserCollectSongList(userId);
+        LinkedList<SongList> songListOfPart = new LinkedList<>();
+        int end = 0;
+        if((current*size) > songLists.size())
+        {
+            end = songLists.size();
+        }else {
+            end = current*size;
+        }
+        for(int i = (current - 1)*size;i < end;i++){
+            songListOfPart.add(songLists.get(i));
+        }
+        PageVo<SongList> pageVo = new PageVo<>();
+        pageVo.setTotal((long) songLists.size());
+        pageVo.setSize(size);
+        pageVo.setDataList(songListOfPart);
+        pageVo.setCurrent(current);
+        return pageVo;
+    }
+
+    @Override
+    public int deleteUserCollectSongList(Integer songListId, Integer userId) {
+        return songListMapper.deleteCollectSongList(songListId, userId);
+    }
+
+
 }

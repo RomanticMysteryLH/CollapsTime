@@ -147,7 +147,14 @@ public class SongServiceImpl implements SongService {
         LinkedList<Song> songs = songMapper.querySongTop50(songMapper.querySongTop50OfId());
         String os = System.getProperty("os.name");
         LinkedList<Integer> songOfUserCollect = songMapper.getSongOfUserCollect(userId);
-        for(int i = (current-1)*size;i < current*size; i++){
+        int end = 0;
+        if((current*size) > songs.size())
+        {
+            end = songs.size();
+        }else {
+            end = current*size;
+        }
+        for(int i = (current-1)*size;i < end; i++){
             String path = null;
             if (os.toLowerCase().startsWith("win")){
                 path = Cons.RESOURCE_WIN_PATH;
@@ -205,13 +212,52 @@ public class SongServiceImpl implements SongService {
         return map;
     }
 
+    /**
+     * 删除用户收藏的歌曲
+     * @param songId
+     * @param userId
+     * @return
+     */
     @Override
     public int deleteCollectSong(Integer songId, Integer userId) {
-        return 0;
+        return songMapper.deleteCollectSongById(songId, userId);
     }
 
+    /**
+     * 获取用户收藏的歌曲 分页形式
+     * @param userId
+     * @return
+     */
     @Override
-    public LinkedList<Song> queryCollectSong(Integer userId) {
-        return null;
+    public PageVo<SongShowInList> queryCollectSong(Integer current,Integer size,Integer userId) {
+        LinkedList<SongShowInList> list = new LinkedList<>();
+        LinkedList<Song> userCollect = songMapper.getSongInfoOfUserCollect(userId);
+        String os = System.getProperty("os.name");
+        for(int i = (current-1)*size;i < current*size; i++){
+            String path = null;
+            if (os.toLowerCase().startsWith("win")){
+                path = Cons.RESOURCE_WIN_PATH;
+            }else {
+                path = Cons.RESOURCE_MAC_PATH;
+            }
+            SongShowInList songShowInList = new SongShowInList();
+            Integer collectStatus = 1;
+            songShowInList.setCollectStatus(collectStatus);
+            songShowInList.setUrl(userCollect.get(i).getUrl());
+            songShowInList.setCover(userCollect.get(i).getPicture());
+            songShowInList.setSingerId(userCollect.get(i).getSingerId());
+            songShowInList.setId(userCollect.get(i).getId());
+            songShowInList.setName(userCollect.get(i).getName().split("-")[1]);
+            songShowInList.setSingerName(singerMapper.getSingerNameById(userCollect.get(i).getSingerId()));
+            path+=userCollect.get(i).getUrl();
+            songShowInList.setDuration(MusicUtils.getDuration(path));
+            list.add(songShowInList);
+        }
+        PageVo<SongShowInList> songShowInListPageVo = new PageVo<>();
+        songShowInListPageVo.setTotal((long) userCollect.size());
+        songShowInListPageVo.setCurrent(current);
+        songShowInListPageVo.setSize(size);
+        songShowInListPageVo.setDataList(list);
+        return songShowInListPageVo;
     }
 }

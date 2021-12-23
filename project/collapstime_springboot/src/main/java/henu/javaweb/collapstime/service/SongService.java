@@ -60,5 +60,5 @@ public interface SongService {
      * 获取用户收藏的歌曲
      * @param userId
      */
-    public LinkedList<Song> queryCollectSong(Integer userId);
+    public PageVo<SongShowInList> queryCollectSong(Integer current,Integer size,Integer userId);
 }

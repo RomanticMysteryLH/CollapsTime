@@ -156,4 +156,38 @@ public class SingerController {
         return singerService.getTop5SingerOfUserPlay(userId);
     }
 
+    /**
+     * 获取用户收藏的歌手
+     * @param current
+     * @param size
+     * @param userId
+     * @return
+     */
+    @PostMapping("/getUserCollectSinger")
+    @ResponseBody
+    public PageVo<Singer> getUserCollectSong(Integer current,Integer size,Integer userId){
+        return singerService.queryUserCollectSinger(current, size, userId);
+    }
+
+    /**
+     * 删除用户收藏的歌手
+     * @param singerId
+     * @param userId
+     * @return
+     */
+    @PostMapping("/deleteCollectSinger")
+    @ResponseBody
+    public HashMap<String, String> deleteCollectSong(Integer singerId,Integer userId){
+        int delete = singerService.deleteUserCollectSinger(singerId, userId);
+        HashMap<String, String> result = new HashMap<>();
+        if(delete > 0){
+            result.put("state","success");
+            result.put("msg","取消收藏成功");
+        }else {
+            result.put("state","fail");
+            result.put("msg","出错了");
+        }
+        return result;
+    }
+
 }

@@ -7,6 +7,9 @@
     <delete id="dismissFollowSinger" parameterType="henu.javaweb.collapstime.model.Collect">
         delete from collect where user_id = #{userId} and singer_id = #{singerId};
     </delete>
+    <delete id="deleteCollectSinger">
+        delete from collect where type = 2 and user_id = #{userId} and singer_id = #{singerId};
+    </delete>
     <select id="getSingerNameById" resultType="java.lang.String">
         select name from singer where id = #{id};
     </select>
@@ -40,6 +43,11 @@
     </select>
     <select id="fromSongIdToSingerId" resultType="java.lang.Integer">
         select singer_id from song where id = #{songId};
+    </select>
+    <select id="getUserCollectSinger" resultType="henu.javaweb.collapstime.model.Singer">
+        select * from singer where id in(
+            select singer_id from collect where type = 2 and user_id = #{userId}
+        );
     </select>
 
 </mapper>

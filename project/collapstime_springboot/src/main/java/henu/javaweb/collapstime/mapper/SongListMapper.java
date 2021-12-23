@@ -118,4 +118,19 @@ public interface SongListMapper extends BaseMapper<SongList> {
      * 获取热门歌单id
      */
     public LinkedList<Integer> querySongListTop30OfId();
+
+    /**
+     * 取消用户收藏的歌单
+     * @param songListId
+     * @param userId
+     * @return
+     */
+    public int deleteCollectSongList(Integer songListId,Integer userId);
+
+    /**
+     * 获取用户收藏的歌单
+     * @param userId
+     * @return
+     */
+    public LinkedList<SongList> getUserCollectSongList(Integer userId);
 }

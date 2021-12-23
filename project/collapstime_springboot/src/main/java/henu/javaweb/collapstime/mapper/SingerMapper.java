@@ -81,4 +81,19 @@ public interface SingerMapper extends BaseMapper<Singer>{
      */
     public Integer fromSongIdToSingerId(Integer songId);
 
+    /**
+     * 取消用户收藏的歌手
+     * @param singerId
+     * @param userId
+     * @return
+     */
+    public int deleteCollectSinger(Integer singerId,Integer userId);
+
+    /**
+     * 获取用户收藏的歌手
+     * @param userId
+     * @return
+     */
+    public LinkedList<Singer> getUserCollectSinger(Integer userId);
+
 }

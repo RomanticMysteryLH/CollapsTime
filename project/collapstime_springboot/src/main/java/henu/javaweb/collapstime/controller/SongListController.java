@@ -211,4 +211,38 @@ public class SongListController {
     public PageVo<SongList> getHotSongList(Integer current,Integer size){
         return songListService.songListPageByCollections(current, size);
     }
+
+    /**
+     * 获取用户收藏的歌单
+     * @param current
+     * @param size
+     * @param userId
+     * @return
+     */
+    @PostMapping("/getUserCollectSongList")
+    @ResponseBody
+    public PageVo<SongList> getUserCollectSong(Integer current,Integer size,Integer userId){
+        return songListService.queryUserCollectSongList(current, size, userId);
+    }
+
+    /**
+     * 删除用户收藏的歌单
+     * @param songListId
+     * @param userId
+     * @return
+     */
+    @PostMapping("/deleteCollectSongList")
+    @ResponseBody
+    public HashMap<String, String> deleteCollectSongList(Integer songListId,Integer userId){
+        int delete = songListService.deleteUserCollectSongList(songListId, userId);
+        HashMap<String, String> result = new HashMap<>();
+        if(delete > 0){
+            result.put("state","success");
+            result.put("msg","取消收藏成功");
+        }else {
+            result.put("state","fail");
+            result.put("msg","出错了");
+        }
+        return result;
+    }
 }

@@ -16,6 +16,9 @@
     <delete id="dismissCollectSongList" parameterType="henu.javaweb.collapstime.model.Collect">
         delete from collect where user_id = #{userId} and song_list_id = #{songListId};
     </delete>
+    <delete id="deleteCollectSongList">
+        delete from collect where type = 1 and user_id = #{userId} and song_list_id = #{songListId};
+    </delete>
     <select id="querySongListAllStyle" resultType="string">
         select group_concat(distinct style) styleList
         from song_list;
@@ -69,5 +72,10 @@
                 #{item}
             </foreach>
         </if>
+    </select>
+    <select id="getUserCollectSongList" resultType="henu.javaweb.collapstime.model.SongList">
+        select * from song_list where id in(
+            select song_list_id from collect where type = 1 and user_id = #{userId}
+        );
     </select>
 </mapper>
