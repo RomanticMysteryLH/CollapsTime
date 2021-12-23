@@ -152,7 +152,9 @@ public class SongController {
         String lyric = songMapper.getLyricBySongId(songId);
         Map<String, String> result = new HashMap<>();
         result.put("lyric",lyric);
-        LinkedList<Integer> songIds = songMapper.queryAllSongIdOfPlay();
+        LinkedList<Integer> songIds = new LinkedList<>();
+        songIds = songMapper.queryAllSongIdOfPlay(userId);
+        System.out.println(1);
         boolean flag = false;
         for(int i = 0; i < songIds.size(); i++) {
             if (songId.equals(songIds.get(i))) {

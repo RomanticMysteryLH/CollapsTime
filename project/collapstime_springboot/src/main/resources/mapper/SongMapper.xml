@@ -71,7 +71,12 @@
         select up from comment where id = #{commentId} and type = 0;
     </select>
     <select id="queryAllSongIdOfPlay" resultType="java.lang.Integer">
-        select distinct song_id from play;
+        select distinct song_id from play
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>;
     </select>
     <select id="querySongTop50"  resultType="henu.javaweb.collapstime.model.Song">
      select * from song

@@ -127,7 +127,7 @@ public interface SongMapper extends BaseMapper<Song> {
      * 查询播放表中的所有歌曲id根据用户id
      * @return
      */
-    public LinkedList<Integer> queryAllSongIdOfPlay();
+    public LinkedList<Integer> queryAllSongIdOfPlay(Integer userId);
 
     /**
      * 更新歌曲播放量
