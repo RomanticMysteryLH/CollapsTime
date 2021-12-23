@@ -221,7 +221,7 @@ public class SongListController {
      */
     @PostMapping("/getUserCollectSongList")
     @ResponseBody
-    public PageVo<SongList> getUserCollectSong(Integer current,Integer size,Integer userId){
+    public PageVo<SongList> getUserCollectSongList(Integer current,Integer size,Integer userId){
         return songListService.queryUserCollectSongList(current, size, userId);
     }
 

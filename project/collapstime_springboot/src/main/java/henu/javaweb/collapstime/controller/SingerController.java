@@ -165,7 +165,7 @@ public class SingerController {
      */
     @PostMapping("/getUserCollectSinger")
     @ResponseBody
-    public PageVo<Singer> getUserCollectSong(Integer current,Integer size,Integer userId){
+    public PageVo<Singer> getUserCollectSinger(Integer current,Integer size,Integer userId){
         return singerService.queryUserCollectSinger(current, size, userId);
     }
 
@@ -177,7 +177,7 @@ public class SingerController {
      */
     @PostMapping("/deleteCollectSinger")
     @ResponseBody
-    public HashMap<String, String> deleteCollectSong(Integer singerId,Integer userId){
+    public HashMap<String, String> deleteCollectSinger(Integer singerId,Integer userId){
         int delete = singerService.deleteUserCollectSinger(singerId, userId);
         HashMap<String, String> result = new HashMap<>();
         if(delete > 0){
