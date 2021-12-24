@@ -115,7 +115,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="block">
+    <!-- <div class="block">
       <el-pagination
         small
         layout="prev, pager, next"
@@ -125,7 +125,7 @@
         style="text-align: center"
       >
       </el-pagination>
-    </div>
+    </div> -->
   </el-card>
 </template>
 <style scoped>
@@ -180,7 +180,7 @@ export default {
     },
     downloadSong(row) {
       // console.log(row);
-      // let axiosThis = this;
+      let axiosThis = this;
       this.$axios
         .get("user/downloadSong", {
           params: {
@@ -189,17 +189,18 @@ export default {
           responseType: "blob",
         })
         .then((res) => {
-          let data = res.data;
-          let url = window.URL.createObjectURL(new Blob([data]));
-          let link = document.createElement("a");
-          link.style.display = "none";
-          link.href = url;
-          link.setAttribute("download", row.name);
-
-          document.body.appendChild(link);
-          link.click();
-          // window.location.href=res;
-          console.log(res);
+          let blob = new Blob([res.data], {
+            type: "audio/mpeg",
+          }); // 2.获取请求返回的response对象中的blob 设置文件类型，这里以excel为例
+          let url = window.URL.createObjectURL(blob); // 3.创建一个临时的url指向blob对象
+          // 4.创建url之后可以模拟对此文件对象的一系列操作，例如：预览、下载
+          let a = document.createElement("a");
+          a.href = url;
+          a.download = row.name + ".mp3";
+          a.click();
+          // 5.释放这个临时的对象url
+          window.URL.revokeObjectURL(url);
+          axiosThis.$message.success("已开始下载，请稍等");
         });
     },
     //歌词还没加
@@ -300,16 +301,20 @@ export default {
     async getLyrics(id) {
       let newLyrics = "";
       // let axiosThis = this;
-      let data = Qs.stringify({
+      let dataObj = {
         songId: id,
-      });
+      };
+      if(this.$root.userData.login_ed==true){
+        dataObj.userId=this.$root.userData.userId;
+      }
+      let data=Qs.stringify(dataObj);
       await this.$axios
         .post(`song/getLyric`, data)
         .then((res) => {
           //请求成功
           // console.log(axiosThis);
           // console.log("res.data=>", res.data);
-          newLyrics=res.data.lyric;
+          newLyrics = res.data.lyric;
         })
         .catch((err) => {
           console.log(err);

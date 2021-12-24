@@ -215,10 +215,10 @@ export default {
             console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
-              axiosThis.$message.success("收藏歌单成功！");
+              axiosThis.$message.success(responseData.msg+"！");
               axiosThis.getPlaylistDetail();
             } else {
-              axiosThis.$message.error("收藏歌单失败！");
+              axiosThis.$message.error(responseData.msg+"！");
             }
           })
           .catch((err) => {
