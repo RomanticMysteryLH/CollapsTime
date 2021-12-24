@@ -17,4 +17,5 @@ public interface SongListService {
     public PageVo<SongList> songListPageByCollections(Integer currentPage, Integer pageSize);
     public PageVo<SongList> queryUserCollectSongList(Integer current,Integer size,Integer userId);
     public int deleteUserCollectSongList(Integer songListId,Integer userId);
+    public PageVo<SongList> searchSongListInfo(Integer currentPage, Integer pageSize,String key);
 }

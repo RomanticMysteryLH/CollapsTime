@@ -15,4 +15,5 @@ public interface SingerService {
     public HashMap<String,Object> getTop5SingerOfUserPlay(Integer userId);
     public PageVo<Singer> queryUserCollectSinger(Integer current,Integer size,Integer userId);
     public int deleteUserCollectSinger(Integer singerId,Integer userId);
+    public PageVo<Singer> searchSingerInfo(Integer currentPage, Integer pageSize,String key);
 }

@@ -61,4 +61,6 @@ public interface SongService {
      * @param userId
      */
     public PageVo<SongShowInList> queryCollectSong(Integer current,Integer size,Integer userId);
+
+    public PageVo<SongShowInList> searchSongInfo(Integer current,Integer size,String key,Integer userId);
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import henu.javaweb.collapstime.mapper.SingerMapper;
 import henu.javaweb.collapstime.mapper.SongMapper;
+import henu.javaweb.collapstime.mapper.UserMapper;
 import henu.javaweb.collapstime.model.*;
 import henu.javaweb.collapstime.service.SongService;
 import henu.javaweb.collapstime.utils.Cons;
@@ -22,6 +23,8 @@ public class SongServiceImpl implements SongService {
     private SongMapper songMapper;
     @Autowired
     private SingerMapper singerMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public PageVo<Song> songPage(Integer currentPage, Integer pageSize) {
@@ -262,6 +265,63 @@ public class SongServiceImpl implements SongService {
         }
         PageVo<SongShowInList> songShowInListPageVo = new PageVo<>();
         songShowInListPageVo.setTotal((long) userCollect.size());
+        songShowInListPageVo.setCurrent(current);
+        songShowInListPageVo.setSize(size);
+        songShowInListPageVo.setDataList(list);
+        return songShowInListPageVo;
+    }
+
+    /**
+     * 获取用户搜索的歌曲
+     * @param current
+     * @param size
+     * @param key
+     * @param userId
+     * @return
+     */
+    @Override
+    public PageVo<SongShowInList> searchSongInfo(Integer current, Integer size, String key,Integer userId) {
+        LinkedList<SongShowInList> list = new LinkedList<>();
+        LinkedList<Song> searchSong = userMapper.searchSongInfo(key);
+        String os = System.getProperty("os.name");
+        LinkedList<Integer> songOfUserCollect = songMapper.getSongOfUserCollect(userId);
+        int end = 0;
+        if((current*size) > searchSong.size())
+        {
+            end = searchSong.size();
+        }else {
+            end = current*size;
+        }
+        for(int i = (current-1)*size;i < end; i++){
+            String path = null;
+            if (os.toLowerCase().startsWith("win")){
+                path = Cons.RESOURCE_WIN_PATH;
+            }else {
+                path = Cons.RESOURCE_MAC_PATH;
+            }
+            SongShowInList songShowInList = new SongShowInList();
+            Integer collectStatus = 0;
+            for (int j = 0; j < songOfUserCollect.size(); j++) {
+                if(searchSong.get(i).getId().equals(songOfUserCollect.get(j))){
+                    collectStatus = 1;
+                    break;
+                }else {
+                    continue;
+                }
+            }
+            songShowInList.setCollectStatus(collectStatus);
+            songShowInList.setUrl(searchSong.get(i).getUrl());
+            songShowInList.setCover(searchSong.get(i).getPicture());
+            songShowInList.setSingerId(searchSong.get(i).getSingerId());
+            songShowInList.setId(searchSong.get(i).getId());
+            songShowInList.setName(searchSong.get(i).getName().split("-")[1]);
+            songShowInList.setSingerName(singerMapper.getSingerNameById(searchSong.get(i).getSingerId()));
+            path+=searchSong.get(i).getUrl();
+            songShowInList.setDuration(MusicUtils.getDuration(path));
+            list.add(songShowInList);
+        }
+        PageVo<SongShowInList> songShowInListPageVo = new PageVo<>();
+        songShowInListPageVo.setTotal((long) searchSong.size());
         songShowInListPageVo.setCurrent(current);
         songShowInListPageVo.setSize(size);
         songShowInListPageVo.setDataList(list);

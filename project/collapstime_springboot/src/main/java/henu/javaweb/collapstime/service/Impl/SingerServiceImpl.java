@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import henu.javaweb.collapstime.mapper.SingerMapper;
 import henu.javaweb.collapstime.mapper.SongMapper;
+import henu.javaweb.collapstime.mapper.UserMapper;
 import henu.javaweb.collapstime.model.*;
 import henu.javaweb.collapstime.service.SingerService;
 import henu.javaweb.collapstime.utils.Cons;
@@ -22,6 +23,8 @@ public class SingerServiceImpl implements SingerService {
     private SingerMapper singerMapper;
     @Autowired
     private SongMapper songMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 歌手分页
@@ -291,6 +294,13 @@ public class SingerServiceImpl implements SingerService {
         return result;
     }
 
+    /**
+     * 查询用户收藏的歌手
+     * @param current
+     * @param size
+     * @param userId
+     * @return
+     */
     @Override
     public PageVo<Singer> queryUserCollectSinger(Integer current, Integer size, Integer userId) {
         LinkedList<Singer> singers = singerMapper.getUserCollectSinger(userId);
@@ -316,8 +326,43 @@ public class SingerServiceImpl implements SingerService {
         return pageVo;
     }
 
+    /**
+     * 删除用户收藏的歌手
+     * @param singerId
+     * @param userId
+     * @return
+     */
     @Override
     public int deleteUserCollectSinger(Integer singerId, Integer userId) {
         return singerMapper.deleteCollectSinger(singerId, userId);
+    }
+
+    /**
+     * 搜索歌手
+     * @param currentPage
+     * @param pageSize
+     * @param key
+     * @return
+     */
+    @Override
+    public PageVo<Singer> searchSingerInfo(Integer currentPage, Integer pageSize, String key) {
+        LinkedList<Singer> singers = userMapper.searchSingerInfo(key);
+        LinkedList<Singer> singerOfPart = new LinkedList<>();
+        int end = 0;
+        if((currentPage*pageSize) > singers.size())
+        {
+            end = singers.size();
+        }else {
+            end = currentPage*pageSize;
+        }
+        for(int i = (currentPage - 1)*pageSize;i < end;i++){
+            singerOfPart.add(singers.get(i));
+        }
+        PageVo<Singer> pageVo = new PageVo<>();
+        pageVo.setTotal((long) singers.size());
+        pageVo.setSize(pageSize);
+        pageVo.setDataList(singerOfPart);
+        pageVo.setCurrent(currentPage);
+        return pageVo;
     }
 }

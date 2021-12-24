@@ -8,6 +8,9 @@ import henu.javaweb.collapstime.model.FileUploadResult;
 import henu.javaweb.collapstime.model.SongDownloadResult;
 import henu.javaweb.collapstime.model.SongShowInList;
 import henu.javaweb.collapstime.model.User;
+import henu.javaweb.collapstime.service.SingerService;
+import henu.javaweb.collapstime.service.SongListService;
+import henu.javaweb.collapstime.service.SongService;
 import henu.javaweb.collapstime.service.UserService;
 import henu.javaweb.collapstime.utils.Cons;
 import henu.javaweb.collapstime.utils.JWTUtil;
@@ -63,6 +66,12 @@ public class UserController {
     private SongMapper songMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private SongService songService;
+    @Autowired
+    private SongListService songListService;
+    @Autowired
+    private SingerService singerService;
 
     /**
      * 注册
@@ -250,6 +259,33 @@ public class UserController {
     @ResponseBody
     public User getInfo(String account){
         return userMapper.selectByAccount(account);
+    }
+
+    /**
+     * 搜索歌单歌曲歌手
+     * @param key
+     * @param type 搜索的是歌曲歌手还是歌单
+     * @param current
+     * @param size
+     * @param userId
+     *  type
+     * {
+     *    singer
+     *    song
+     *    songList
+     * }
+     * @return
+     */
+    @PostMapping("/searchInfo")
+    @ResponseBody
+    public Object searchInfo(Integer current,Integer size,String key,String type,Integer userId){
+        if("song".equals(type)){
+            return songService.searchSongInfo(current, size, key, userId);
+        }else if("songList".equals(type)){
+            return songListService.searchSongListInfo(current, size, key);
+        }else {
+            return singerService.searchSingerInfo(current, size, key);
+        }
     }
 
 }

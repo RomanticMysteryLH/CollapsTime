@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import henu.javaweb.collapstime.mapper.SingerMapper;
 import henu.javaweb.collapstime.mapper.SongListMapper;
 import henu.javaweb.collapstime.mapper.SongMapper;
+import henu.javaweb.collapstime.mapper.UserMapper;
 import henu.javaweb.collapstime.model.*;
 import henu.javaweb.collapstime.service.SongListService;
 import henu.javaweb.collapstime.utils.Cons;
@@ -25,6 +26,8 @@ public class SongListServiceImpl implements SongListService {
     private SingerMapper singerMapper;
     @Autowired
     private SongMapper songMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 实现歌单分页
@@ -279,9 +282,45 @@ public class SongListServiceImpl implements SongListService {
         return pageVo;
     }
 
+    /**
+     * 删除用户收藏的歌单
+     * @param songListId
+     * @param userId
+     * @return
+     */
     @Override
     public int deleteUserCollectSongList(Integer songListId, Integer userId) {
         return songListMapper.deleteCollectSongList(songListId, userId);
+    }
+
+    /**
+     * 搜索歌单
+     * @param currentPage
+     * @param pageSize
+     * @param key
+     * @return
+     */
+    @Override
+    public PageVo<SongList> searchSongListInfo(Integer currentPage, Integer pageSize, String key) {
+        //获取用户搜索的歌单
+        LinkedList<SongList> songLists = userMapper.searchSongListInfo(key);
+        LinkedList<SongList> songListOfPart = new LinkedList<>();
+        int end = 0;
+        if((currentPage*pageSize) > songLists.size())
+        {
+            end = songLists.size();
+        }else {
+            end = currentPage*pageSize;
+        }
+        for(int i = (currentPage - 1)*pageSize;i < end;i++){
+            songListOfPart.add(songLists.get(i));
+        }
+        PageVo<SongList> pageVo = new PageVo<>();
+        pageVo.setTotal((long) songLists.size());
+        pageVo.setSize(pageSize);
+        pageVo.setDataList(songListOfPart);
+        pageVo.setCurrent(currentPage);
+        return pageVo;
     }
 
 
