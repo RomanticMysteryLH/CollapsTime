@@ -188,49 +188,6 @@ public class UserController {
     }
 
 
-    /**
-     * 上传头像
-     * @param file
-     * @return
-     */
-    @PostMapping("/fileUpload")
-    @ResponseBody
-    public FileUploadResult fileUpload(MultipartFile file) {
-        FileUploadResult result = new FileUploadResult();
-        if (file.isEmpty()) {
-            result.setMsg("上传文件为空");
-            return result;
-        }
-        String fileName = file.getOriginalFilename();  // 文件名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
-        if(".png".equals(suffixName) || ".jpg".equals(suffixName) || ".jpeg".equals(suffixName)){
-            String filePath = ""; // 上传后的路径
-            String os = System.getProperty("os.name");
-            if (os.toLowerCase().startsWith("win")){
-                filePath = Cons.RESOURCE_WIN_PATH;
-            }else {
-                filePath = Cons.RESOURCE_MAC_PATH;
-            }
-            filePath+="/img/userPic/";
-            fileName = UUID.randomUUID() + suffixName; // 新文件名
-            File dest = new File(filePath + fileName);
-            if (!dest.getParentFile().exists()) {
-                dest.getParentFile().mkdirs();
-            }
-            try {
-                file.transferTo(dest);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            result.setMsg("上传成功");
-            result.setFilePath("/img/userPic/"+fileName);
-            return result;
-
-        }else {
-            result.setMsg("只支持上传png,jpeg,jpg格式的图像");
-            return result;
-        }
-    }
     @GetMapping("/downloadSong")
     @ResponseBody
     public void downloadSong(Integer songId, HttpServletResponse response){

@@ -24,4 +24,14 @@ public class AdminUserServiceImpl implements AdminUserService {
         userVo.setSize(pageSize);
         return userVo;
     }
+
+    @Override
+    public Integer userDelete(String userId) {
+        return userMapper.deleteById(userId);
+    }
+
+    @Override
+    public User queryUser(String id) {
+        return userMapper.selectById(id);
+    }
 }

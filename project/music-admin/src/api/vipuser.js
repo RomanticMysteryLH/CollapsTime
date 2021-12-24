@@ -18,10 +18,21 @@ export function updateuser(data) {
   })
 }
 
+// //上传头像
+// export function sendAvatar(picfile) {
+//   return request({
+//     url: '/admin/user/userAvatarUpload',
+//     method: 'post',
+//     data:picfile,
+//     headers: {
+//       'Content-Type': 'multipart/form-data'
+//     }
+//   })
+// }
 //上传头像
 export function sendAvatar(picfile) {
   return request({
-    url: '/admin/user/fileUpload',
+    url: '/admin/user/userAvatarUpload',
     method: 'post',
     data:picfile,
     headers: {
@@ -31,11 +42,37 @@ export function sendAvatar(picfile) {
 }
 
 /**
+ * 删除未保存但上传了的文件
+ * @param path
+ * @returns {AxiosPromise}
+ */
+export function deleteProFile(picPath) {
+  return request({
+    url: '/admin/user/userProFileDelete',
+    method: 'post',
+    params:{picfilePath:picPath}
+  })
+}
+
+/**
+ * 覆盖文件时删除原来的文件
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function overridePic(id) {
+  return request({
+    url: '/admin/user/userFileDelete',
+    method: 'post',
+    params:{id:id}
+  })
+}
+
+/**
  * 删除用户
  * @param data
  * @returns {AxiosPromise}
  */
-export function deleteuser(data) {
+export function deleteUser(data) {
   return request({
     url: '/admin/user/deleteUser',
     method: 'post',

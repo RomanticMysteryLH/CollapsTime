@@ -32,9 +32,9 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="头像" width="100px" align="center">
+      <el-table-column label="头像" width="130px" align="center">
         <template slot-scope="{row}">
-          <el-avatar fit="fill" :src="row.avatorshow" />
+          <el-avatar fit="fill"  :size="100" :src="row.avatorshow" />
         </template>
       </el-table-column>
       <el-table-column label="账号" width="150px" align="center">
@@ -50,6 +50,11 @@
       <el-table-column label="性别" width="100px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.sex }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="简介" align="center" min-width="100">
+        <template slot-scope="{row}">
+          <span>{{ row.introduction }}</span>
         </template>
       </el-table-column>
       <el-table-column label="邮箱" align="center" min-width="100">
@@ -73,10 +78,10 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
         </template>
@@ -85,7 +90,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="1%" style="height:95%;overflow-y: auto;"  >
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="1%" style="height:95%;overflow-y: auto;" @open="deletePicFlag=false" @close="checkDelete">
       <el-tabs v-model="activeName">
         <el-tab-pane label="会员基本信息" name="first">
           <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
@@ -110,18 +115,19 @@
               <el-input v-model="temp.introduction" type="textarea" />
             </el-form-item>
             <el-form-item label="头像">
-              <el-avatar :src="temp.avatorshow" />
+<!--              <el-avatar :src="temp.avatorshow" />-->
+              <my-upload field="file"
+                         v-model="showupload"
+                         :width="300"
+                         :height="300"
+                         @crop-success="PicUpload"
+                         :lang-ext="{preview: '图片预览',btn:{save:'上传'}}"
+                         ref="myUpload"
+                         img-format="png">
+              </my-upload>
+              <img :src="temp.avatorshow"  class="avatar">
+              <el-button type="primary" @click="uploadimg">上传头像</el-button>
             </el-form-item>
-            <el-upload
-              class="avatar-uploader"
-              action="#"
-              accept=".jpg,.png,.jpeg"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="temp.avatorshow" :src="temp.avatorshow" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
           </el-form>
 
         </el-tab-pane>
@@ -130,11 +136,11 @@
         <el-tab-pane label="会员评论" name="fourth"></el-tab-pane>
       </el-tabs>
       <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="updateData()">
+          保存
+        </el-button>
         <el-button @click="dialogFormVisible = false">
           取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确定
         </el-button>
       </div>
     </el-dialog>
@@ -152,11 +158,13 @@
 </template>
 
 <script>
-import { fetchUser ,updateuser,sendAvatar} from '@/api/vipuser'
+import { fetchUser ,updateuser,sendAvatar,deleteUser,deleteProFile,overridePic} from '@/api/vipuser'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // 分页操作
 import qs from 'qs'
+import myUpload from 'vue-image-crop-upload/upload-2.vue'
+import {deleteSong, deleteSongFile} from "@/api/song";
 
 const sexOptions = [
   { key: '0', display_name: 'female' },
@@ -170,7 +178,7 @@ const sexKeyValue = sexOptions.reduce((acc, cur) => {
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: { Pagination,myUpload},
   directives: { waves },
   filters: {
     SignstatusFilter(status) {
@@ -213,6 +221,8 @@ export default {
       activeName: 'first',
       total: 0,
       listLoading: false,
+      showupload:false,
+      deletePicFlag:false,//删除标记，用于判断是否需要删除之前的图片
       listQuery: {
         current: 1,
         size: 20,
@@ -254,7 +264,7 @@ export default {
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: 'Create'
+        create: '新建'
       },
       dialogPvVisible: false,
       pvData: [],
@@ -336,7 +346,13 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           const upData = qs.stringify(tempData);
+          if(this.deletePicFlag){
+            overridePic(this.temp.id).then(result=>{
+              console.log(result)
+            })
+          }
           updateuser(upData).then(result => {
+            this.deletePicFlag=false//如果点击保存则重置删除标记
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -350,38 +366,46 @@ export default {
         }
       })
     },
-    //头像上传
-    handleAvatarSuccess(res, file) {
-      this.temp.avator = URL.createObjectURL(file.raw);
-    },
+
     /**
-     * 头像上传主体部分
-     * @param file
-     * @returns {boolean}
+     * 上传头像
      */
-    beforeAvatarUpload(file) {
-      const isJPG = (file.type === 'image/jpeg'||file.type === 'image/png' || file.type === 'image/jpg');
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG/JPEG格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
-      }
+    PicUpload(file){
       let fd = new FormData();//通过form数据格式来传
       fd.append("file", file); //传文件
       sendAvatar(fd).then(result=>{
         if(result.msg=="上传成功")
         {
+          this.checkDelete()
           this.temp.avator=result.filePath;
           this.temp.avatorshow=this.targetApi+this.temp.avator;
           this.$message.success('上传成功')
+          this.deletePicFlag=true//上传成功后把删除标志置为可删除状态。
         }
         else {
           this.$message.error('上传失败')
         }
       })
-      return false;
+    },
+
+    /**
+     * 显示上传图片界面
+     */
+    uploadimg(){
+      this.showupload=true
+      // 调用其组件的方法，将其视图跳转到第一步,解决传过一次之后一直是该界面的问题
+      this.$refs.myUpload.setStep(1)
+    },
+
+    /**
+     * 判断是否需要删除上一个文件
+     */
+    checkDelete() {
+      if (this.deletePicFlag) {
+        deleteProFile(this.temp.avator).then(result => {
+          console.log(result)
+        })
+      }
     },
 
     /**
@@ -389,15 +413,40 @@ export default {
      * @param row
      * @param index
      */
-    handleDelete(row, index) {
+    handleDelete(row,index) {
+      const tempData = Object.assign({}, row)
+      const idData = qs.stringify(tempData);
+      this.$confirm('确认永久删除该用户吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteUser(idData).then(result=>{
+          if(result=="success"){
+            this.$notify({
+              title: 'Success',
+              message: '删除成功！',
+              type: 'success',
+              duration: 2000
+            })
+            this.list.splice(index, 1)
+          }
+          else{
+            this.$notify({
+              title: 'error',
+              message: '删除失败！',
+              type: 'error',
+              duration: 2000
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
 
-      this.$notify({
-        title: 'Success',
-        message: '删除成功！',
-        type: 'success',
-        duration: 2000
-      })
-      this.list.splice(index, 1)
     },
 
     handleDownload() {
@@ -450,9 +499,10 @@ export default {
     text-align: center;
   }
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 250px;
+    height: 250px;
     display: block;
+    margin-bottom: 10px;
   }
   ::-webkit-scrollbar {
     width: 10px !important;

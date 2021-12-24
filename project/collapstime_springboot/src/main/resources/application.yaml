@@ -6,7 +6,7 @@ spring:
     url: jdbc:mysql://localhost:3306/music?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: zbf2312306353
+    password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
   #发送邮件配置
   mail:
@@ -29,3 +29,12 @@ logging:
     root: info
     henu: debug
 
+servlet:
+  multipart:
+    max-file-size: 20MB
+    enabled: true
+
+http:
+  multipart:
+    max-file-size: 20MB
+    enabled: true
