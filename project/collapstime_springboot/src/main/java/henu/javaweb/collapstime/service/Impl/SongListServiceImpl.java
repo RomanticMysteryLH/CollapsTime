@@ -258,6 +258,9 @@ public class SongListServiceImpl implements SongListService {
     public PageVo<SongList> queryUserCollectSongList(Integer current,Integer size,Integer userId){
         LinkedList<SongList> songLists = songListMapper.getUserCollectSongList(userId);
         LinkedList<SongList> songListOfPart = new LinkedList<>();
+        for(int i = 0; i < songLists.size(); i++){
+            songLists.get(i).setCollectState(1);
+        }
         int end = 0;
         if((current*size) > songLists.size())
         {

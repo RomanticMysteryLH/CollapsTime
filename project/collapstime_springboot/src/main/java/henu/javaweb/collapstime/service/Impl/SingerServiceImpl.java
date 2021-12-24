@@ -295,6 +295,9 @@ public class SingerServiceImpl implements SingerService {
     public PageVo<Singer> queryUserCollectSinger(Integer current, Integer size, Integer userId) {
         LinkedList<Singer> singers = singerMapper.getUserCollectSinger(userId);
         LinkedList<Singer> singerOfPart = new LinkedList<>();
+        for(int i = 0; i < singers.size(); i++){
+            singers.get(i).setCollectState(1);
+        }
         int end = 0;
         if((current*size) > singers.size())
         {

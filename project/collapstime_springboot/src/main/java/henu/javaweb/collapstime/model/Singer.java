@@ -1,5 +1,6 @@
 package henu.javaweb.collapstime.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -15,6 +16,9 @@ public class Singer {
     private String birth;
     private String location;
     private String introduction;
+    //收藏状态
+    @TableField(exist = false)
+    private int collectState;
 
     public Integer getId() {
         return id;
@@ -70,5 +74,13 @@ public class Singer {
 
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
+    }
+
+    public int getCollectState() {
+        return collectState;
+    }
+
+    public void setCollectState(int collectState) {
+        this.collectState = collectState;
     }
 }
