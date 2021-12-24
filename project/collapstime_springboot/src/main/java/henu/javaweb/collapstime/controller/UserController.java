@@ -3,6 +3,7 @@ package henu.javaweb.collapstime.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import henu.javaweb.collapstime.mapper.SongMapper;
+import henu.javaweb.collapstime.mapper.UserMapper;
 import henu.javaweb.collapstime.model.FileUploadResult;
 import henu.javaweb.collapstime.model.SongDownloadResult;
 import henu.javaweb.collapstime.model.SongShowInList;
@@ -60,6 +61,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private SongMapper songMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 注册
@@ -270,10 +273,26 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户搜索推荐信息
+     * @param key
+     * @return
+     */
     @PostMapping("/search")
     @ResponseBody
     public HashMap<String, Object> search(String key){
         return userService.search(key);
+    }
+
+    /**
+     * 根据id获取用户信息
+     * @param account
+     * @return
+     */
+    @PostMapping("/getInfo")
+    @ResponseBody
+    public User getInfo(String account){
+        return userMapper.selectByAccount(account);
     }
 
 }
