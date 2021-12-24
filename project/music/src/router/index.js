@@ -7,10 +7,16 @@ import playlist from '@/views/playlist'
 import musician from '@/views/musician'
 import myMusic from '@/views/mymusic'
 import message from '@/views/message'
-import hotSingle from '@/views/hotSingle'
+import hitSingle from '@/views/hitSingle'
 import register from '@/views/register'
 import detailPlaylist from '@/views/detailPlaylist'
 import detailMusician from '@/views/detailMusician'
+import hitPlaylist from '@/views/hitPlaylist'
+import userCenter from '@/views/userCenter'
+import hitSinger from '@/views/hitSinger'
+import collectedSong from '@/views/collectedSong'
+import collectedPlaylist from '@/views/collectedPlaylist'
+import followingSinger from '@/views/followingSinger'
 export default new VueRouter({
     routes: [{
             path: '/home',
@@ -39,15 +45,31 @@ export default new VueRouter({
         },
         {
             path: '/myMusic',
-            component: myMusic
+            component: myMusic,
+            // beforeEnter: (to, from, next) => {
+            //     // ...
+            //     console.log(to);
+            //     console.log(from);
+            //     console.log(next);
+            //     console.log(this.$root.userData)
+            //     if(to.path ===myMusic&&this.$root.userData.login_ed==false){
+            //         next({path:"/"});
+            //     }else{
+            //         next();
+            //     }
+            // }
         },
         {
             path: '/message',
             component: message,
         },
         {
-            path: '/home/hotSingle',
-            component: hotSingle
+            path: '/home/hitSingle',
+            component: hitSingle
+        },
+        {
+            path: '/home/hitPlaylist',
+            component: hitPlaylist
         },
         {
             path: '/register',
@@ -57,11 +79,31 @@ export default new VueRouter({
             name: 'detailPlaylist',
             path: '/detailPlaylist/:playlistId',
             component: detailPlaylist,
-        }, 
+        },
         {
             name: 'detailMusician',
             path: '/detailMusician/:musicianId',
-            component:detailMusician,
+            component: detailMusician,
+        },
+        {
+            path: '/userCenter',
+            component: userCenter
+        },
+        {
+            path: '/home/hitSinger',
+            component: hitSinger
+        },
+        {
+            path: '/myMusic/collectedSong',
+            component: collectedSong
+        },
+        {
+            path: '/myMusic/collectedPlaylist',
+            component: collectedPlaylist
+        },
+        {
+            path: '/myMusic/followingSinger',
+            component:followingSinger
         },
     ]
 })

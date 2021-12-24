@@ -1,39 +1,7 @@
 <template>
   <div class="content">
-    <p style="font-size: 25px">所有歌手</p>
-    <div style="margin-top: 20px">
-      <p style="margin-bottom: 10px">分类：</p>
-      <el-radio-group v-model="radio1" size="medium">
-        <el-radio-button label="男歌手"></el-radio-button>
-        <el-radio-button label="女歌手"></el-radio-button>
-        <el-radio-button label="乐队组合"></el-radio-button>
-      </el-radio-group>
-      <el-button
-        type="text"
-        style="margin-left: 20px"
-        size="small"
-        @click="radio1 = ''"
-        >取消分类</el-button
-      >
-    </div>
-    <div style="margin-top: 20px; margin-bottom: 20px">
-      <p style="margin-bottom: 10px; font-size: 14px">筛选：</p>
-      <el-radio-group v-model="radio2" size="small">
-        <el-radio-button
-          v-for="i in 26"
-          :key="i"
-          :label="String.fromCharCode(i + 64)"
-          style="margin-bottom: 5px"
-        ></el-radio-button>
-        <el-button
-          type="text"
-          style="margin-left: 20px"
-          size="small"
-          @click="radio2 = ''"
-          >取消筛选</el-button
-        >
-      </el-radio-group>
-    </div>
+    <el-page-header @back="goBack()" content="收藏的歌手"> </el-page-header>
+    <el-divider></el-divider>
     <el-tag type="success" effect="plain">共{{ this.totalResult }}条</el-tag>
     <el-row style="padding: 20px 0px 0px 0px" :gutter="15">
       <!-- span决定大小 -->
@@ -112,6 +80,19 @@
               >
                 艺人
               </p>
+              <el-button
+                v-if="item.collectState == 1"
+                class="likeButton"
+                :icon="
+                  item.collectStatus == 0
+                    ? 'iconfont icon-aixin'
+                    : 'iconfont icon-aixin1'
+                "
+                type="text"
+                size="medium"
+                style="color: orange; float: right;margin-top:-10px"
+                @click.stop="deleteCollectedSinger(item)"
+              ></el-button>
             </div>
           </el-card>
         </el-popover>
@@ -179,9 +160,14 @@
   font-weight: bold;
   margin-top: 6px;
 }
+.likeButton >>> .iconfont {
+  font-size: 12px;
+  color: rgb(255, 78, 78);
+}
 </style>
 <script>
 // import axios from "axios";
+import Qs from "qs";
 export default {
   data: function () {
     return {
@@ -190,9 +176,9 @@ export default {
       //当前行长度
       colLength: 4,
       //总共页数
-      totalPage: 100,
+      totalPage: 20,
       //当前页条数
-      nowResult: 30,
+      nowResult: 20,
       //当前总条数
       totalResult: 0,
       //当前页面所有歌单信息
@@ -205,34 +191,16 @@ export default {
   },
   methods: {
     //获取未筛选数据
-
-    async getPage() {
-      this.nowPageList=[];
+    getPage() {
       this.$root.routerLoading = true;
       let axiosThis = this;
-      let Params = {
+      let data = Qs.stringify({
         current: axiosThis.nowPage,
         size: axiosThis.nowResult,
-      };
-      let radio1 = axiosThis.radio1;
-      let radio2 = axiosThis.radio2;
-      let isFiltering = false;
-
-      if (radio1 != "" && radio1 != null && radio1 != 0) {
-        Params.category = radio1;
-        isFiltering = true;
-      }
-      if (radio2 != "" && radio2 != null && radio2 != 0) {
-        Params.initial = radio2;
-        isFiltering = true;
-      }
-      console.log(isFiltering);
-      //是否需要显示提示，如果是正在筛选（isFiltering==true）且不是在翻页（后面用监听区分）
-      var messageFlag = false;
-      await this.$axios
-        .get("singer/singerPage", {
-          params: Params,
-        })
+        userId: this.$root.userData.userId,
+      });
+      this.$axios
+        .post(`singer/getUserCollectSinger`, data)
         .then(function (res) {
           //   axiosThis.$message.success("筛选成功");
           let response = res.data;
@@ -240,9 +208,6 @@ export default {
           axiosThis.totalResult = response.total;
           axiosThis.nowPageList = response.dataList;
           console.log(axiosThis.totalResult);
-          if (isFiltering) {
-            messageFlag = true;
-          }
           axiosThis.$root.routerLoading = false;
         })
         .catch(function (error) {
@@ -250,12 +215,46 @@ export default {
           console.log(error);
           axiosThis.$root.routerLoading = false;
         });
-      return messageFlag;
     },
     musicianSelect(id) {
       console.log(id);
       // console.log(e);
       this.$router.push({ path: `/detailMusician/${id}` });
+    },
+    goBack() {
+      console.log("goBack");
+      this.$router.go(-1);
+    },
+    deleteCollectedSinger(item) {
+      if (this.$root.userData.login_ed == false) {
+        this.$message({ message: "请先登陆", type: "warning" });
+      } else {
+        let axiosThis = this;
+        console.log(item);
+        let data = Qs.stringify({
+          userId: this.$root.userData.userId,
+          singerId: item.id,
+          flag: item.collectState,
+        });
+        this.$axios
+          .post(`singer/followSinger`, data)
+          .then((res) => {
+            //请求成功
+            console.log(axiosThis);
+            console.log("res.data=>", res.data);
+            let responseData = res.data;
+            if (responseData.status == "success") {
+              axiosThis.$message.success(responseData.msg + "！");
+              axiosThis.getPage();
+            } else {
+              axiosThis.$message.error(responseData.msg + "！");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$message.error("请求失败");
+          });
+      }
     },
   },
 
@@ -272,22 +271,6 @@ export default {
       document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
       this.$emit("goBackToTop");
-    },
-    radio1() {
-      if (this.getPage()) {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        this.$emit("goBackToTop");
-        this.$message.success({ message: "筛选成功", duration: 1000 });
-      }
-    },
-    radio2() {
-      if (this.getPage()) {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        this.$emit("goBackToTop");
-        this.$message.success({ message: "筛选成功", duration: 1000 });
-      }
     },
   },
   mounted: function () {

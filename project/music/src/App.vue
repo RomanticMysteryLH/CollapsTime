@@ -47,17 +47,22 @@
             </el-submenu>
           </template>
           <el-autocomplete
+            popper-class="my-autocomplete"
             v-model="searchBar"
             :fetch-suggestions="querySearch"
             placeholder="请输入内容"
-            style="width: 15%; margin-left: 5%"
             size="small"
+            :trigger-on-focus="false"
           >
             <i
               slot="suffix"
               class="el-input__icon el-icon-search search_button"
               @click="search()"
             ></i>
+            <template slot-scope="{ item }">
+              <div class="name">{{ item.name }}</div>
+              <span class="type">{{ item.type }}</span>
+            </template>
             <!-- suffix表示在搜索框尾部 -->
           </el-autocomplete>
 
@@ -83,7 +88,7 @@
             >
               <p>您好，{{ this.$root.userData.username }}！</p>
               <div style="text-align: right; margin: 0">
-                <el-button size="mini" type="text" @click="visible = false"
+                <el-button size="mini" type="text" @click="goToUserCenter"
                   >个人中心</el-button
                 >
                 <el-button type="primary" size="mini" @click="log_out()"
@@ -151,6 +156,7 @@
       :fixed="true"
       style="z-index: 9999"
       :lrcType="1"
+      @onPlaying="getLyrics"
     ></aplayer>
     <loginView
       :login_ed.sync="this.$root.userData.login_ed"
@@ -166,9 +172,10 @@ import detailSong from "@/views/detailSong.vue";
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 import APlayer from "@moefe/vue-aplayer";
+import Qs from "qs";
 Vue.use(APlayer, {
-  defaultCover: "@/assets/default/defaultPlayList.jpg",
-  productionTip: true,
+  defaultCover: "./assets/default/defaultPlayList.jpg",
+  productionTip: false,
 });
 Vue.use(VueCookies);
 export default {
@@ -219,11 +226,52 @@ export default {
     //搜索建议
     querySearch(queryString, cb) {
       console.log(queryString);
+      // let axiosThis = this;
+      let data = Qs.stringify({
+        key: queryString,
+      });
+      this.timeout = setTimeout(() => {
+        // cb(results);
+        this.$axios
+          .post(`/user/search`, data)
+          .then((res) => {
+            let response = res.data;
+            console.log(response);
+            let cbArray = [];
+            cbArray.push.apply(
+              cbArray,
+              response.songs.map((item) => {
+                console.log(item);
+                return { name: item.name, id: item.id, type: "-歌曲-" };
+              })
+            );
+            cbArray.push.apply(
+              cbArray,
+              response.singers.map((item) => {
+                console.log(item);
+                return { name: item.name, id: item.id, type: "-歌手-" };
+              })
+            );
+            cbArray.push.apply(
+              cbArray,
+              response.songLists.map((item) => {
+                console.log(item);
+                return { name: item.title, id: item.id, type: "-歌单-" };
+              })
+            );
+
+            console.log(cbArray);
+            cb(cbArray);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }, 1000);
+
       // var restaurants = this.restaurants;
       // var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // // 调用 callback 返回建议列表的数据
       // cb(results);
-      cb(["1", "2", "3", "4"]);
     },
     createFilter(queryString) {
       console.log(queryString);
@@ -252,6 +300,38 @@ export default {
     goBackToTop() {
       console.log("goBackToTop");
       this.$refs.goBackButton.$el.click();
+    },
+    detailSongOpened() {
+      console.log("opened");
+      document.body.style = "padding-right:0px";
+    },
+    goToUserCenter() {
+      this.$router.push("/userCenter");
+    },
+    async getLyrics(e) {
+      console.log(e);
+      // let newLyrics = "";
+      // // let axiosThis = this;
+      // let dataObj = {
+      //   songId: id,
+      // };
+      // if(this.$root.userData.login_ed==true){
+      //   dataObj.userId=this.$root.userData.userId;
+      // }
+      // let data=Qs.stringify(dataObj);
+      // await this.$axios
+      //   .post(`song/getLyric`, data)
+      //   .then((res) => {
+      //     //请求成功
+      //     // console.log(axiosThis);
+      //     // console.log("res.data=>", res.data);
+      //     newLyrics = res.data.lyric;
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     this.$message.error("请求失败，无法发送");
+      //   });
+      // return newLyrics;
     },
   },
   computed: {
@@ -342,6 +422,8 @@ export default {
       },
     ];
     console.log(this.$root.audio);
+    this.$refs.aplayer.hideLrc();
+    this.$refs.aplayer.showLrc();
     // if(this.$root.audio.length<1){
     //   this.$root.audio.push(this.$refs.aplayer.currentMusic)
     // }
@@ -403,10 +485,15 @@ body {
 
 html,
 body {
+  scrollbar-width: none;
   height: 100%;
   overflow: hidden;
   font-family: "PingFang SC", SimSun, "Helvetica Neue", Helvetica,
     "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+body .el-popup-parent--hidden {
+  scrollbar-width: none;
+  overflow: hidden;
 }
 .page-component__scroll {
   height: 100%;
@@ -419,5 +506,22 @@ body {
   padding: 0;
   /* margin-top: -60px; */
   z-index: 0;
+}
+
+.my-autocomplete li {
+  /* 加入important解决无法覆盖 */
+  line-height: normal !important;
+  padding: 8px 14px !important;
+}
+.my-autocomplete li .name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.my-autocomplete li .type {
+  font-size: 10px;
+  color: #fdcb5e;
+}
+.my-autocomplete li .highlighted .addr {
+  color: #ddd;
 }
 </style>

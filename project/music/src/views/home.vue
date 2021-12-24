@@ -26,51 +26,15 @@
             style="float: right"
             type="primary"
             :underline="false"
-            @click="goToHotSingle"
+            @click="goToHitSingle"
             >更多<i class="el-icon-arrow-right"></i
           ></el-link>
         </p>
-        <el-row style="padding: 20px 0px 0px 0px" :gutter="20">
-          <!-- span决定大小 -->
-          <el-col :span="4" v-for="item in hotSongs" :key="item.id">
-            <el-card
-              :body-style="{ padding: '0px' }"
-              class="card"
-              style="cursor: pointer"
-              @click.native="songSelect(item.id)"
-            >
-              <el-image :src="$RequestUrl + item.picture" class="myimage" lazy>
-                <!-- 加载前占位 -->
-                <div slot="placeholder">
-                  <img src="@/assets/default/loading1.gif" class="image" />
-                </div>
-                <!-- 加载后占位 -->
-                <div slot="error">
-                  <img
-                    src="@/assets/default/defaultPlayList.jpg"
-                    slot="error"
-                    class="image"
-                  />
-                </div>
-              </el-image>
-              <div style="padding: 14px; height: 50px; overflow: hidden">
-                <p
-                  style="
-                    font-weight: 600;
-                    font-size: 14px;
-                    overflow: hidden;
-                    height: 40px;
-                  "
-                >
-                  {{ item.title }}
-                </p>
-                <p style="font-size:12px;color:gray;position;bottom:5px">
-                  {{ item.singer }}
-                </p>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
+        <oneColSongList
+          :songs="hitSongs"
+          @getHitSong="getHitSong"
+          @openSongDetail="openSongDetail"
+        ></oneColSongList>
       </div>
       <div class="heatPlaylist">
         <el-divider></el-divider>
@@ -80,80 +44,120 @@
             style="float: right"
             type="primary"
             :underline="false"
-            @click="goToHotPlaylist"
+            @click="goToHitPlaylist"
             >更多<i class="el-icon-arrow-right"></i
           ></el-link>
         </p>
-        <el-row style="padding: 20px 0px 0px 0px" :gutter="20">
-          <el-col
-            :lg="{ span: '4-8' }"
-            v-for="item in hotPlaylists"
-            :key="item.id"
-          >
-            <el-popover
-              placement="bottom-start"
-              width="350"
-              trigger="hover"
-              :content="item.introduction"
-              :close-delay="50"
-            >
-              <p class="subscribeTile">歌单：</p>
-              <p>{{ item.title }}</p>
-              <p class="subscribeTile">歌单介绍：</p>
-              <p>{{ item.introduction }}</p>
-              <p class="subscribeTile">创建时间：</p>
-              <p>{{ item.createTime }}</p>
-              <!-- 以上为弹窗内的内容 -->
-              <el-card
-                :body-style="{ padding: '0px' }"
-                class="card"
-
-                style="cursor: pointer"
-                slot="reference"
-                @click.native="playListSelect(item.id)"
-              >
-                <el-image
-                  :src="$RequestUrl + item.picture"
-                  class="myimage"
-                  lazy
-                >
-                  <!-- 加载前占位 -->
-                  <div slot="placeholder">
-                    <img src="@/assets/default/loading1.gif" class="image" />
-                  </div>
-                  <!-- 加载后占位 -->
-                  <div slot="error">
-                    <img
-                      src="@/assets/default/defaultPlayList.jpg"
-                      slot="error"
-                      class="image"
-                    />
-                  </div>
-                </el-image>
-                <div style="padding: 14px; height: 50px; overflow: hidden">
-                  <p
-                    style="
-                      font-weight: 600;
-                      font-size: 14px;
-                      overflow: hidden;
-                      height: 40px;
-                    "
-                  >
-                    {{ item.title }}
-                  </p>
-                  <p style="font-size:12px;color:gray;position;bottom:5px">
-                    风格：{{ item.style }}
-                  </p>
-                </div>
-              </el-card>
-            </el-popover>
-          </el-col>
-        </el-row>
+        <oneColPlaylists :playlists="hitPlaylists"></oneColPlaylists>
       </div>
+      <div class="hitSinger">
+        <el-divider></el-divider>
+        <p>
+          <span style="font-weight: 700">热门歌手</span
+          ><el-link
+            style="float: right"
+            type="primary"
+            :underline="false"
+            @click="goToHitSinger"
+            >更多<i class="el-icon-arrow-right"></i
+          ></el-link>
+        </p>
+        <oneColMusicianList
+          :musicianList="hitMusicianList"
+        ></oneColMusicianList>
+      </div>
+      <el-divider></el-divider>
+      <!-- <div>
+        <p class="motto">
+          你在时间里奔跑，却永远跑不过时间。<br />如果说成年人的世界里，残酷是注定的，<br />那音乐，<br />就是这个残酷世界里，<br />最后的温柔。
+        </p>
+        <p class="tail" style="text-align: right">
+          —— CollapsTime Music 转自
+          <el-link type="warning" href="https://space.bilibili.com/261485584"
+            >HOPICO</el-link
+          >
+        </p>
+      </div> -->
+
+      <el-carousel
+        :interval="4000"
+        height="400px"
+        indicator-position="outside"
+        arrow="never"
+      >
+        <el-carousel-item>
+          <div style="padding: 30px 60px">
+            <p class="motto">
+              你在时间里奔跑，却永远也跑不过时间。<br />如果说成年人的世界里，残酷是注定的，
+              <br />那音乐，<br />就是这个残酷世界里，<br />最后的温柔。
+            </p>
+            <p class="tail" style="text-align: right">
+              —— CollapsTime Music 转自
+              <el-link
+                type="warning"
+                href="https://space.bilibili.com/261485584"
+                >HOPICO</el-link
+              >
+            </p>
+          </div>
+        </el-carousel-item>
+        <el-carousel-item>
+          <div style="padding: 30px 60px">
+            <p class="motto">
+              我们把光速作为有质量的物体的速度上限，<br />但我们也不断构建着，<br />超越光速的存在的幻想。<br />
+              也许这束光的声音，有作为人类本身的上限，<br />但在她的声音里，<br />也依旧寄存着许多人现实与幻想的<br />夹缝碎片。
+            </p>
+            <p class="tail" style="text-align: right">
+              —— CollapsTime Music 转自
+              <el-link
+                type="warning"
+                href="https://space.bilibili.com/261485584"
+                >HOPICO</el-link
+              >
+            </p>
+          </div>
+        </el-carousel-item>
+        <el-carousel-item>
+          <div style="padding: 30px 60px">
+            <p class="motto">
+              这个世界，每天都在变，<br />幸福的，和糟糕的，<br />永远都在同时发生。<br />
+              但好在，当我们的耳机里响起这些作品的时候，<br />它可以把那个你向往的、充满生气的城市<br />原封不动地<br />还给你。
+            </p>
+            <p class="tail" style="text-align: right">
+              —— CollapsTime Music 转自
+              <el-link
+                type="warning"
+                href="https://space.bilibili.com/261485584"
+                >HOPICO</el-link
+              >
+            </p>
+          </div>
+        </el-carousel-item>
+        <el-carousel-item>
+          <div style="padding: 30px 60px">
+            <p class="motto">
+              随着时间的推移，<br />或许我们面对作品的收听方式在做着改变，<br />但我想，我们也应该学会听到<br />
+              为了换回你的耐心，<br />一张好的作品背后付出的用心<br />因为这些用心，<br />和你的耐心<br />一样珍贵。
+            </p>
+            <p class="tail" style="text-align: right">
+              —— CollapsTime Music 转自
+              <el-link
+                type="warning"
+                href="https://space.bilibili.com/261485584"
+                >HOPICO</el-link
+              >
+            </p>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
     </div>
   </div>
 </template>
 <script>
+import oneColPlaylists from "@/components/oneColPlaylists";
+import oneColSongList from "@/components/oneColSongList";
+import oneColMusicianList from "@/components/oneColMusicianList";
+import Qs from "qs";
 export default {
   data: function () {
     return {
@@ -171,7 +175,7 @@ export default {
           src: "https://y.qq.com/music/common/upload/MUSIC_FOCUS/4149422.jpg?max_age=2592000",
         },
       ],
-      hotSongs: [
+      hitSongs: [
         {
           id: 1,
         },
@@ -191,7 +195,24 @@ export default {
           id: 6,
         },
       ],
-      hotPlaylists: [
+      hitPlaylists: [
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+        {
+          id: 3,
+        },
+        {
+          id: 4,
+        },
+        {
+          id: 5,
+        },
+      ],
+      hitMusicianList: [
         {
           id: 1,
         },
@@ -214,17 +235,101 @@ export default {
     goBack() {
       console.log("goBack");
     },
-    goToHotSingle() {
-      this.$router.push("/home/hotSingle");
+    goToHitSingle() {
+      this.$router.push("/home/hitSingle");
     },
-    goToHotPlaylist() {
-      this.$router.push("/home/hotPlaylist");
+    goToHitPlaylist() {
+      this.$router.push("/home/hitPlaylist");
     },
+    goToHitSinger(){
+      this.$router.push("/home/hitSinger");
+    },
+    getHitSong() {
+      let axiosThis = this;
+      let data = Qs.stringify({
+        current: 1,
+        size: 6,
+        userId: this.$root.userData.userId,
+      });
+      this.$axios
+        .post(`song/getHotSong`, data)
+        .then((res) => {
+          let response = res.data;
+          console.log(response);
+          axiosThis.hitSongs = response.dataList;
+          console.log(axiosThis.totalResult);
+          axiosThis.$root.routerLoading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          axiosThis.$message.error("获取热门歌曲失败");
+        });
+    },
+    getHitPlaylist() {
+      this.$root.routerLoading = true;
+      let axiosThis = this;
+      this.$axios
+        .get("songList/getHotSongList", {
+          params: {
+            current: 1,
+            size: 5,
+          },
+        })
+        .then(function (res) {
+          let response = res.data;
+          console.log(response);
+          axiosThis.hitPlaylists = response.dataList;
+          console.log(axiosThis.totalResult);
+          axiosThis.$root.routerLoading = false;
+        })
+        .catch(function (error) {
+          axiosThis.$message.error("获取歌单信息失败");
+          console.log(error);
+          axiosThis.$root.routerLoading = false;
+        });
+    },
+    getHitSinger() {
+      let axiosThis = this;
+      let Params = {
+        current: 1,
+        size: 5,
+      };
+      this.$axios
+        .get("singer/getHotSinger", {
+          params: Params,
+        })
+        .then(function (res) {
+          //   axiosThis.$message.success("筛选成功");
+          let response = res.data;
+          console.log(response);
+          axiosThis.hitMusicianList = response.dataList;
+          console.log(axiosThis.totalResult);
+          // axiosThis.$root.routerLoading = false;
+        })
+        .catch(function (error) {
+          console.log(error);
+          axiosThis.$message.error("获取歌手信息失败");
+        });
+    },
+    openSongDetail(data) {
+      console.log(data);
+      this.$emit("openSongDetail", data);
+    },
+  },
+  created() {
+    this.getHitSong();
+    this.getHitPlaylist();
+    this.getHitSinger();
+  },
+  components: {
+    oneColPlaylists: oneColPlaylists,
+    oneColSongList: oneColSongList,
+    oneColMusicianList: oneColMusicianList,
   },
 };
 </script>
 <style scoped>
-.el-carousel__item h3 {
+/* .el-carousel__item h3 {
   color: #475669;
   font-size: 14px;
   opacity: 0.75;
@@ -272,50 +377,14 @@ export default {
 .heatSingle {
   padding: 40px auto 0px auto;
 }
-.heatSingle .myimage {
-  /* 自适应正方形 */
-  width: 100%;
-  display: block;
-  height: 0;
-  padding-bottom: 100%;
+.motto {
+  margin-top: 25px;
+  font-size: 30px;
+  line-height: 40px;
+  font-family: HanYiZhongSongJian, HanYiZhongSongFan;
 }
-.heatSingle .image-slot {
-  width: 100%;
-  display: block;
-}
-.heatSingle .demo-image__lazy .el-image {
-  display: block;
-  min-height: 200px;
-  margin-bottom: 10px;
-}
-.heatSingle .myimage >>> .el-image__inner {
-  position: absolute;
-}
-.heatSingle .image {
-  width: 100%;
-  position: absolute;
-}
-.heatPlaylist .myimage {
-  /* 自适应正方形 */
-  width: 100%;
-  display: block;
-  height: 0;
-  padding-bottom: 100%;
-}
-.heatPlaylist .image-slot {
-  width: 100%;
-  display: block;
-}
-.heatPlaylist .demo-image__lazy .el-image {
-  display: block;
-  min-height: 200px;
-  margin-bottom: 10px;
-}
-.heatPlaylist .myimage >>> .el-image__inner {
-  position: absolute;
-}
-.heatPlaylist .image {
-  width: 100%;
-  position: absolute;
+.tail {
+  line-height: 25px;
+  font-family: HanYiZhongSongJian, HanYiZhongSongFan;
 }
 </style>

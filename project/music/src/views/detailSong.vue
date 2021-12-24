@@ -260,7 +260,7 @@ export default {
           // 4.创建url之后可以模拟对此文件对象的一系列操作，例如：预览、下载
           let a = document.createElement("a");
           a.href = url;
-          a.download = this.pageData.songInfo.name + ".mp3";
+          a.download = axiosThis.pageData.songInfo.name + ".mp3";
           a.click();
           // 5.释放这个临时的对象url
           window.URL.revokeObjectURL(url);
