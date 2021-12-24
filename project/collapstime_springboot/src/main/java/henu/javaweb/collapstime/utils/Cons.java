@@ -14,6 +14,6 @@ public class Cons {
     public static final String RESOURCE_MAC_PATH = "D:\\WorkDocument\\javaweb\\project\\project\\collapstime_springboot";
 
     // windos系统a
-    public static final String RESOURCE_WIN_PATH = "D:\\WorkDocument\\javaweb\\project\\project\\collapstime_springboot";
+    public static final String RESOURCE_WIN_PATH = "E:\\collapstime\\project\\collapstime_springboot";
 
 }
