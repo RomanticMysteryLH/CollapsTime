@@ -11,6 +11,7 @@ import henu.javaweb.collapstime.service.SongListService;
 import henu.javaweb.collapstime.service.SongService;
 import henu.javaweb.collapstime.service.UserService;
 import henu.javaweb.collapstime.utils.Cons;
+import henu.javaweb.collapstime.utils.FileHandleUtils;
 import henu.javaweb.collapstime.utils.JWTUtil;
 import henu.javaweb.collapstime.utils.VerifyCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -294,6 +295,7 @@ public class UserController {
      * 验证token
      * @param request
      * @return
+     * /user/verifyToken
      */
     @PostMapping("/verifyToken")
     @ResponseBody
@@ -310,6 +312,77 @@ public class UserController {
         }
         map.put("username",payloadFromToken.get(Cons.username).asString());
         map.put("status","success");
+        return map;
+    }
+
+    /**
+     * 更新用户基本信息
+     * @param user
+     * @return
+     */
+    @PostMapping("/updateUserBaseInfo")
+    @ResponseBody
+    public HashMap<String,String> updateUserBaseInfo(User user){
+        HashMap<String, String> map = new HashMap<>();
+        int i = userMapper.updateUserBaseInfo(user);
+        if(i > 0){
+            map.put("status","success");
+            map.put("msg","更新成功");
+        }else {
+            map.put("status","fail");
+            map.put("msg", "出错了");
+        }
+        return map;
+    }
+
+    /**
+     * 用户修改密码
+     * @param account
+     * @param password
+     * @return
+     */
+    @PostMapping("/updatePwd")
+    @ResponseBody
+    public HashMap<String,String> updatePwd(String account,String password){
+        HashMap<String, String> map = new HashMap<>();
+        int i = userMapper.updatePwd(account, password);
+        if(i > 0){
+            map.put("status","success");
+            map.put("msg","修改成功");
+        }else {
+            map.put("status","fail");
+            map.put("msg", "出错了");
+        }
+        return map;
+    }
+
+    /**
+     * 修改用户头像
+     * @param account
+     * @param filePath
+     * @return
+     */
+    @PostMapping("/updateAvator")
+    @ResponseBody
+    public HashMap<String,String> updateAvator(String account,String filePath){
+        String os = System.getProperty("os.name");
+        String path = null;
+        if (os.toLowerCase().startsWith("win")){
+            path = Cons.RESOURCE_WIN_PATH;
+        }else {
+            path = Cons.RESOURCE_MAC_PATH;
+        }
+        path += userMapper.queryUserAvatorOfPast(account);
+        FileHandleUtils.deleteFile(path);
+        HashMap<String, String> map = new HashMap<>();
+        int i = userMapper.updateAvator(account,filePath);
+        if(i > 0){
+            map.put("status","success");
+            map.put("msg","修改成功");
+        }else {
+            map.put("status","fail");
+            map.put("msg", "出错了");
+        }
         return map;
     }
 

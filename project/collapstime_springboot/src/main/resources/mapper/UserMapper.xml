@@ -101,9 +101,21 @@
   <select id="searchSingerInfo" resultType="henu.javaweb.collapstime.model.Singer">
     select * from singer where name like CONCAT('%',#{key},'%');
   </select>
+  <select id="queryUserAvatorOfPast" resultType="java.lang.String">
+    select avator from user where account = #{account};
+  </select>
   <update id="updateUserdata" parameterType="henu.javaweb.collapstime.model.User">
     update user
     set username=#{username},account=#{account},sex=#{sex},avator=#{avator},location=#{location},email=#{email},introduction=#{introduction},topping=#{topping}
     where id=#{id}
+  </update>
+    <update id="updateUserBaseInfo">
+      update user set username=#{username},sex = #{sex},location=#{location},introduction = #{introduction} where account = #{account};
+    </update>
+  <update id="updatePwd">
+    update user set password = #{password} where account = #{account};
+  </update>
+  <update id="updateAvator">
+    update user set avator = #{filePath} where account = #{account};
   </update>
 </mapper>

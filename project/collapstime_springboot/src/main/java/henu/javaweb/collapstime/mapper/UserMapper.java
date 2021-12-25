@@ -85,4 +85,40 @@ public interface UserMapper extends BaseMapper<User> {
      */
     LinkedList<Singer> searchSingerInfo(String key);
 
+    /**
+     * 更新用户基本信息
+     * {
+     *     username
+     *     sex
+     *     location
+     *     introduction
+     * }
+     * @param user
+     * @return
+     */
+    int updateUserBaseInfo(User user);
+
+    /**
+     * 更新用户密码
+     * @param account
+     * @param password
+     * @return
+     */
+    int updatePwd(String account,String password);
+
+    /**
+     * 更新用户头像
+     * @param account
+     * @param filePath
+     * @return
+     */
+    int updateAvator(String account,String filePath);
+
+    /**
+     * 查询用户更新头像之前的照片
+     * @param account
+     * @return
+     */
+    String queryUserAvatorOfPast(String account);
+
 }
