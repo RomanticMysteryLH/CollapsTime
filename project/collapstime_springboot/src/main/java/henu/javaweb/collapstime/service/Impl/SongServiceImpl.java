@@ -208,7 +208,7 @@ public class SongServiceImpl implements SongService {
         for(int i = 0; i < plays.size(); i++){
             plays.get(i).setName(songMapper.getSongNameBySongId(plays.get(i).getSongId()).split("-")[1]);
         }
-        int count = songMapper.getAllPlaySongCountOfUser(userId);
+        Integer count = songMapper.getAllPlaySongCountOfUser(userId);
         HashMap<String, Object> map = new HashMap<>();
         map.put("total",count);
         map.put("songs",plays);

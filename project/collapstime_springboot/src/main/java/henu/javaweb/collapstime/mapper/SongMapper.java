@@ -152,7 +152,7 @@ public interface SongMapper extends BaseMapper<Song> {
      * @param userId
      * @return
      */
-    public int getAllPlaySongCountOfUser(Integer userId);
+    public Integer getAllPlaySongCountOfUser(Integer userId);
 
     /**
      * 获取用户播放次数最多的五首歌
