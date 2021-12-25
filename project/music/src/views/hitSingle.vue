@@ -3,6 +3,7 @@
   <div class="content">
     <el-page-header @back="goBack()" content="热门单曲"> </el-page-header>
     <el-divider></el-divider>
+    <el-tag type="success" effect="plain">共{{ this.totalResult }}条</el-tag>
     <songList
       :listProp="nowPageList"
       @openSongDetail="openSongDetail"

@@ -180,6 +180,10 @@ export default {
     },
     downloadSong(row) {
       // console.log(row);
+      if(this.$root.userData.login_ed==false){
+        this.$message.error("请先登录！");
+        return;
+      }
       let axiosThis = this;
       this.$axios
         .get("user/downloadSong", {

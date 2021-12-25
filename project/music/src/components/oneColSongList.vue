@@ -80,6 +80,9 @@
   width: 100%;
   position: absolute;
 }
+.card{
+  margin-bottom: 30px;
+}
 </style>
 <script>
 import Qs from "qs";

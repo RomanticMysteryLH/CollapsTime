@@ -186,13 +186,13 @@ export default {
   },
   props: ["songId"],
   computed: {
-    nowSongId:{
-      get(){
+    nowSongId: {
+      get() {
         return this.songId;
       },
-      set(newVal){
+      set(newVal) {
         return newVal;
-      }
+      },
     },
     // nowSongId() {
     //   return this.songId;
@@ -241,6 +241,10 @@ export default {
         });
     },
     downloadSong() {
+      if (this.$root.userData.login_ed == false) {
+        this.$message.error("请先登录！");
+        return;
+      }
       let axiosThis = this;
       this.$axios
         .get("user/downloadSong", {

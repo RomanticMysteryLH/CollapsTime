@@ -150,6 +150,9 @@
   font-size: 12px;
   color: rgb(255, 78, 78);
 }
+.card{
+  margin-bottom: 30px;
+}
 </style>
 <script>
 // 引入

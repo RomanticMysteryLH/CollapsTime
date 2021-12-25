@@ -17,6 +17,7 @@ import hitSinger from '@/views/hitSinger'
 import collectedSong from '@/views/collectedSong'
 import collectedPlaylist from '@/views/collectedPlaylist'
 import followingSinger from '@/views/followingSinger'
+import searchResult from '@/views/searchResult'
 export default new VueRouter({
     routes: [{
             path: '/home',
@@ -103,7 +104,12 @@ export default new VueRouter({
         },
         {
             path: '/myMusic/followingSinger',
-            component:followingSinger
+            component: followingSinger
+        },
+        {
+            name:'searchResult',
+            path: '/searchResult/:searchText',
+            component: searchResult
         },
     ]
 })

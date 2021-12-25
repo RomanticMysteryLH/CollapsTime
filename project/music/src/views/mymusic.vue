@@ -16,6 +16,7 @@
                 >{{ item.name }} {{ item.times }}次</span
               > -->
               <el-progress
+                v-if="!isNaN(item.playCount / recentListenSong.total)"
                 :key="item.songId"
                 :percentage="(item.playCount / recentListenSong.total) * 100"
                 :color="customColorMethod"
@@ -48,6 +49,7 @@
                 >{{ item.name }} {{ item.times }}次</span
               > -->
               <el-progress
+                v-if="!isNaN(item.times / recentListenSinger.total)"
                 :key="item.id"
                 :percentage="(item.times / recentListenSinger.total) * 100"
                 :color="customColorMethod"

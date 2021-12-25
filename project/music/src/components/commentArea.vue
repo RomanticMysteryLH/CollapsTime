@@ -52,8 +52,10 @@
           :rows="3"
           :placeholder="commentTip"
           :maxlength="maxCommentLength"
+          :minlength="minCommentLength"
           v-model="textarea"
           :disabled="!this.$root.userData.login_ed"
+          :show-word-limit="true"
         >
         </el-input>
       </el-col>
@@ -64,13 +66,13 @@
           @click.native="sendComment()"
           >发送</el-button
         >
-        <div style="text-align: center; color: gainsboro">
+        <!-- <div style="text-align: center; color: gainsboro">
           <span v-if="this.textarea.length <= 8" style="color: red">{{
             this.textarea.length
           }}</span
           ><span v-else>{{ this.textarea.length }}</span
           >/{{ this.maxCommentLength }}
-        </div>
+        </div> -->
       </el-col>
     </el-row>
   </div>
@@ -99,6 +101,7 @@ export default {
       textarea: "",
       commentData: [],
       maxCommentLength: 100,
+      minCommentLength:8,
     };
   },
   computed: {

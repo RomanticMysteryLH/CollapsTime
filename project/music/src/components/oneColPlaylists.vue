@@ -106,6 +106,9 @@
   font-weight: bold;
   margin-top: 6px;
 }
+.card{
+  margin-bottom: 30px;
+}
 </style>
 <script>
 import Qs from "qs";

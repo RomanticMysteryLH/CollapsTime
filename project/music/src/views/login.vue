@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="登录" :visible.sync="loginVisible" width="500px" top="30vh" :lock-scroll="false">
+  <el-dialog
+    title="登录"
+    :visible.sync="loginVisible"
+    width="500px"
+    top="30vh"
+    :lock-scroll="false"
+  >
     <!-- Form 组件提供了表单验证的功能，只需要通过 rules 属性传入约定的验证规则，
     并将 Form-Item 的 prop 属性设置为需校验的字段名即可 -->
     <el-form
@@ -54,7 +60,7 @@
           />
         </div>
       </el-form-item>
-      <el-link type="primary" style="float: right">忘记密码？</el-link>
+      <!-- <el-link type="primary" style="float: right">忘记密码？</el-link> -->
       <el-button
         type="primary"
         @click="loginAction('loginForm')"
@@ -204,7 +210,7 @@ export default {
                 axiosThis.reload();
               } else {
                 //请求失败
-                axiosThis.$message.error(responseData.state+"请联系管理员");
+                axiosThis.$message.error(responseData.state + "请联系管理员");
                 axiosThis.changeCode();
                 return;
               }

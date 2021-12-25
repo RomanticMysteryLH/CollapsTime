@@ -47,23 +47,32 @@
             </el-submenu>
           </template>
           <el-autocomplete
+            style="margin-left: 80px; width: 250px"
             popper-class="my-autocomplete"
             v-model="searchBar"
             :fetch-suggestions="querySearch"
             placeholder="请输入内容"
             size="small"
             :trigger-on-focus="false"
+            @select="selectSearch"
+            ref="myAutocomplete"
+            @keyup.enter.native="search()"
           >
-            <i
+            <!-- <i
               slot="suffix"
               class="el-input__icon el-icon-search search_button"
               @click="search()"
-            ></i>
+            ></i> -->
             <template slot-scope="{ item }">
               <div class="name">{{ item.name }}</div>
               <span class="type">{{ item.type }}</span>
             </template>
             <!-- suffix表示在搜索框尾部 -->
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="search()"
+            ></el-button>
           </el-autocomplete>
 
           <el-button
@@ -209,7 +218,7 @@ export default {
     openSongDetail(data) {
       this.songDetailVisible = true;
       this.nowSongId = data;
-      console.log(this.nowSongId);
+      // console.log(this.nowSongId);
       //获取到了
     },
     handleSelect(key, keyPath) {
@@ -221,11 +230,15 @@ export default {
         this.$message.error("您还没有输入要搜索的内容");
       } else {
         console.log(this.searchBar);
+        this.$router.push({ path: `/searchResult/${this.searchBar}` });
+        this.$refs.myAutocomplete.suggestions=[];
+        this.reload();
       }
+
     },
     //搜索建议
     querySearch(queryString, cb) {
-      console.log(queryString);
+      // console.log(queryString);
       // let axiosThis = this;
       let data = Qs.stringify({
         key: queryString,
@@ -236,31 +249,29 @@ export default {
           .post(`/user/search`, data)
           .then((res) => {
             let response = res.data;
-            console.log(response);
+            // console.log(response);
             let cbArray = [];
             cbArray.push.apply(
               cbArray,
               response.songs.map((item) => {
-                console.log(item);
+                // console.log(item);
                 return { name: item.name, id: item.id, type: "-歌曲-" };
               })
             );
             cbArray.push.apply(
               cbArray,
               response.singers.map((item) => {
-                console.log(item);
+                // console.log(item);
                 return { name: item.name, id: item.id, type: "-歌手-" };
               })
             );
             cbArray.push.apply(
               cbArray,
               response.songLists.map((item) => {
-                console.log(item);
+                // console.log(item);
                 return { name: item.title, id: item.id, type: "-歌单-" };
               })
             );
-
-            console.log(cbArray);
             cb(cbArray);
           })
           .catch((err) => {
@@ -272,12 +283,6 @@ export default {
       // var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // // 调用 callback 返回建议列表的数据
       // cb(results);
-    },
-    createFilter(queryString) {
-      console.log(queryString);
-      // return (restaurant) => {
-      //   return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      // };
     },
     changeLoginView() {
       this.$refs.loginView.loginVisible = true; // 修改子组件数据
@@ -333,6 +338,19 @@ export default {
       //   });
       // return newLyrics;
     },
+    selectSearch(item) {
+      console.log(item);
+      if (item.type.indexOf("歌曲") >= 0) {
+        this.openSongDetail(item.id);
+      } else if (item.type.indexOf("歌手") > 0) {
+        this.$router.push({ path: `/detailMusician/${item.id}` });
+        //这里不reload会导致歌手详情打开时搜索另一个歌手并选中却没跳转
+        this.reload();
+      } else {
+        this.$router.push({ path: `/detailPlaylist/${item.id}` });
+        this.reload();
+      }
+    },
   },
   computed: {
     navigateItem: function () {
@@ -370,12 +388,12 @@ export default {
           //未登录时不可选择
           disabled: !this.$root.userData.login_ed,
         },
-        {
-          title: "消息中心",
-          key: "4",
-          path: "/message",
-          items: [],
-        },
+        // {
+        //   title: "消息中心",
+        //   key: "4",
+        //   path: "/message",
+        //   items: [],
+        // },
       ];
       return item;
     },
@@ -462,9 +480,9 @@ export default {
   border-radius: 8px;
 }
 .aplayer .aplayer-lrc {
-  height: 80px;
-  text-align: right;
-  padding-right: 30px;
+  height: 80px !important;;
+  text-align: right !important;
+  padding-right: 30px !important;;
 }
 .aplayer .aplayer-lrc p {
   font-size: 14px;
@@ -507,7 +525,6 @@ body .el-popup-parent--hidden {
   /* margin-top: -60px; */
   z-index: 0;
 }
-
 .my-autocomplete li {
   /* 加入important解决无法覆盖 */
   line-height: normal !important;
