@@ -128,4 +128,10 @@ public interface UserMapper extends BaseMapper<User> {
      */
     User queryUserByAccount(String account);
 
+    /**
+     * 注销用户
+     * @param account
+     * @return
+     */
+    Integer deleteUser(String account);
 }

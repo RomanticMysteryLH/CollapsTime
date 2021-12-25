@@ -74,6 +74,9 @@
       </if>
     </trim>
   </insert>
+  <delete id="deleteUser">
+    delete from user where account = #{account};
+  </delete>
 
 
   <select id="selectByAccount" parameterType="java.lang.String" resultType="henu.javaweb.collapstime.model.User">

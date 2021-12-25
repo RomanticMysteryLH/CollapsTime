@@ -10,10 +10,7 @@ import henu.javaweb.collapstime.service.SingerService;
 import henu.javaweb.collapstime.service.SongListService;
 import henu.javaweb.collapstime.service.SongService;
 import henu.javaweb.collapstime.service.UserService;
-import henu.javaweb.collapstime.utils.Cons;
-import henu.javaweb.collapstime.utils.FileHandleUtils;
-import henu.javaweb.collapstime.utils.JWTUtil;
-import henu.javaweb.collapstime.utils.VerifyCodeUtils;
+import henu.javaweb.collapstime.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
@@ -91,7 +88,7 @@ public class UserController {
         }else {
             s = 0;
         }
-        User user = new User(username, account, password,s,location,email);
+        User user = new User(username, account, Md5Utils.code(password),s,location,email);
         int register = userService.register(user);
         if(register > 0){
             return "success";
@@ -136,7 +133,7 @@ public class UserController {
                 result.put(Cons.state,"账号或者密码错误");
                 return result;
             }else {
-                if(password.equals(user.getPassword())){
+                if(Md5Utils.code(password).equals(user.getPassword())){
                     result.put(Cons.username,user.getUsername());
                     result.put(Cons.account,user.getAccount());
                     result.put(Cons.avator,user.getAvator());
@@ -343,7 +340,7 @@ public class UserController {
     @ResponseBody
     public HashMap<String,String> updatePwd(String account,String password){
         HashMap<String, String> map = new HashMap<>();
-        int i = userMapper.updatePwd(account, password);
+        int i = userMapper.updatePwd(account, Md5Utils.code(password));
         if(i > 0){
             map.put("status","success");
             map.put("msg","修改成功");
@@ -377,6 +374,26 @@ public class UserController {
         if(i > 0){
             map.put("status","success");
             map.put("msg","修改成功");
+        }else {
+            map.put("status","fail");
+            map.put("msg", "出错了");
+        }
+        return map;
+    }
+
+    /**
+     * 注销用户
+     * @param account
+     * @return
+     */
+    @PostMapping("/deleteUser")
+    @ResponseBody
+    public HashMap<String,String> deleteUser(String account){
+        HashMap<String, String> map = new HashMap<>();
+        Integer i = userMapper.deleteUser(account);
+        if(i > 0){
+            map.put("status","success");
+            map.put("msg","注销成功");
         }else {
             map.put("status","fail");
             map.put("msg", "出错了");
