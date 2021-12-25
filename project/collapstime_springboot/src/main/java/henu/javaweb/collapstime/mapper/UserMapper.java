@@ -121,4 +121,11 @@ public interface UserMapper extends BaseMapper<User> {
      */
     String queryUserAvatorOfPast(String account);
 
+    /**
+     * 根据账号查询用户信息
+     * @param account
+     * @return
+     */
+    User queryUserByAccount(String account);
+
 }

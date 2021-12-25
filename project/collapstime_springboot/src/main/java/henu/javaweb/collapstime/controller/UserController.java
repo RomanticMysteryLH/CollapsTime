@@ -299,18 +299,16 @@ public class UserController {
      */
     @PostMapping("/verifyToken")
     @ResponseBody
-    public HashMap<String,String> verifyToken(HttpServletRequest request){
+    public HashMap<String,Object> verifyToken(HttpServletRequest request){
         String token = request.getHeader("token");
         Map<String, Claim> payloadFromToken = JWTUtil.getPayloadFromToken(token);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("userId",payloadFromToken.get(Cons.id).asString());
-        map.put("account",payloadFromToken.get(Cons.account).asString());
-        try {
-            map.put("avator",payloadFromToken.get(Cons.avator).asString());
-        }catch (Exception e) {
-            map.put("avator",null);
-        }
-        map.put("username",payloadFromToken.get(Cons.username).asString());
+        HashMap<String, Object> map = new HashMap<>();
+        String account = payloadFromToken.get(Cons.account).asString();
+        User user = userMapper.queryUserByAccount(account);
+        map.put("userId",user.getId());
+        map.put("account",account);
+        map.put("avator",user.getAvator());
+        map.put("username",user.getUsername());
         map.put("status","success");
         return map;
     }
