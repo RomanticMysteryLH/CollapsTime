@@ -1,13 +1,11 @@
 package henu.javaweb.collapstime.controller;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import henu.javaweb.collapstime.mapper.SongMapper;
 import henu.javaweb.collapstime.mapper.UserMapper;
-import henu.javaweb.collapstime.model.FileUploadResult;
-import henu.javaweb.collapstime.model.SongDownloadResult;
-import henu.javaweb.collapstime.model.SongShowInList;
-import henu.javaweb.collapstime.model.User;
+import henu.javaweb.collapstime.model.*;
 import henu.javaweb.collapstime.service.SingerService;
 import henu.javaweb.collapstime.service.SongListService;
 import henu.javaweb.collapstime.service.SongService;
@@ -33,6 +31,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -143,6 +142,9 @@ public class UserController {
                     result.put(Cons.id,user.getId());
                     result.put(Cons.state,"登录成功");
                     payload.put(Cons.account,user.getAccount());
+                    payload.put(Cons.id,user.getId().toString());
+                    payload.put(Cons.username,user.getUsername());
+                    payload.put(Cons.avator,user.getAvator());
                     String token = JWTUtil.getToken(payload);
                     result.put(Cons.token,token);
                     //将用户登录账号存到session,用于以后登录检测
@@ -286,6 +288,29 @@ public class UserController {
         }else {
             return singerService.searchSingerInfo(current, size, key);
         }
+    }
+
+    /**
+     * 验证token
+     * @param request
+     * @return
+     */
+    @PostMapping("/verifyToken")
+    @ResponseBody
+    public HashMap<String,String> verifyToken(HttpServletRequest request){
+        String token = request.getHeader("token");
+        Map<String, Claim> payloadFromToken = JWTUtil.getPayloadFromToken(token);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("userId",payloadFromToken.get(Cons.id).asString());
+        map.put("account",payloadFromToken.get(Cons.account).asString());
+        try {
+            map.put("avator",payloadFromToken.get(Cons.avator).asString());
+        }catch (Exception e) {
+            map.put("avator",null);
+        }
+        map.put("username",payloadFromToken.get(Cons.username).asString());
+        map.put("status","success");
+        return map;
     }
 
 }
