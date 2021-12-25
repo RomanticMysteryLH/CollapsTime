@@ -38,6 +38,7 @@ Vue.use(ElementUI, {
 
 Vue.config.productionTip = false
 Vue.prototype.$qs = qs
+Vue.prototype.backApi = "http://localhost:8081"
 
 new Vue({
     el: '#app',

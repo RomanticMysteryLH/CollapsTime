@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column label="性别" width="100px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.sex }}</span>
+          <span>{{ row.sex | sexFilter}}</span>
         </template>
       </el-table-column>
       <el-table-column label="简介" align="center" min-width="100">
@@ -100,6 +100,11 @@
             <el-form-item label="用户名" prop="username">
               <el-input v-model="temp.username" />
             </el-form-item>
+            <el-form-item label="性别" prop="sex">
+              <el-select v-model="temp.sex" class="filter-item" >
+                <el-option v-for="item in sexOptions" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="temp.email" />
             </el-form-item>
@@ -115,7 +120,6 @@
               <el-input v-model="temp.introduction" type="textarea" />
             </el-form-item>
             <el-form-item label="头像">
-<!--              <el-avatar :src="temp.avatorshow" />-->
               <my-upload field="file"
                          v-model="showupload"
                          :width="300"
@@ -166,21 +170,19 @@ import qs from 'qs'
 import myUpload from 'vue-image-crop-upload/upload-2.vue'
 import {deleteSong, deleteSongFile} from "@/api/song";
 
-const sexOptions = [
-  { key: '0', display_name: 'female' },
-  { key: '1', display_name: 'male' }
-]
-
-const sexKeyValue = sexOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
 
 export default {
   name: 'ComplexTable',
   components: { Pagination,myUpload},
   directives: { waves },
   filters: {
+    sexFilter(status){
+      const statusMap = {
+        0: '女',
+        1: '男',
+      }
+      return statusMap[status]
+    },
     SignstatusFilter(status) {
       const statusMap = {
         0: 'success',
@@ -217,7 +219,6 @@ export default {
     return {
       tableKey: 0,
       list: null,
-      targetApi: "http://localhost:8081",//后端ip地址
       activeName: 'first',
       total: 0,
       listLoading: false,
@@ -243,9 +244,9 @@ export default {
         },
         sort: '+id'
       },
-      sexOptions,
       sortOptions: [{ label: 'ID 升序', key: '+id' }, { label: 'ID 降序', key: '-id' }],
       statusOptions: [{label:'未标记',value:0},{label:'标记',value:1}],//标记状态选择
+      sexOptions: [{label:'女',value:0},{label:'男',value:1}],//标记状态选择
       showReviewer: false,
       temp: {
         id: '',
@@ -295,7 +296,7 @@ export default {
             item.avatorshow="/logo.png";
           }
           else {
-            item.avatorshow=this.targetApi+item.avator;
+            item.avatorshow=this.backApi+item.avator;
           }
         })
         this.total = response.total
@@ -347,7 +348,7 @@ export default {
           const tempData = Object.assign({}, this.temp)
           const upData = qs.stringify(tempData);
           if(this.deletePicFlag){
-            overridePic(this.temp.id).then(result=>{
+            overridePic(this.temp.id,"").then(result=>{
               console.log(result)
             })
           }
@@ -378,7 +379,7 @@ export default {
         {
           this.checkDelete()
           this.temp.avator=result.filePath;
-          this.temp.avatorshow=this.targetApi+this.temp.avator;
+          this.temp.avatorshow=this.backApi+this.temp.avator;
           this.$message.success('上传成功')
           this.deletePicFlag=true//上传成功后把删除标志置为可删除状态。
         }
@@ -402,7 +403,7 @@ export default {
      */
     checkDelete() {
       if (this.deletePicFlag) {
-        deleteProFile(this.temp.avator).then(result => {
+        overridePic("",this.temp.avator).then(result => {
           console.log(result)
         })
       }

@@ -42,28 +42,15 @@ export function sendAvatar(picfile) {
 }
 
 /**
- * 删除未保存但上传了的文件
- * @param path
- * @returns {AxiosPromise}
- */
-export function deleteProFile(picPath) {
-  return request({
-    url: '/admin/user/userProFileDelete',
-    method: 'post',
-    params:{picfilePath:picPath}
-  })
-}
-
-/**
  * 覆盖文件时删除原来的文件
  * @param id
  * @returns {AxiosPromise}
  */
-export function overridePic(id) {
+export function overridePic(id,picPath) {
   return request({
     url: '/admin/user/userFileDelete',
     method: 'post',
-    params:{id:id}
+    params:{id:id,picfilePath:picPath}
   })
 }
 

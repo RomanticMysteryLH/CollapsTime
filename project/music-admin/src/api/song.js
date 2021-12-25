@@ -125,7 +125,7 @@ export function getSinger(data) {
 }
 
 /**
- * 删除用户
+ * 删除歌曲
  * @param data
  * @returns {AxiosPromise}
  */

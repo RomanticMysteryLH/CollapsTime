@@ -80,30 +80,24 @@ public class AdminUserController {
         String savePath ="userPic";
         return FileHandleUtils.filehandle(file,savePath);
     }
+
     /**
-     * 删除数据库覆盖的头像图片
+     * 删除多出来的图片文件
      * @param id
+     * @param picfilePath
      * @return
      */
     @PostMapping("/userFileDelete")
     @ResponseBody
-    public String userFileDelete(String id){
-        String picfilePath = Cons.RESOURCE_WIN_PATH+adminUserService.queryUser(id).getAvator();
+    public String userFileDelete(String id,String picfilePath){
+        String picPath = null;
+        if(!id.isEmpty()){
+            picPath = Cons.RESOURCE_WIN_PATH+adminUserService.queryUser(id).getAvator();
+        }else{
+            picPath = Cons.RESOURCE_WIN_PATH+picfilePath;
+        }
         String picResult = null;
-        picResult=FileHandleUtils.deleteFile(picfilePath);
-
-        return "图片"+picResult;
-    }
-
-    /**
-     * 删除没保存的时候上传的上一个图片
-     * @param picfilePath
-     * @return
-     */
-    @PostMapping("/userProFileDelete")
-    @ResponseBody
-    public String userProFileDelete(String picfilePath){
-        String picResult=FileHandleUtils.deleteFile(Cons.RESOURCE_WIN_PATH+picfilePath);
+        picResult=FileHandleUtils.deleteFile(picPath);
         return "图片"+picResult;
     }
 
@@ -116,7 +110,7 @@ public class AdminUserController {
     @PostMapping("/deleteUser")
     @ResponseBody
     public String deleteUser(String id) throws IOException{
-        String msg = userFileDelete(id);
+        String msg = userFileDelete(id,"");
         int i = adminUserService.userDelete(id);
         if(i > 0)
         {

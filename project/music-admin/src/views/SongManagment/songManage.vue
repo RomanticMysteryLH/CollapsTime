@@ -27,11 +27,6 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-<!--      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">-->
-<!--        <template slot-scope="{row}">-->
-<!--          <span>{{ row.id }}</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
       <el-table-column label="封面" width="200px" align="center" class="coverPic">
         <template slot-scope="{row}" >
           <el-avatar shape="square" :size="100" fit="cover" :src="row.pictureshow" />
@@ -73,9 +68,6 @@
             <el-form-item label="歌曲名" prop="name">
               <el-input v-model="temp.name" />
             </el-form-item>
-<!--            <el-form-item label="歌手名" prop="name">-->
-<!--              <el-input v-model="temp.singername" />-->
-<!--            </el-form-item>-->
             <el-form-item label="歌手">
               <el-select
                 v-model="temp.singerId" value="temp.singerId"
@@ -162,64 +154,22 @@
 <script>
   import { fetchSong,sendPic,sendLrc,updateSong,getSinger,deleteProFile,deleteSongFile,sendMp3,addSong,deleteSong} from '@/api/song'
   import waves from '@/directive/waves' // waves directive
-  import { parseTime } from '@/utils'
   import Pagination from '@/components/Pagination' // 分页操作
   import qs from 'qs'
   import myUpload from 'vue-image-crop-upload/upload-2.vue'
-  import {deleteUser} from "@/api/vipuser";
 
-  const sexOptions = [
-    { key: '0', display_name: 'female' },
-    { key: '1', display_name: 'male' }
-  ]
-
-  const sexKeyValue = sexOptions.reduce((acc, cur) => {
-    acc[cur.key] = cur.display_name
-    return acc
-  }, {})
 
   export default {
     name: 'ComplexTable',
     components: { Pagination,myUpload },
     directives: { waves },
     filters: {
-      SignstatusFilter(status) {
-        const statusMap = {
-          0: 'success',
-          1: 'danger',
-        }
-        return statusMap[status]
-      },
-      FreezestatusFilter(status) {
-        const statusMap = {
-          0: 'success',
-          1: 'danger'
-        }
-        return statusMap[status]
-      },
-      SignFilter(sign){
-        const signMap={
-          0:'未标记',
-          1:'标记'
-        }
-        return signMap[sign]
-      },
-      FreezeFilter(Freeze){
-        const signMap={
-          0:'未冻结',
-          1:'冻结中'
-        }
-        return signMap[Freeze]
-      },
-      typeFilter(type) {
-        return sexKeyValue[type]
-      }
+
     },
     data() {
       return {
         tableKey: 0,
         list: null,
-        targetApi: "http://localhost:8081",//后端ip地址
         activeName: 'first',
         total: 0,
         //远程搜索组件
@@ -252,7 +202,6 @@
           },
           sort: '+id'
         },
-        sexOptions,
         sortOptions: [{ label: 'ID 升序', key: '+id' }, { label: 'ID 降序', key: '-id' }],
         showReviewer: false,
         temp: {
@@ -317,7 +266,7 @@
               item.pictureshow="/logo.png";
             }
             else {
-              item.pictureshow=this.targetApi+item.picture;
+              item.pictureshow=this.backApi+item.picture;
             }
           })
           this.total = response.total
@@ -626,7 +575,7 @@
           {
             this.checkDelete("img")
             this.temp.picture=result.filePath;
-            this.temp.pictureshow=this.targetApi+this.temp.picture;
+            this.temp.pictureshow=this.backApi+this.temp.picture;
             this.$message.success('上传成功')
             this.deletePicFlag=true//上传成功后把删除标志置为可删除状态。
           }
