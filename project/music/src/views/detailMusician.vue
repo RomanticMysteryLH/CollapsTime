@@ -113,7 +113,7 @@
   margin-top: 6px;
 }
 .musicianTitle {
-  font-family: HanYiZhongSongJian, HanyiZhongSongFan;
+  font-family: HanYiZhongSongJian,SimSun;
 }
 .el-divider__text {
   color: gray;

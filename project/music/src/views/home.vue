@@ -381,10 +381,10 @@ export default {
   margin-top: 25px;
   font-size: 30px;
   line-height: 40px;
-  font-family: HanYiZhongSongJian, HanYiZhongSongFan;
+  font-family: HanYiZhongSongJian, SimSun;
 }
 .tail {
   line-height: 25px;
-  font-family: HanYiZhongSongJian, HanYiZhongSongFan;
+  font-family: HanYiZhongSongJian, SimSun;
 }
 </style>

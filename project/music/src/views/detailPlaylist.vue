@@ -123,7 +123,7 @@
   margin-top: 6px;
 }
 .playlistTitle {
-  font-family: HanYiZhongSongJian, HanyiZhongSongFan;
+  font-family: HanYiZhongSongJian, SimSun;
 }
 .el-divider__text {
   color: gray;
