@@ -168,6 +168,13 @@ export default {
     loginAction(formName) {
       //按钮前验证，需要给form设置ref，给button的click调用设置参数为表格数据
       //在refs列表中找到ref名为formName的
+      if (
+        this.loginForm.account == "admin"
+      ) {
+        console.log("正在跳转")
+        window.location.href = this.$adminRequestUrl;
+        return;
+      }
       let axiosThis = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -176,11 +183,6 @@ export default {
             password: this.loginForm.password,
             code: this.loginForm.code,
           });
-          if(this.loginForm.account=="admin"&&this.loginForm.password=="123456"){
-            // axiosThis.$message.success("正在跳转！")
-            window.location.href="http://152.136.234.240/lrj/#/dashboard";
-            return;
-          }
           //axios请求
           this.$axios
             .post(`user/login`, data)
@@ -213,7 +215,7 @@ export default {
                 console.log(axiosThis.$root.userData);
                 //重载页面
                 axiosThis.reload();
-                localStorage.setItem('collapstimeUser',responseData.token);
+                localStorage.setItem("collapstimeUser", responseData.token);
               } else {
                 //请求失败
                 axiosThis.$message.error(responseData.state);

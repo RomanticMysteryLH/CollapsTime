@@ -94,6 +94,8 @@ new Vue({
   created: function () {
     //设置全局变量
     Vue.prototype.$RequestUrl = "http://localhost:8081";
+    //后台地址
+    Vue.prototype.$adminRequestUrl = "http://152.136.234.240/lrj/#/dashboard"
     // Vue.prototype.$RequestUrl = "http://192.168.31.58:8081";
   },
 
