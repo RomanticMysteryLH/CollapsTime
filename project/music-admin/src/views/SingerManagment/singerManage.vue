@@ -22,7 +22,6 @@
       fit
       highlight-current-row
       style="width: 100%;"
-      @sort-change="sortChange"
     >
       <el-table-column label="头像" width="200px" align="center" class="coverPic">
         <template slot-scope="{row}">
@@ -69,7 +68,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="1%" style="height:96%;overflow-y: auto;" @open="deletePicFlag=false" @close="checkDelete" >
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="ShowDeleteButton">
         <el-tab-pane label="歌手基本信息" name="first">
           <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
             <el-form-item label="歌手名" prop="name">
@@ -106,102 +105,120 @@
         </el-tab-pane>
         <el-tab-pane label="歌手的歌曲" name="second">
           <el-row style="padding: 20px 0px 0px 0px" :gutter="20">
+
             <!-- span决定大小 -->
-            <el-col :span="4" v-for="item in this.Songs" :key="item.id">
+            <el-col :span="4" v-for="item in this.Songs" :key="item.id" >
+              <div @click="HandleDoCheck(item)">
               <el-card
                 :body-style="{ padding: '0px' }"
                 class="card"
                 style="cursor: pointer"
-                @click.native="songSelect(item.id)"
               >
-                <el-image :src="this.backApi+item.cover" class="myimage" lazy>
-
+                <el-image :src="targetApi+item.cover" fit="cover" class="myimage">
+                  <!-- 加载前占位 -->
+                  <div slot="placeholder">
+                    <img src="@/assets/default/loading1.gif" class="image" />
+                  </div>
+                  <!-- 加载后占位 -->
+                  <div slot="error">
+                    <img
+                      src="@/assets/default/defaultPlayList.jpg"
+                      slot="error"
+                      class="image"
+                    />
+                  </div>
                 </el-image>
-                <div style="padding: 14px; height: 50px; overflow: hidden">
+                <div style="display:flex;padding:14px 0px 0px; justify-content: center; overflow: hidden">
                   <p
-                    style="
-                font-weight: 600;
+                    style="font-weight: 600;
                 font-size: 14px;
-                overflow: hidden;
-                height: 32px;
-              "
-                  >
-                    {{ item.name }}
-                  </p>
-                  <p style="font-size:12px;color:gray;bottom:5px">
-                    {{ item.singerName }}
-                    <el-button
-                      :icon="
-                  item.collectStatus == 0
-                    ? 'el-icon-star-off'
-                    : 'el-icon-star-on'
-                "
-                      type="text"
-                      size="medium"
-                      style="color: orange; float: right"
-                      @click.stop="collectSong(item)"
-                    ></el-button>
+                margin: 0;
+                ">
+                    {{item.name}}
                   </p>
                 </div>
-              </el-card>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
+                <div style="height: 19px">
+                  <el-checkbox ref="checkbox" v-if="showCheck" v-model="checkList" :label="item.id"  @click.stop.native="()=>{}" style="float: right;width: 16px;overflow: hidden"></el-checkbox>
+      </div>
+      </el-card>
+      </div>
+      </el-col>
+      </el-row>
+      </el-tab-pane>
 
       </el-tabs>
 
-      <div slot="footer" class="dialog-footer" style="display: flex;justify-content: flex-end">
-        <el-button ref="confirm" type="primary" @click="dialogStatus==='create'?createData():updateData()" style="margin-left: 10px">
-          保存
-        </el-button>
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
+      <div slot="footer" class="dialog-footer" style="display: flex">
+        <div style="display: flex;justify-content: start;width: 50%;">
+          <el-button v-if="showDelete" type="primary" @click="showCheckDelete" style="justify-content: start">
+            批量删除
+          </el-button>
+          <el-button v-if="showHandleDelete" type="primary" @click="confirmCheckDelete" style="justify-content: start">
+            确认删除
+          </el-button>
+          <el-button v-if="showHandleDelete" type="primary" @click="closeShowCheckDelete" style="justify-content: start">
+            取消删除
+          </el-button>
+        </div>
+        <div style="display: flex;justify-content: end;width: 50%;">
+          <el-button ref="confirm" type="primary" @click="dialogStatus==='create'?createData():updateData()" style="margin-left: 10px">
+            保存
+          </el-button>
+          <el-button @click="dialogFormVisible = false">
+            取消
+          </el-button>
+        </div>
       </div>
-    </el-dialog>
-  </div>
-</template>
+        </el-dialog>
+        </div>
+        </template>
 
-<script>
-  import {fetchSinger,addSinger,sendPic,overridePic,updateSinger,deleteSinger,fetchSingerSong} from '@/api/singer'
-  import waves from '@/directive/waves' // waves directive
-  import { parseTime } from '@/utils'
-  import Pagination from '@/components/Pagination' // 分页操作
-  import qs from 'qs'
-  import myUpload from 'vue-image-crop-upload/upload-2.vue'
+        <script>
+      import {fetchSinger,addSinger,sendPic,overridePic,updateSinger,deleteSinger,fetchSingerSong,deleteSingerSong} from '@/api/singer'
+      import waves from '@/directive/waves' // waves directive
+      import { parseTime } from '@/utils'
+      import Pagination from '@/components/Pagination' // 分页操作
+      import qs from 'qs'
+      import myUpload from 'vue-image-crop-upload/upload-2.vue'
 
-  export default {
-    name: 'ComplexTable',
-    components: { Pagination,myUpload},
-    directives: { waves },
-    filters: {
-      sexFilter(status){
-        const statusMap = {
-          0: '女',
-          1: '男',
-        }
-        return statusMap[status]
-      },
-      parseTime: parseTime
-    },
-    data() {
-      return {
-        tableKey: 0,
-        list: null,
-        activeName: 'first',
-        total: 0,
-        showupload:false,
-        deletePicFlag:false,//删除标记，用于判断是否需要删除之前的图片
-        deleteSongFlag:false,
-        listLoading: false,
-        listQuery: {
-          current: 1,
-          size: 10,
-          total:undefined,
-          dataList:{
-            id:undefined,
-            name: undefined,
-            sex:undefined,
+      export default {
+        name: 'ComplexTable',
+        components: { Pagination,myUpload},
+        directives: { waves },
+        filters: {
+          sexFilter(status){
+            const statusMap = {
+              0: '女',
+              1: '男',
+            }
+            return statusMap[status]
+          },
+          parseTime: parseTime
+        },
+        data() {
+          return {
+            tableKey: 0,
+            list: null,
+            activeName: 'first',
+            total: 0,
+            checkFlagList:[],
+            checkList:[],
+            showDelete:false,
+            showHandleDelete:false,
+            showupload:false,
+            showCheck:false,
+            targetApi:this.backApi,
+            deletePicFlag:false,//删除标记，用于判断是否需要删除之前的图片
+            deleteSongFlag:false,
+            listLoading: false,
+            listQuery: {
+              current: 1,
+              size: 10,
+              total:undefined,
+              dataList:{
+                id:undefined,
+                name: undefined,
+                sex:undefined,
             birth:undefined,
             introduction:undefined,
             picture:undefined,
@@ -275,19 +292,100 @@
         this.listQuery.page = 1
         this.getList()
       },
-      sortChange(data) {
-        const { prop, order } = data
-        if (prop === 'id') {
-          this.sortByID(order)
+
+      /**
+       * 显示批量删除按钮
+       */
+      ShowDeleteButton(tab){
+        if(tab.label==="歌手的歌曲"){
+          this.showDelete=true
+        }else {
+          this.showDelete=false
+          this.showHandleDelete=false
+          this.showCheck=false
         }
       },
-      sortByID(order) {
-        if (order === 'ascending') {
-          this.listQuery.sort = '+id'
-        } else {
-          this.listQuery.sort = '-id'
+
+      /**
+       * 显示批量删除多选框
+       */
+      showCheckDelete(){
+        this.showCheck=true
+        this.showHandleDelete=true
+      },
+
+      /**
+       * 取消显示批量删除框
+       */
+      closeShowCheckDelete(){
+        this.showCheck=false
+        this.checkList=[]
+      },
+
+      /**
+       * 确认删除所选歌曲
+       */
+      confirmCheckDelete(){
+        deleteSingerSong(this.checkList.toString()).then(result=>{
+          if(result=="success"){
+            this.$notify({
+              title: result,
+              message: '删除成功!',
+              type: result,
+              duration: 2000
+            })
+            for(let i in this.Songs){
+              for(let j of this.checkList){
+                if(this.Songs[i].id===j){
+                  this.Songs.splice(i,1)
+                }
+              }
+            }
+          }
+          else{
+            this.$notify({
+              title: result,
+              message: '删除失败!',
+              type: result,
+              duration: 2000
+            })
+          }
+        })
+      },
+
+      /**
+       *点击卡片选中复选框
+       */
+      HandleDoCheck(val){
+        if(this.showCheck==true){
+          this.doCheck(val)
         }
-        this.handleFilter()
+      },
+
+      //获取数组中数值的下标
+      indexOf(val,ids) {
+        for (let i = 0; i < ids.length; i++) {
+          //获取当前值的下标
+          if (ids[i] === val.id)
+            return i;
+        }
+        return -1;
+      },
+
+      doCheck(val){
+        let ids = this.checkList;
+        //检索下标,判断当前值(或对象是否在数组中); 在则返回下标,不在则返回-1
+        let index = this.indexOf(val,ids);
+        if (ids.length >0 && index > -1) {
+          //删除数组中的某个元素(在取消勾选时,删除数组中的值)
+          ids.splice(index,1);
+        }else {
+          //添加到数组中
+          ids.push(val.id);
+          //用逗号隔开
+          ids.join(",");
+        }
+        this.checkList = ids
       },
 
       /**
@@ -407,6 +505,10 @@
             console.log(result)
           })
         }
+        this.showCheck=false
+        this.showHandleDelete=false
+        this.checkList=[]
+        this.Songs=[]
       },
 
       /**
@@ -534,5 +636,8 @@
   .image {
     width: 100%;
     position: absolute;
+  }
+  .card{
+    margin-bottom: 30px;
   }
 </style>

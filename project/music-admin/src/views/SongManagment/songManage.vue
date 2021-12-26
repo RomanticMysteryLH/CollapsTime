@@ -3,9 +3,7 @@
     <div class="filter-container">
       <el-input v-model="listQuery.username" placeholder="账号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.useraccount" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.sex" placeholder="性别" clearable class="filter-item" style="width: 100px">
-        <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-      </el-select>
+
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>

@@ -1,30 +1,20 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">Hello,Admin</div>
+    <component :is="currentRole" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
-export default {
-  name: 'Dashboard',
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
+  import adminDashboard from './admin'
+  import circleChart from "@/views/dashboard/echarts/circleChart";
+  import VCharts from 'v-charts'
+  export default {
+    name: 'Dashboard',
+    components: { adminDashboard,},
+    data() {
+      return {
+        currentRole: 'adminDashboard'
+      }
+    },
   }
-}
 </script>
-
-<style lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 30px;
-  }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
-  }
-}
-</style>

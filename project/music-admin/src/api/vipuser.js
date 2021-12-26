@@ -68,14 +68,55 @@ export function deleteUser(data) {
 }
 
 /**
+ * 获取用户收藏歌手
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function fetchUserSinger(query) {
+  return request({
+    url: '/singer/getUserCollectSinger',
+    method: 'post',
+    params: query
+  })
+}
+
+/**
  * 获取用户收藏歌曲
  * @param query
  * @returns {AxiosPromise}
  */
 export function fetchUserSong(query) {
   return request({
-    url: '/user/getUserSong',
-    method: 'get',
+    url: '/song/getUserCollectSong',
+    method: 'post',
     params: query
+  })
+}
+
+/**
+ * 获取用户收藏歌单
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function fetchUserSongList(query) {
+  return request({
+    url: '/songList/getUserCollectSongList',
+    method: 'post',
+    params: query
+  })
+}
+
+/**
+ * 删除用户收藏歌手、歌曲、歌单
+ * @param userId
+ * @param idStr
+ * @param flag
+ * @returns {AxiosPromise}
+ */
+export function deleteCollect(userId,idStr,flag) {
+  return request({
+    url: '/admin/user/deleteCollect',
+    method: 'post',
+    params:{userId:userId,idStr:idStr,flag:flag}
   })
 }

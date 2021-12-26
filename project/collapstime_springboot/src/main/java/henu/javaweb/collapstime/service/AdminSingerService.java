@@ -31,4 +31,5 @@ public interface AdminSingerService {
      * @return
      */
     public Integer singerDelete(String id);
+
 }

@@ -32,7 +32,22 @@ import Layout from '@/layout'
  */
 //都看得见的路由
 export const constantRoutes = [
-
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
 {
   path: '/404',
   component: () =>
@@ -76,15 +91,15 @@ export const constantRoutes = [
       title: '管理会员信息'
     }
   },
-  {
-    path: 'userExam',
-    component: () =>
-      import ('@/views/UserManagment/userExam'),
-    name: 'userExam',
-    meta: {
-      title: '审核注销会员'
-    }
-  }
+  // {
+  //   path: 'userExam',
+  //   component: () =>
+  //     import ('@/views/UserManagment/userExam'),
+  //   name: 'userExam',
+  //   meta: {
+  //     title: '审核注销会员'
+  //   }
+  // }
   ]
 },
 
@@ -120,18 +135,18 @@ export const constantRoutes = [
         import ('@/views/SongManagment/songManage'),
       name: 'songManage',
       meta: {
-        title: '管理歌曲'
+        title: '歌曲管理'
       }
     },
-      {
-        path: 'songExam',
-        component: () =>
-          import ('@/views/SongManagment/songExam'),
-        name: 'songExam',
-        meta: {
-          title: '审核歌曲'
-        }
-      }
+      // {
+      //   path: 'songExam',
+      //   component: () =>
+      //     import ('@/views/SongManagment/songExam'),
+      //   name: 'songExam',
+      //   meta: {
+      //     title: '审核歌曲'
+      //   }
+      // }
     ]
   },
 
@@ -153,34 +168,34 @@ export const constantRoutes = [
   /**
    * 主页管理模块
    */
-  {
-    path: '/HomeManagment',
-    component: Layout,
-    name: 'HomeManagment',
-    meta: {
-      title: '主页管理',
-      icon: 'form'
-    },
-    children: [{
-      path: 'homeImgManage',
-      component: () =>
-        import ('@/views/HomeManagment/homeImgManage'),
-      name: 'homeImgManage',
-      meta: {
-        title: '主页图片替换'
-      }
-    },
-      {
-        path: 'placardManage',
-        component: () =>
-          import ('@/views/HomeManagment/placardManage'),
-        name: 'placardManage',
-        meta: {
-          title: '公告管理'
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/HomeManagment',
+  //   component: Layout,
+  //   name: 'HomeManagment',
+  //   meta: {
+  //     title: '主页管理',
+  //     icon: 'form'
+  //   },
+  //   children: [{
+  //     path: 'homeImgManage',
+  //     component: () =>
+  //       import ('@/views/HomeManagment/homeImgManage'),
+  //     name: 'homeImgManage',
+  //     meta: {
+  //       title: '主页图片替换'
+  //     }
+  //   },
+  //     {
+  //       path: 'placardManage',
+  //       component: () =>
+  //         import ('@/views/HomeManagment/placardManage'),
+  //       name: 'placardManage',
+  //       meta: {
+  //         title: '公告管理'
+  //       }
+  //     }
+  //   ]
+  // },
 
 // 404 page must be placed at the end !!!
 { path: '*', redirect: '/404', hidden: true }

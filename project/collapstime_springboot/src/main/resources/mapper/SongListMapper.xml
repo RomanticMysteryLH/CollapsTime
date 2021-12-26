@@ -19,6 +19,12 @@
     <delete id="deleteCollectSongList">
         delete from collect where type = 1 and user_id = #{userId} and song_list_id = #{songListId};
     </delete>
+    <delete id="deleteSongListComment">
+        delete from comment where id = #{id};
+    </delete>
+    <delete id="deleteSongListSong">
+        delete from list_song where song_id = #{songId} and song_list_id=#{songListId};
+    </delete>
     <select id="querySongListAllStyle" resultType="string">
         select group_concat(distinct style) styleList
         from song_list;

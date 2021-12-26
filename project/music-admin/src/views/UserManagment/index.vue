@@ -3,17 +3,11 @@
     <div class="filter-container">
       <el-input v-model="listQuery.username" placeholder="账号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.useraccount" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.sex" placeholder="性别" clearable class="filter-item" style="width: 100px">
-        <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-      </el-select>
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
-      </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        导出
       </el-button>
     </div>
 
@@ -88,10 +82,10 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="1%" style="height:95%;overflow-y: auto;" @open="deletePicFlag=false" @close="checkDelete">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="ShowDeleteButton">
         <el-tab-pane label="会员基本信息" name="first">
           <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
             <el-form-item label="账号" prop="account">
@@ -133,42 +127,169 @@
               <el-button type="primary" @click="uploadimg">上传头像</el-button>
             </el-form-item>
           </el-form>
-
         </el-tab-pane>
-        <el-tab-pane label="会员收藏歌手" name="second"></el-tab-pane>
-        <el-tab-pane label="会员收藏歌单" name="third"></el-tab-pane>
-        <el-tab-pane label="会员评论" name="fourth"></el-tab-pane>
-      </el-tabs>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="updateData()">
-          保存
-        </el-button>
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-      </div>
-    </el-dialog>
+        <el-tab-pane label="会员收藏歌手" name="singer">
+          <el-row style="padding: 20px 0px 0px 0px" :gutter="20">
+            <!-- span决定大小 -->
+            <el-col :span="5" v-for="item in this.Collect['singer']" :key="item.id" >
+              <div @click="HandleDoCheck(item)">
+                <el-card
+                  :body-style="{ padding: '0px' }"
+                  class="card"
+                  style="cursor: pointer"
+                >
+                  <el-image :src="targetApi+item.picture" fit="cover" class="myimage">
+                    <!-- 加载前占位 -->
+                    <div slot="placeholder">
+                      <img src="@/assets/default/loading1.gif" class="image" />
+                    </div>
+                    <!-- 加载后占位 -->
+                    <div slot="error">
+                      <img
+                        src="@/assets/default/defaultPlayList.jpg"
+                        slot="error"
+                        class="image"
+                      />
+                    </div>
+                  </el-image>
+                  <div style="display:flex;padding:14px 0px 0px; justify-content: center; overflow: hidden">
+                    <p
+                      style="font-weight: 600;
+                font-size: 14px;
+                margin: 0;
+                ">
+                      {{item.name}}
+                    </p>
+                  </div>
+                  <div style="height: 19px">
+                    <el-checkbox ref="checkbox" v-if="showCheck" v-model="checkList" :label="item.id"  @click.stop.native="()=>{}" style="float: right;width: 16px;overflow: hidden"></el-checkbox>
+                  </div>
+                </el-card>
+              </div>
+            </el-col>
+          </el-row>
+          <pagination v-show="singerTotal>0" :total="singerTotal" :page.sync="singerQuery.current" :limit.sync="singerQuery.size"  style="padding-top: 0px" align="center" @pagination="getSinger(temp.id)" />
+        </el-tab-pane>
+        <el-tab-pane label="会员收藏歌曲" name="song">
+          <el-row style="padding: 20px 0px 0px 0px" :gutter="20">
+            <!-- span决定大小 -->
+            <el-col :span="5" v-for="item in this.Collect['song']" :key="item.id" >
+              <div @click="HandleDoCheck(item)">
+                <el-card
+                  :body-style="{ padding: '0px' }"
+                  class="card"
+                  style="cursor: pointer"
+                >
+                  <el-image :src="targetApi+item.cover" fit="cover" class="myimage">
+                    <!-- 加载前占位 -->
+                    <div slot="placeholder">
+                      <img src="@/assets/default/loading1.gif" class="image" />
+                    </div>
+                    <!-- 加载后占位 -->
+                    <div slot="error">
+                      <img
+                        src="@/assets/default/defaultPlayList.jpg"
+                        slot="error"
+                        class="image"
+                      />
+                    </div>
+                  </el-image>
+                  <div style="display:flex;padding:14px 0px 0px; justify-content: center; overflow: hidden">
+                    <p
+                      style="font-weight: 600;
+                font-size: 14px;
+                margin: 0;
+                ">
+                      {{item.name}}
+                    </p>
+                  </div>
+                  <div style="height: 19px">
+                    <el-checkbox ref="checkbox" v-if="showCheck" v-model="checkList" :label="item.id"  @click.stop.native="()=>{}" style="float: right;width: 16px;overflow: hidden"></el-checkbox>
+                  </div>
+                </el-card>
+              </div>
+            </el-col>
+          </el-row>
+          <pagination v-show="songTotal>0" :total="songTotal" :page.sync="songQuery.current" :limit.sync="songQuery.size"  style="padding-top: 0px" align="center" @pagination="getSong(temp.id)" />
+        </el-tab-pane>
+        <el-tab-pane label="会员收藏歌单" name="songList">
+          <el-row style="padding: 20px 0px 0px 0px;" :gutter="20">
+            <!-- span决定大小 -->
+            <el-col :span="5" v-for="item in this.Collect['songList']" :key="item.id" >
+              <div @click="HandleDoCheck(item)">
+                <el-card
+                  :body-style="{ padding: '0px' }"
+                  class="card"
+                  style="cursor: pointer"
+                >
+                  <el-image :src="targetApi+item.picture" fit="cover" class="myimage">
+                    <!-- 加载前占位 -->
+                    <div slot="placeholder">
+                      <img src="@/assets/default/loading1.gif" class="image" />
+                    </div>
+                    <!-- 加载后占位 -->
+                    <div slot="error">
+                      <img
+                        src="@/assets/default/defaultPlayList.jpg"
+                        slot="error"
+                        class="image"
+                      />
+                    </div>
+                  </el-image>
+                  <div style="display:flex;padding:14px 0px 0px; justify-content: center; overflow: hidden">
+                    <p
+                      style="font-weight: 600;
+                font-size: 14px;
+                margin: 0;
+                ">
+                      {{item.title}}
+                    </p>
+                  </div>
+                  <div style="height: 19px">
+                    <el-checkbox ref="checkbox" v-if="showCheck" v-model="checkList" :label="item.id"  @click.stop.native="()=>{}" style="float: right;width: 16px;overflow: hidden"></el-checkbox>
+                  </div>
+                </el-card>
+              </div>
+            </el-col>
+          </el-row>
+          <pagination v-show="songListTotal>0" :total="songListTotal" :page.sync="songListQuery.current" :limit.sync="songListQuery.size"  style="padding-top: 0px" align="center" @pagination="getSongList(temp.id)" />
+        </el-tab-pane>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
+      </el-tabs>
+      <div slot="footer" class="dialog-footer" style="display: flex">
+        <div style="display: flex;justify-content: start;width: 50%;">
+          <el-button v-if="showDelete" type="primary" @click="showCheckDelete" style="justify-content: start">
+            批量删除
+          </el-button>
+          <el-button v-if="showHandleDelete" type="primary" @click="confirmCheckDelete" style="justify-content: start">
+            确认删除
+          </el-button>
+          <el-button v-if="showHandleDelete" type="primary" @click="closeShowCheckDelete" style="justify-content: start">
+            取消删除
+          </el-button>
+        </div>
+        <div style="display: flex;justify-content: end;width: 50%;">
+          <el-button ref="confirm" type="primary" @click="dialogStatus==='create'?createData():updateData()" style="margin-left: 10px">
+            保存
+          </el-button>
+          <el-button @click="dialogFormVisible = false">
+            取消
+          </el-button>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchUser ,updateuser,sendAvatar,deleteUser,deleteProFile,overridePic} from '@/api/vipuser'
+import { fetchUser ,updateuser,sendAvatar,deleteUser,overridePic,fetchUserSinger,fetchUserSong,fetchUserSongList,deleteCollect} from '@/api/vipuser'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // 分页操作
 import qs from 'qs'
 import myUpload from 'vue-image-crop-upload/upload-2.vue'
 import {deleteSong, deleteSongFile} from "@/api/song";
+import {deleteSongListSong} from "@/api/songList";
 
 
 export default {
@@ -221,8 +342,27 @@ export default {
       list: null,
       activeName: 'first',
       total: 0,
-      listLoading: false,
+      singerTotal:0,
+      songTotal:0,
+      songListTotal:0,
+      checkFlagList:[],
+      checkList:[],
+      showDelete:false,
+      showHandleDelete:false,
       showupload:false,
+      showCheck:false,
+      targetApi:this.backApi,
+      Collect:{
+        'song':null,
+        'singer':null,
+        'songList':null
+      },
+      Songs:null,
+      Singers:null,
+      SongLists:null,
+      commentList:null,
+
+      listLoading: false,
       deletePicFlag:false,//删除标记，用于判断是否需要删除之前的图片
       listQuery: {
         current: 1,
@@ -243,6 +383,24 @@ export default {
           frozen: ''
         },
         sort: '+id'
+      },
+      singerQuery:{
+        current:1,
+        size:8,
+        total:undefined,
+        userId:null
+      },
+      songQuery:{
+        current:1,
+        size:8,
+        total:undefined,
+        userId:null
+      },
+      songListQuery:{
+        current:1,
+        size:8,
+        total:undefined,
+        userId:null
       },
       sortOptions: [{ label: 'ID 升序', key: '+id' }, { label: 'ID 降序', key: '-id' }],
       statusOptions: [{label:'未标记',value:0},{label:'标记',value:1}],//标记状态选择
@@ -328,11 +486,146 @@ export default {
     },
 
     /**
+     * 显示批量删除按钮
+     */
+    ShowDeleteButton(tab){
+      if(tab.label==="会员基本信息"){
+        this.showDelete=false
+        this.showHandleDelete=false
+        this.showCheck=false
+      }else {//切换标签时清空选项信息
+        this.showDelete=false
+        this.showHandleDelete=false
+        this.showCheck=false
+        this.showDelete=true
+        this.checkList=[]
+      }
+    },
+
+    /**
+     * 显示批量删除多选框
+     */
+    showCheckDelete(){
+      this.showCheck=true
+      this.showHandleDelete=true
+    },
+
+    /**
+     * 取消显示批量删除框
+     */
+    closeShowCheckDelete(){
+      this.showCheck=false
+      this.checkList=[]
+    },
+
+    /**
+     * 确认删除所选歌曲
+     */
+    confirmCheckDelete(){
+      deleteCollect(this.temp.id,this.checkList.toString(),this.activeName).then(result=>{
+        if(result.state=="success"){
+          this.$notify({
+            title: '提示',
+            message: '删除成功!',
+            type: "success",
+            duration: 2000
+          })
+          for(let i in this.Collect[this.activeName]){
+            for(let j of this.checkList){
+              if(this.Collect[this.activeName][i].id===j){
+                this.Collect[this.activeName].splice(i,1)
+              }
+            }
+          }
+        }
+        else{
+          this.$notify({
+            title: '提示',
+            message: '删除失败!',
+            type: "error",
+            duration: 2000
+          })
+        }
+      })
+    },
+
+    /**
+     *点击卡片选中复选框
+     */
+    HandleDoCheck(val){
+      if(this.showCheck==true){
+        this.doCheck(val)
+      }
+    },
+
+    //获取数组中数值的下标
+    indexOf(val,ids) {
+      for (let i = 0; i < ids.length; i++) {
+        //获取当前值的下标
+        if (ids[i] === val.id)
+          return i;
+      }
+      return -1;
+    },
+
+    doCheck(val){
+      let ids = this.checkList;
+      //检索下标,判断当前值(或对象是否在数组中); 在则返回下标,不在则返回-1
+      let index = this.indexOf(val,ids);
+      if (ids.length >0 && index > -1) {
+        //删除数组中的某个元素(在取消勾选时,删除数组中的值)
+        ids.splice(index,1);
+      }else {
+        //添加到数组中
+        ids.push(val.id);
+        //用逗号隔开
+        ids.join(",");
+      }
+      this.checkList = ids
+    },
+
+    /**
+     * 获取用户收藏的歌手列表
+     */
+    getSinger(userid){
+      this.singerQuery.userId=userid
+      fetchUserSinger(this.singerQuery).then(result=>{
+        this.Collect["singer"] = result.dataList
+        this.singerTotal = result.total
+      })
+    },
+
+    /**
+     * 获取用户收藏的歌曲列表
+     */
+    getSong(userid){
+      this.songQuery.userId=userid
+      fetchUserSong(this.songQuery).then(result=>{
+        this.Collect["song"] = result.dataList
+        this.songTotal = result.total
+      })
+    },
+
+    /**
+     * 获取用户收藏的歌单列表
+     */
+    getSongList(userid){
+      this.songListQuery.userId=userid
+      fetchUserSongList(this.songListQuery).then(result=>{
+        this.Collect["songList"] = result.dataList
+        this.songListTotal = result.total
+      })
+    },
+
+    /**
      * 控制编辑内容的弹框
      * @param row
      */
     handleUpdate(row) {
       this.temp = Object.assign({}, row) //把那一行的内容存到temp里面
+      this.getSinger(this.temp.id)
+      this.getSong(this.temp.id)
+      this.getSongList(this.temp.id)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -407,6 +700,11 @@ export default {
           console.log(result)
         })
       }
+      this.showCheck=false
+      this.showHandleDelete=false
+      this.checkList=[]
+      this.Collect=[]
+      this.commentList=null
     },
 
     /**
@@ -450,29 +748,7 @@ export default {
 
     },
 
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
+
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
@@ -480,7 +756,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -516,4 +792,27 @@ export default {
     /* 滚动条的颜色 */
     background-color: #e4e4e4;
   }
+  .myimage {
+    /* 自适应正方形 */
+    width: 100%;
+    display: block;
+    height: 0;
+    padding-bottom: 100%;
+  }
+  .demo-image__lazy .el-image {
+    display: block;
+    min-height: 200px;
+    margin-bottom: 10px;
+  }
+  .myimage >>> .el-image__inner {
+    position: absolute;
+  }
+  .image {
+    width: 100%;
+    position: absolute;
+  }
+  .card{
+    margin-bottom: 30px;
+  }
+
 </style>

@@ -104,7 +104,7 @@ public class AdminSongController {
     }
 
     /**
-     * 删除数据库覆盖的歌曲图片
+     * 删除数据库覆盖的歌曲文件
      * @param id
      * @return
      */
@@ -200,7 +200,7 @@ public class AdminSongController {
     }
 
     /**
-     * 删除用户
+     * 删除歌曲
      * @param id
      * @return
      * @throws IOException
@@ -208,6 +208,7 @@ public class AdminSongController {
     @PostMapping("/deleteSong")
     @ResponseBody
     public String deleteSong(String id) throws IOException{
+        System.out.println(id);
         String msg = songFileDelete(id,"both");
         int i = adminSongService.songDelete(id);
         if(i > 0)

@@ -57,11 +57,11 @@ public class SongController {
      * @param size
      * @return
      */
-//    @GetMapping("/songPage")
-//    @ResponseBody
-//    public PageVo<Song> queryAllSong(Integer current, Integer size) {
-//        return songService.songPage(current,size);
-//    }
+    @GetMapping("/songPage")
+    @ResponseBody
+    public PageVo<Song> queryAllSong(Integer current, Integer size) {
+        return songService.songPage(current,size);
+    }
 
     /**
      * 获取歌曲详情页的所有信息

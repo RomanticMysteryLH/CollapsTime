@@ -133,4 +133,19 @@ public interface SongListMapper extends BaseMapper<SongList> {
      * @return
      */
     public LinkedList<SongList> getUserCollectSongList(Integer userId);
+
+    /**
+     * 删除歌单评论
+     * @param id
+     * @return
+     */
+    public int deleteSongListComment(String id);
+
+    /**
+     * 删除歌单歌曲
+     * @param songListId
+     * @param songId
+     * @return
+     */
+    public int deleteSongListSong(String songListId,String songId);
 }

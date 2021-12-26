@@ -5,12 +5,14 @@ import henu.javaweb.collapstime.model.FileUploadResult;
 import henu.javaweb.collapstime.model.Singer;
 import henu.javaweb.collapstime.model.Song;
 import henu.javaweb.collapstime.service.AdminSingerService;
+import henu.javaweb.collapstime.service.AdminSongService;
 import henu.javaweb.collapstime.service.SingerService;
 import henu.javaweb.collapstime.utils.Cons;
 import henu.javaweb.collapstime.utils.FileHandleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,12 +20,15 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/singer")
 public class AdminSingerController {
     @Autowired
     private AdminSingerService adminSingerService;
+    @Autowired
+    private AdminSongController adminSongController;
 
     @Configuration
     public class MyConfig implements WebMvcConfigurer {
@@ -127,5 +132,27 @@ public class AdminSingerController {
         }else {
             return "info";
         }
+    }
+
+    /**
+     * 删除歌手的歌曲
+     * @param
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/deleteSingerSong")
+    @ResponseBody
+    public String deleteSingerSong(String idstr) throws IOException{
+        String result = null;
+        if(idstr.contains(",")){//如果传了两个以上就分割
+            String[] strarr = idstr.split(",");
+            for(int i = 0;i<strarr.length;i++){
+                result = adminSongController.deleteSong(strarr[i]);
+            }
+        }else{//如果只传一个就直接作为id
+            result = adminSongController.deleteSong(idstr);
+        }
+
+        return result;
     }
 }

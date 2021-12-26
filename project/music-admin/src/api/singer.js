@@ -92,3 +92,16 @@ export function deleteSinger(data) {
     data
   })
 }
+
+/**
+ * 删除所选歌手的歌曲
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function deleteSingerSong(data) {
+  return request({
+    url: '/admin/singer/deleteSingerSong',
+    method: 'post',
+    params:{idstr:data}
+  })
+}

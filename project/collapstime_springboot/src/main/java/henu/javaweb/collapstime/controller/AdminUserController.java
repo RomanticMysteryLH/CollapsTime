@@ -3,8 +3,7 @@ package henu.javaweb.collapstime.controller;
 import henu.javaweb.collapstime.model.FileUploadResult;
 import henu.javaweb.collapstime.model.PageVo;
 import henu.javaweb.collapstime.model.User;
-import henu.javaweb.collapstime.service.AdminUserService;
-import henu.javaweb.collapstime.service.UserService;
+import henu.javaweb.collapstime.service.*;
 import henu.javaweb.collapstime.utils.Cons;
 import henu.javaweb.collapstime.utils.FileHandleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/admin/user")
@@ -42,6 +42,12 @@ public class AdminUserController {
     private UserService userService;
     @Autowired
     private AdminUserService adminUserService;
+    @Autowired
+    private SingerService singerService;
+    @Autowired
+    private SongService songService;
+    @Autowired
+    private SongListService songListService;
 
     /**
      * 后台返回用户列表
@@ -118,5 +124,52 @@ public class AdminUserController {
         }else {
             return "info";
         }
+    }
+
+    /**
+     * 删除用户收藏的歌手、歌曲、歌单
+     * @param userId
+     * @param idStr
+     * @param flag
+     * @return
+     */
+    @PostMapping("/deleteCollect")
+    @ResponseBody
+    public HashMap<String, String> deleteCollect(Integer userId,String idStr,String flag){
+        int n = 0;
+        if(idStr.contains(",")){//如果传了两个以上就分割
+            String[] strarr = idStr.split(",");
+            if(flag.equals("singer")){
+                for(int i = 0;i<strarr.length;i++){
+                    n = singerService.deleteUserCollectSinger(Integer.parseInt(strarr[i]), userId);
+                }
+            }else if (flag.equals("song")){
+                for(int i = 0;i<strarr.length;i++){
+                    n = songService.deleteCollectSong(Integer.parseInt(strarr[i]), userId);
+                }
+            }else{
+                for(int i = 0;i<strarr.length;i++){
+                    n = songListService.deleteUserCollectSongList(Integer.parseInt(strarr[i]), userId);
+                }
+            }
+
+        }else{//如果只传一个就直接作为id
+            if(flag.equals("singer")){
+                n = singerService.deleteUserCollectSinger(Integer.parseInt(idStr), userId);
+            }else if (flag.equals("song")){
+                n = songService.deleteCollectSong(Integer.parseInt(idStr), userId);
+            }else{
+                n = songListService.deleteUserCollectSongList(Integer.parseInt(idStr), userId);
+            }
+        }
+        HashMap<String, String> result = new HashMap<>();
+        if(n > 0){
+            result.put("state","success");
+            result.put("msg","取消收藏成功");
+        }else {
+            result.put("state","fail");
+            result.put("msg","出错了");
+        }
+        return result;
     }
 }

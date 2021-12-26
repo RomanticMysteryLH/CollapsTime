@@ -1,6 +1,7 @@
 package henu.javaweb.collapstime.service.Impl;
 
 import henu.javaweb.collapstime.mapper.SingerMapper;
+import henu.javaweb.collapstime.mapper.SongMapper;
 import henu.javaweb.collapstime.model.Singer;
 import henu.javaweb.collapstime.model.Song;
 import henu.javaweb.collapstime.service.AdminSingerService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class AdminSingerServiceImpl implements AdminSingerService {
     @Autowired
     private SingerMapper singerMapper;
+
     @Override
     public Integer updateSinger(Singer singer) { return singerMapper.updateById(singer); }
 
@@ -22,4 +24,5 @@ public class AdminSingerServiceImpl implements AdminSingerService {
 
     @Override
     public Integer singerDelete(String id) { return singerMapper.deleteById(id); }
+
 }

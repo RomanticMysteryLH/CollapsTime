@@ -1,6 +1,8 @@
 package henu.javaweb.collapstime.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -9,6 +11,7 @@ import java.util.Date;
 
 @TableName("song_list")
 public class SongList {
+    @TableId(value = "id",type= IdType.AUTO)
     private Integer id;
     private String title;
     private String picture;
