@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     openSongDetail(data) {
-      console.log(data);
+    //   console.log(data);
       this.$emit("openSongDetail", data);
     },
     getPage() {
@@ -118,7 +118,7 @@ export default {
           } else if (dataObj.type == "songList") {
             axiosThis.playlists = response.dataList;
             axiosThis.playlistPage.totalResult = response.total;
-            console.log(axiosThis.playlists);
+            // console.log(axiosThis.playlists);
           }
         })
         .catch((err) => {

@@ -70,6 +70,9 @@
           </el-card>
         </el-popover>
       </el-col>
+      <el-col v-if="playlists.length==0" style="min-height:240px;padding-top:100px">
+        <p style="text-align:center;font-size:14px;color:gray">暂无</p>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -123,7 +126,7 @@ export default {
   },
   methods: {
     playListSelect(itemId) {
-      console.log(itemId);
+      // console.log(itemId);
       // console.log(e);
       this.$router.push({ path: `/detailPlaylist/${itemId}` });
     },
@@ -141,8 +144,8 @@ export default {
           .post(`songList/collectSongList`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$message.success(responseData.msg + "！");

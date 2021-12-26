@@ -169,7 +169,7 @@ export default {
         .post(`songList//getUserCollectSongList`, data)
         .then(function (res) {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.totalResult = response.total;
           axiosThis.nowPageList = response.dataList;
           console.log(axiosThis.totalResult);

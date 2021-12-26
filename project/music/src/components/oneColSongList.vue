@@ -53,6 +53,12 @@
           </div>
         </el-card>
       </el-col>
+      <el-col
+        v-if="songs.length == 0"
+        style="min-height: 240px; padding-top: 100px"
+      >
+        <p style="text-align: center; font-size: 14px; color: gray">暂无</p>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -80,7 +86,7 @@
   width: 100%;
   position: absolute;
 }
-.card{
+.card {
   margin-bottom: 30px;
 }
 </style>
@@ -118,7 +124,7 @@ export default {
   },
   methods: {
     collectSong(row) {
-      console.log(row);
+      // console.log(row);
       if (this.$root.userData.login_ed == false) {
         this.$message({ message: "请先登陆", type: "warning" });
       } else {
@@ -132,8 +138,8 @@ export default {
           .post(`song/collectSong`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$emit("getHitSong");

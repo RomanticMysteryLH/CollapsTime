@@ -354,7 +354,7 @@ export default {
           let response = res.data;
           // console.log(response);
           axiosThis.collectedPlaylists = response.dataList;
-          console.log(axiosThis.totalResult);
+          // console.log(axiosThis.totalResult);
           axiosThis.$root.routerLoading = false;
         })
         .catch(function (error) {
@@ -437,6 +437,9 @@ export default {
     oneColMusicianList: oneColMusicianList,
   },
   created() {
+    if(this.$root.userData.login_ed==false){
+      this.$router.push('/')
+    }
     this.getSongRank();
     this.getSingerRank();
     this.getCollectedSong();

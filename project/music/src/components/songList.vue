@@ -148,6 +148,7 @@ export default {
       totalResult: 0,
       //   musicianId: 0,
       songData: [],
+      downloadProgress: "0%",
     };
   },
   methods: {
@@ -161,14 +162,14 @@ export default {
     //   this.$emit('openSongDetail')
     // },
     showSongDetail(row) {
-      console.log(row);
+      // console.log(row);
       this.$emit("openSongDetail", row.id);
     },
     goToMusician(row) {
-      console.log(row);
+      // console.log(row);
       //待写
       let id = row.singerId;
-      console.log(this.songData);
+      // console.log(this.songData);
       this.$router.push({ path: `/detailMusician/${id}` }).catch((failure) => {
         if (String(failure).indexOf("NavigationDuplicated") >= 0) {
           this.$message("已在当前页面");
@@ -180,17 +181,30 @@ export default {
     },
     downloadSong(row) {
       // console.log(row);
-      if(this.$root.userData.login_ed==false){
+      if (this.$root.userData.login_ed == false) {
         this.$message.error("请先登录！");
         return;
       }
       let axiosThis = this;
+      // axiosThis.$notify.closeAll();
+      // axiosThis.$notify({
+      //   title: "下载进度",
+      //   message: `{{downloadProgress}}`,
+      //   dangerouslyUseHTMLString: true,
+      // });
       this.$axios
         .get("user/downloadSong", {
           params: {
             songId: row.id,
           },
           responseType: "blob",
+          onDownloadProgress(progress) {
+            // console.log(
+            //   Math.round((progress.loaded / progress.total) * 100) + "%"
+            // );
+            axiosThis.$root.downloadProgress = axiosThis.downloadProgress =
+              Math.round((progress.loaded / progress.total) * 100) + "%";
+          },
         })
         .then((res) => {
           let blob = new Blob([res.data], {
@@ -204,7 +218,12 @@ export default {
           a.click();
           // 5.释放这个临时的对象url
           window.URL.revokeObjectURL(url);
-          axiosThis.$message.success("已开始下载，请稍等");
+          // axiosThis.$message.success(
+          //   "已开始下载，请稍等 " + axiosThis.downloadProgress
+          // );
+        })
+        .catch((err) => {
+          this.$message.error("下载失败" + err);
         });
     },
     //歌词还没加
@@ -234,7 +253,7 @@ export default {
         this.$message.success("添加成功！");
       }
       this.$root.audio.push(newAudio);
-      console.log(this.$root.audio);
+      // console.log(this.$root.audio);
     },
     playSong(row) {
       console.log(this.$root.audio);
@@ -249,7 +268,7 @@ export default {
         lrc: this.getLyrics(row.id),
       };
       this.$root.audio = [newAudio];
-      console.log(this.$root.audio);
+      // console.log(this.$root.audio);
       this.$root.startPlay();
     },
     playAllSong() {
@@ -284,8 +303,8 @@ export default {
           .post(`song/collectSong`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               this.$root.songCollectChangeFlag =
@@ -308,10 +327,10 @@ export default {
       let dataObj = {
         songId: id,
       };
-      if(this.$root.userData.login_ed==true){
-        dataObj.userId=this.$root.userData.userId;
+      if (this.$root.userData.login_ed == true) {
+        dataObj.userId = this.$root.userData.userId;
       }
-      let data=Qs.stringify(dataObj);
+      let data = Qs.stringify(dataObj);
       await this.$axios
         .post(`song/getLyric`, data)
         .then((res) => {
@@ -334,12 +353,12 @@ export default {
   },
   watch: {
     listProp() {
-      console.log(this.listProp);
+      // console.log(this.listProp);
       this.songData = this.listProp;
     },
   },
   mounted() {
-    console.log(this.listProp);
+    // console.log(this.listProp);
   },
 
   //   created() {

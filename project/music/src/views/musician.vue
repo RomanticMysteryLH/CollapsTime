@@ -236,7 +236,7 @@ export default {
         .then(function (res) {
           //   axiosThis.$message.success("筛选成功");
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.totalResult = response.total;
           axiosThis.nowPageList = response.dataList;
           console.log(axiosThis.totalResult);

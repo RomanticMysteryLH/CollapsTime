@@ -61,7 +61,7 @@ export default {
         .post(`song/getUserCollectSong`, data)
         .then((res) => {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.totalResult = response.total;
           axiosThis.nowPageList = response.dataList;
           console.log(axiosThis.totalResult);
@@ -74,7 +74,7 @@ export default {
         });
     },
     openSongDetail(data) {
-      console.log(data);
+      // console.log(data);
       this.$emit("openSongDetail", data);
     },
   },

@@ -157,10 +157,10 @@ export default {
         })
         .then(function (res) {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.totalResult = response.total;
           axiosThis.nowPageList = response.dataList;
-          console.log(axiosThis.totalResult);
+          // console.log(axiosThis.totalResult);
           axiosThis.$root.routerLoading = false;
         })
         .catch(function (error) {
@@ -170,7 +170,7 @@ export default {
         });
     },
     playListSelect(itemId) {
-      console.log(itemId);
+      // console.log(itemId);
       // console.log(e);
       this.$router.push({ path: `/detailPlaylist/${itemId}` });
     },

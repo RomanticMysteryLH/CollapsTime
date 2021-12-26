@@ -41,7 +41,6 @@
             type="primary"
             plain
             style="margin: 20px auto"
-            @click="commentPlaylist()"
             ><i class="el-icon-s-comment"></i> 查看评论 ({{
               pageData.commentCount
             }})</el-button
@@ -62,7 +61,10 @@
           <el-tag type="warning">单曲</el-tag><span>{{ songInfo.name }}</span>
         </div>
         <div class="songInfo">
-          <span>歌手：{{ songInfo.singerName }}</span
+          <span
+            >歌手：<el-link @click.native="musicianSelect(songInfo.singerId)">{{
+              songInfo.singerName
+            }}</el-link></span
           ><span style="margin-left: 40px"
             >专辑：{{ songInfo.introduction }}</span
           >
@@ -228,7 +230,7 @@ export default {
         })
         .then(function (res) {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.pageData = response;
           // console.log(axiosThis.pageData.commentCount);
           axiosThis.songInfo = response.songInfo;
@@ -252,11 +254,19 @@ export default {
             songId: axiosThis.songInfo.id,
           },
           responseType: "blob",
+          onDownloadProgress(progress) {
+            // console.log(
+            //   Math.round((progress.loaded / progress.total) * 100) + "%"
+            // );
+            axiosThis.$root.downloadProgress = axiosThis.downloadProgress =
+              Math.round((progress.loaded / progress.total) * 100) + "%";
+          },
           // headers: {
           //   "Content-type": "audio/mpeg",
           // },
         })
         .then((res) => {
+          // axiosThis.$message.success("已开始下载，请稍等");
           let blob = new Blob([res.data], {
             type: "audio/mpeg",
           }); // 2.获取请求返回的response对象中的blob 设置文件类型，这里以excel为例
@@ -268,11 +278,13 @@ export default {
           a.click();
           // 5.释放这个临时的对象url
           window.URL.revokeObjectURL(url);
-          axiosThis.$message.success("已开始下载，请稍等");
+        }).catch(err=>{
+          this.$message.error("下载失败"+err)
         });
     },
     playSong() {
-      console.log(this.$root.audio);
+      // console.log(this.$root.audio);
+      this.getLyrics(this.songInfo.id);
       let newAudio = {
         id: this.songInfo.id,
         name: this.songInfo.name,
@@ -284,6 +296,30 @@ export default {
       this.$root.audio = [newAudio];
       console.log(this.$root.audio);
       this.$root.startPlay();
+    },
+    async getLyrics(id) {
+      let newLyrics = "";
+      // let axiosThis = this;
+      let dataObj = {
+        songId: id,
+      };
+      if (this.$root.userData.login_ed == true) {
+        dataObj.userId = this.$root.userData.userId;
+      }
+      let data = Qs.stringify(dataObj);
+      await this.$axios
+        .post(`song/getLyric`, data)
+        .then((res) => {
+          //请求成功
+          // console.log(axiosThis);
+          // console.log("res.data=>", res.data);
+          newLyrics = res.data.lyric;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("请求失败，无法发送");
+        });
+      return newLyrics;
     },
     addToPlaylist() {
       if (this.$root.audio[0].id == null && this.$root.audio.length == 1) {
@@ -321,8 +357,8 @@ export default {
           .post(`song/collectSong`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               this.$root.songCollectChangeFlag =
@@ -339,6 +375,9 @@ export default {
           });
       }
     },
+    musicianSelect(id) {
+      this.$router.push({ path: `/detailMusician/${id}` });
+    },
     freshComments(value) {
       this.pageData.commentUsers = value;
     },
@@ -349,7 +388,7 @@ export default {
       immediate: true,
       handler: function () {
         this.nowSongId = this.songId;
-        console.log(this.nowSongId);
+        // console.log(this.nowSongId);
         this.getSongDetail();
       },
     },

@@ -15,13 +15,12 @@ Vue.use(VueRouter)
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 
-
 new Vue({
   router,
   data: function () {
     return {
       //是否显示router-view的加载动画
-      routerLoading:false,
+      routerLoading: false,
       //在此定义的全局变量可以直接用this.$root.xxx访问并修改，
       //Vue.prototype定义的全局变量不可被修改
       // userData: {
@@ -32,11 +31,11 @@ new Vue({
       //   avator: "",
       // },
       userData: {
-        login_ed: true,
-        userId: 1,
-        account: "1912080054",
-        username: "123456",
-        avator: "",
+        login_ed: false,
+        // userId: 1,
+        // account: "1912080054",
+        // username: "123456",
+        // avator: "",
       },
       nowSongId: 0,
       audio: [
@@ -49,8 +48,10 @@ new Vue({
         // }
       ],
       //只要歌曲的收藏状态改变，就改变这个flag，子组件监听到后就刷新自己（歌单详情、歌手详情）
-      songCollectChangeFlag:true,
-      
+      songCollectChangeFlag: true,
+      downloadProgress:"0%",
+      downloadProVis:false,
+      downloadProgressInter:null,
     }
   },
   methods: {
@@ -74,6 +75,17 @@ new Vue({
     },
     startPlay() {
       // this.$refs.aplayer.play();
+    }
+  },
+  watch:{
+    downloadProgress(){
+      this.downloadProVis=true;
+      let timeThis=this;
+      //进度没变化5秒后关闭
+      clearInterval(this.downloadProgressInter)
+      this.downloadProgressInter=setTimeout(function(){
+        timeThis.downloadProVis=false;
+      },5000)
     }
   },
   computed: {

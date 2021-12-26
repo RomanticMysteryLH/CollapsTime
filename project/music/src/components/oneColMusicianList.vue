@@ -94,6 +94,12 @@
           </el-card>
         </el-popover>
       </el-col>
+      <el-col
+        v-if="musicianList.length == 0"
+        style="min-height: 240px; padding-top: 100px"
+      >
+        <p style="text-align: center; font-size: 14px; color: gray">暂无</p>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -150,7 +156,7 @@
   font-size: 12px;
   color: rgb(255, 78, 78);
 }
-.card{
+.card {
   margin-bottom: 30px;
 }
 </style>
@@ -172,7 +178,7 @@ export default {
         this.$message({ message: "请先登陆", type: "warning" });
       } else {
         let axiosThis = this;
-        console.log(item);
+        // console.log(item);
         let data = Qs.stringify({
           userId: this.$root.userData.userId,
           singerId: item.id,
@@ -182,12 +188,12 @@ export default {
           .post(`singer/followSinger`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$message.success(responseData.msg + "！");
-              axiosThis.$emit("getFollowingSinger")
+              axiosThis.$emit("getFollowingSinger");
             } else {
               axiosThis.$message.error(responseData.msg + "！");
             }

@@ -106,7 +106,8 @@
               </div>
               <!-- reference确定触发hover的对象 -->
               <el-avatar
-                src=""
+                :key="this.$root.userData.avator"
+                :src="$RequestUrl + this.$root.userData.avator"
                 icon="el-icon-user-solid"
                 :size="30"
                 slot="reference"
@@ -171,6 +172,26 @@
       :login_ed.sync="this.$root.userData.login_ed"
       ref="loginView"
     ></loginView>
+    <transition name="el-fade-in-linear">
+      <div
+        role="alert"
+        class="el-notification right"
+        style="top: 70px; z-index: 2005"
+        v-show="this.$root.downloadProVis"
+      >
+        <!---->
+        <div class="el-notification__group">
+          <h2 class="el-notification__title">下载进度</h2>
+          <div class="el-notification__content">
+            <p>{{ this.$root.downloadProgress }}</p>
+          </div>
+          <div
+            class="el-notification__closeBtn el-icon-close"
+            @click="$root.downloadProVis = false"
+          ></div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -229,12 +250,11 @@ export default {
       if (this.searchBar === "" || this.searchBar == null) {
         this.$message.error("您还没有输入要搜索的内容");
       } else {
-        console.log(this.searchBar);
+        // console.log(this.searchBar);
         this.$router.push({ path: `/searchResult/${this.searchBar}` });
-        this.$refs.myAutocomplete.suggestions=[];
+        this.$refs.myAutocomplete.suggestions = [];
         this.reload();
       }
-
     },
     //搜索建议
     querySearch(queryString, cb) {
@@ -292,7 +312,9 @@ export default {
     // },
     log_out() {
       this.$root.cleanUserData();
-      console.log(this.$root.userData);
+      // console.log(this.$root.userData);
+      localStorage.removeItem("collapstimeUser");
+      this.$message("退出成功");
       this.reload();
     },
     // changeNowSong(data){
@@ -303,11 +325,11 @@ export default {
     //   this.$refs.aplayer.play();
     // }
     goBackToTop() {
-      console.log("goBackToTop");
+      // console.log("goBackToTop");
       this.$refs.goBackButton.$el.click();
     },
     detailSongOpened() {
-      console.log("opened");
+      // console.log("opened");
       document.body.style = "padding-right:0px";
     },
     goToUserCenter() {
@@ -339,7 +361,7 @@ export default {
       // return newLyrics;
     },
     selectSearch(item) {
-      console.log(item);
+      // console.log(item);
       if (item.type.indexOf("歌曲") >= 0) {
         this.openSongDetail(item.id);
       } else if (item.type.indexOf("歌手") > 0) {
@@ -351,6 +373,46 @@ export default {
         this.reload();
       }
     },
+    autoLogin() {
+      let axiosThis = this;
+      if (localStorage.getItem("collapstimeUser") == null) {
+        return;
+      }
+      let data = {};
+      this.$axios
+        .post(`/user/verifyToken`, data, {
+          headers: {
+            token: localStorage.getItem("collapstimeUser"),
+          },
+        })
+        .then((res) => {
+          //请求成功
+          // console.log(axiosThis);
+          // console.log("res.data=>", res.data);
+          let responseData = res.data;
+          if (responseData.status == "success") {
+            axiosThis.$root.userData = {
+              login_ed: true,
+              userId: responseData.userId,
+              username: responseData.username,
+              avator: responseData.avator,
+              account: responseData.account,
+            };
+            axiosThis.$message.success("自动登录成功！");
+          } else {
+            axiosThis.$message.error(responseData.msg + "，请重新登陆！");
+          }
+          this.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("请求失败，无法自动登陆！");
+        });
+    },
+    // clickOther: function () {
+    //   //关闭所有消息
+    //   this.$message.closeAll();
+    // },
   },
   computed: {
     navigateItem: function () {
@@ -419,7 +481,7 @@ export default {
     audio() {
       //audio值改变时播放
       this.$refs.aplayer.play();
-      console.log(this.audio);
+      // console.log(this.audio);
     },
   },
   provide() {
@@ -428,7 +490,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$refs.aplayer.currentMusic);
+    // console.log(this.$refs.aplayer.currentMusic);
     // this.$root.audio = [this.$refs.aplayer.currentMusic];
     this.$root.audio = [
       {
@@ -439,14 +501,23 @@ export default {
         lrc: "[00:00:00] 歌词φ(゜▽゜*)♪",
       },
     ];
-    console.log(this.$root.audio);
+    // console.log(this.$root.audio);
     this.$refs.aplayer.hideLrc();
     this.$refs.aplayer.showLrc();
+    // window.addEventListener("click", this.clickOther);
     // if(this.$root.audio.length<1){
     //   this.$root.audio.push(this.$refs.aplayer.currentMusic)
     // }
     // console.log(this.$root.audio)
   },
+  created() {
+    // myToken=localStorage.getItem("musicUser");
+    this.autoLogin();
+  },
+  // beforeDestroy() {
+  //   // 实例销毁之前对点击事件进行解绑
+  //   window.removeEventListener("click", this.clickOther);
+  // },
 };
 </script>
 
@@ -480,9 +551,9 @@ export default {
   border-radius: 8px;
 }
 .aplayer .aplayer-lrc {
-  height: 80px !important;;
+  height: 80px !important;
   text-align: right !important;
-  padding-right: 30px !important;;
+  padding-right: 30px !important;
 }
 .aplayer .aplayer-lrc p {
   font-size: 14px;
@@ -540,5 +611,8 @@ body .el-popup-parent--hidden {
 }
 .my-autocomplete li .highlighted .addr {
   color: #ddd;
+}
+.el-message {
+  top: 60px !important;
 }
 </style>

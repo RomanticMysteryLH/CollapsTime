@@ -255,9 +255,9 @@ export default {
         .post(`song/getHotSong`, data)
         .then((res) => {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.hitSongs = response.dataList;
-          console.log(axiosThis.totalResult);
+          // console.log(axiosThis.totalResult);
           axiosThis.$root.routerLoading = false;
         })
         .catch((err) => {
@@ -277,9 +277,9 @@ export default {
         })
         .then(function (res) {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.hitPlaylists = response.dataList;
-          console.log(axiosThis.totalResult);
+          // console.log(axiosThis.totalResult);
           axiosThis.$root.routerLoading = false;
         })
         .catch(function (error) {
@@ -301,9 +301,9 @@ export default {
         .then(function (res) {
           //   axiosThis.$message.success("筛选成功");
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.hitMusicianList = response.dataList;
-          console.log(axiosThis.totalResult);
+          // console.log(axiosThis.totalResult);
           // axiosThis.$root.routerLoading = false;
         })
         .catch(function (error) {
@@ -312,7 +312,7 @@ export default {
         });
     },
     openSongDetail(data) {
-      console.log(data);
+      // console.log(data);
       this.$emit("openSongDetail", data);
     },
   },

@@ -110,7 +110,7 @@ export default {
       for (let item in this.commentData) {
         activeArr.push(this.commentData[item].commentId);
       }
-      console.log(activeArr);
+      // console.log(activeArr);
       return activeArr;
     },
     commentTip() {
@@ -134,7 +134,7 @@ export default {
   },
   watch: {
     listProp() {
-      console.log(this.listProp);
+      // console.log(this.listProp);
       this.commentData = this.listProp;
     },
   },
@@ -156,8 +156,8 @@ export default {
           .post(`songList/addSongListComment`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$message.success("评论成功！");
@@ -184,8 +184,8 @@ export default {
           .post(`song/addSongComment`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$message.success("评论成功！");
@@ -214,8 +214,8 @@ export default {
           .post(`songList/upSongListComment`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               // axiosThis.$message.success(responseData.msg + "！");
@@ -240,8 +240,8 @@ export default {
           .post(`song/upSongComment`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               // axiosThis.$message.success(responseData.msg + "！");

@@ -204,10 +204,10 @@ export default {
         .then(function (res) {
           //   axiosThis.$message.success("筛选成功");
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.totalResult = response.total;
           axiosThis.nowPageList = response.dataList;
-          console.log(axiosThis.totalResult);
+          // console.log(axiosThis.totalResult);
           axiosThis.$root.routerLoading = false;
         })
         .catch(function (error) {
@@ -240,8 +240,8 @@ export default {
           .post(`singer/followSinger`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$message.success(responseData.msg + "！");

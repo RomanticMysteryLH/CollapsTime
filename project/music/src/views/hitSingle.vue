@@ -62,10 +62,10 @@ export default {
         .post(`song/getHotSong`, data)
         .then((res) => {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.totalResult = response.total;
           axiosThis.nowPageList = response.dataList;
-          console.log(axiosThis.totalResult);
+          // console.log(axiosThis.totalResult);
           axiosThis.$root.routerLoading = false;
         })
         .catch((err) => {
@@ -75,7 +75,7 @@ export default {
         });
     },
     openSongDetail(data) {
-      console.log(data);
+      // console.log(data);
       this.$emit("openSongDetail", data);
     },
   },

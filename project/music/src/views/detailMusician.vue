@@ -178,7 +178,7 @@ export default {
         })
         .then(function (res) {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.pageData = response;
           axiosThis.songList = response.songs;
           if (response.singer.sex == 0) {
@@ -199,7 +199,7 @@ export default {
         });
     },
     openSongDetail(data) {
-      console.log(data);
+      // console.log(data);
       this.$emit("openSongDetail", data);
     },
     collectSinger() {
@@ -216,8 +216,8 @@ export default {
           .post(`singer/followSinger`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$message.success(responseData.msg+"！");

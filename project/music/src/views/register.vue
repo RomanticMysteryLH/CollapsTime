@@ -120,7 +120,11 @@
         </el-form>
       </el-col>
     </el-row>
-    <el-dialog :visible.sync="confirmVisible" title="提示" :append-to-body="true">
+    <el-dialog
+      :visible.sync="confirmVisible"
+      title="提示"
+      :append-to-body="true"
+    >
       <p>验证码已经发送到您的邮箱，请进入邮箱查看！</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="confirmVisible = false"
@@ -141,7 +145,7 @@
 <script>
 import province from "@/assets/json/province.json";
 import Qs from "qs";
-console.log(province);
+// console.log(province);
 export default {
   data() {
     //自定义校验，确认密码功能
@@ -196,7 +200,7 @@ export default {
       }
     };
     var validUsername = (rule, value, callback) => {
-      console.log(value);
+      // console.log(value);
       if (value.length >= 5 && value.length <= 20) {
         //只判定成功情况，并给userNameValid赋值，之后监听直接读取valid值
         this.userNameValid = true;
@@ -296,12 +300,12 @@ export default {
             sex: this.registerForm.sex,
             location: this.registerForm.location,
           });
-          console.log(data);
+          // console.log(data);
           let axiosThis = this;
           this.$axios
             .post(`user/register`, data)
             .then((res) => {
-              console.log(res);
+              // console.log(res);
               //请求成功
               if (res.data == "success") {
                 axiosThis.$message.success("注册成功！");
@@ -328,9 +332,11 @@ export default {
     sendEmail(formName) {
       console.log("sendEmail");
       //部分表单验证validateField
-
       this.$refs[formName].validateField("email", (valid) => {
-        console.log(valid);
+        // console.log(valid);
+        if(valid!=""||null){
+          return;
+        }
         let data = Qs.stringify({ email: this.registerForm.email });
         let axiosThis = this;
         this.$axios
@@ -342,7 +348,7 @@ export default {
             axiosThis.emailCode = res.data;
             setTimeout(() => {
               axiosThis.emailButtonDis = false;
-            }, 5000);
+            }, 20000);
           })
           .catch((err) => {
             console.log(err);
@@ -356,7 +362,7 @@ export default {
       for (let item in province) {
         options.push({ value: province[item], label: province[item] });
       }
-      console.log(options);
+      // console.log(options);
       return options;
     },
     //同时监听多个属性，用option返回object再在watch中监听
@@ -385,7 +391,7 @@ export default {
       //     validCount = validCount + 1;
       //   }
       // });
-      console.log(this.userNameValid, this.passwordValid);
+      // console.log(this.userNameValid, this.passwordValid);
       if (this.userNameValid && this.passwordValid) {
         this.stepStatus.second = "success";
       } else if (

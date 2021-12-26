@@ -183,7 +183,7 @@ export default {
         })
         .then(function (res) {
           let response = res.data;
-          console.log(response);
+          // console.log(response);
           axiosThis.pageData = response;
           axiosThis.songList = response.songs;
           // console.log(axiosThis.songList);
@@ -211,8 +211,8 @@ export default {
           .post(`songList/collectSongList`, data)
           .then((res) => {
             //请求成功
-            console.log(axiosThis);
-            console.log("res.data=>", res.data);
+            // console.log(axiosThis);
+            // console.log("res.data=>", res.data);
             let responseData = res.data;
             if (responseData.status == "success") {
               axiosThis.$message.success(responseData.msg+"！");
@@ -238,7 +238,7 @@ export default {
     this.$root.routerLoading = true;
     this.playListId = this.$route.params.playlistId;
     this.getPlaylistDetail();
-    console.log(this.$root.songDetailVisible);
+    // console.log(this.$root.songDetailVisible);
   },
   computed: {
     collectStatusClass() {
