@@ -17,7 +17,14 @@
           text-color="black"
           active-text-color="#ffd04b"
         >
-          <i class="el-icon-headset" style="margin-right: 5%">LOGO</i>
+          <!-- <i class="el-icon-headset" style="margin-right: 5%">LOGO</i> -->
+          <!-- <i style="margin-right: 5%"></i> -->
+          <img
+            src="@/assets/completeLogo.png"
+            style="width: 150px; margin-right: 5%"
+            alt="CollapsTime"
+            title="CollapsTime"
+          />
           <template v-for="item in navigateItem">
             <!--template外层循环，内部分成两种元素-->
             <!-- 如果找不到子菜单就生成el-menu-item -->
@@ -502,8 +509,13 @@ export default {
       },
     ];
     // console.log(this.$root.audio);
+    //三秒后再显示歌词，避免bug
     this.$refs.aplayer.hideLrc();
-    this.$refs.aplayer.showLrc();
+    setTimeout(() => {
+      console.log("歌词");
+      this.$refs.aplayer.hideLrc();
+      this.$refs.aplayer.showLrc();
+    }, 3000);
     // window.addEventListener("click", this.clickOther);
     // if(this.$root.audio.length<1){
     //   this.$root.audio.push(this.$refs.aplayer.currentMusic)

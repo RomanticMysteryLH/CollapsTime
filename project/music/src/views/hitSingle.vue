@@ -79,13 +79,20 @@ export default {
       this.$emit("openSongDetail", data);
     },
   },
-
+  computed: {
+    songCollectChangeFlag() {
+      return this.$root.songCollectChangeFlag;
+    },
+  },
   mounted: {},
   components: {
     songList: songList,
   },
   watch: {
     nowPage() {
+      this.getHitSong();
+    },
+    songCollectChangeFlag() {
       this.getHitSong();
     },
   },

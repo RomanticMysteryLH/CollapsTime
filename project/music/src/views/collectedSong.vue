@@ -49,7 +49,7 @@ export default {
       console.log("goBack");
       this.$router.go(-1);
     },
-    getHitSong() {
+    getCollectedSong() {
       this.$root.routerLoading = true;
       let axiosThis = this;
       let data = Qs.stringify({
@@ -78,18 +78,25 @@ export default {
       this.$emit("openSongDetail", data);
     },
   },
-
+  computed: {
+    songCollectChangeFlag() {
+      return this.$root.songCollectChangeFlag;
+    },
+  },
   mounted: {},
   components: {
     songList: songList,
   },
   watch: {
     nowPage() {
-      this.getHitSong();
+      this.getCollectedSong();
+    },
+    songCollectChangeFlag() {
+      this.getCollectedSong();
     },
   },
   created() {
-    this.getHitSong();
+    this.getCollectedSong();
   },
 };
 </script>
