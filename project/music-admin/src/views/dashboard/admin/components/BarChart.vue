@@ -6,7 +6,7 @@
   import * as echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
-
+  import {getCount, queryStasticOfHome} from "@/api/home"
 const animationDuration = 6000
 
 export default {
@@ -27,13 +27,21 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      list:null,
+      dataList:[],
     }
   },
   mounted() {
     this.$nextTick(() => {
-      this.initChart()
+      queryStasticOfHome().then(result=>{
+        this.list=result.songListCountByStyle
+        this.initChart()
+      })
     })
+  },
+  created() {
+
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -78,7 +86,8 @@ export default {
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [15, 16, 18, 20, 45, 50, 78],
+          data: [this.list['欧美'], this.list['BGM'], this.list['粤语'], this.list['日韩'], this.list['乐器'], this.list['轻音乐'], this.list['华语']],
+
           animationDuration
         }]
       })

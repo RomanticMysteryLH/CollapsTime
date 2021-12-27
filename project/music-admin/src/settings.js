@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: 'collapstime后台系统',
 
   /**
    * @type {boolean} true | false

@@ -176,9 +176,6 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
               <template slot-scope="{row,$index}">
-                <el-button type="primary" icon="el-icon-edit" size="mini">
-                  置顶
-                </el-button>
                 <el-button v-if="row.status!='deleted'" icon="el-icon-delete" size="mini" type="danger" @click="handleCommentDelete(row,$index)">
                   删除
                 </el-button>

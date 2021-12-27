@@ -5,59 +5,32 @@
   import * as echarts from "echarts";
   import "echarts-wordcloud/dist/echarts-wordcloud";
   import "echarts-wordcloud/dist/echarts-wordcloud.min";
+  import {getCount, queryStasticOfHome} from "@/api/home"
   export default {
     name: "VueWordCloud",
     data () {
       return {
+        list:null,
         msg: 'Welcome to Your Vue.js App',
-        worddata: [
-          {
-            name: "张杰",
-            value: 15000
-          },
-          {
-            name: "周杰伦",
-            value: 10081
-          },{
-            name: "陈奕迅",
-            value: 9386
-          },
-          {
-            name: "G.E.M.邓紫棋",
-            value: 7500
-          },
-          {
-            name: "林俊杰",
-            value: 7500
-          },
-          {
-            name: "张国荣",
-            value: 6500
-          },
-          {
-            name: "张国荣",
-            value: 6500
-          },
-          {
-            name: "毛不易",
-            value: 6000
-          },
-          {
-            name: "五月天",
-            value: 4500
-          },
-          {
-            name: "张碧晨",
-            value: 3800
-          },
-        ]
+        worddata:[],
       }
     },
     mounted(){
-      this.initChart();
+      queryStasticOfHome().then(result=>{
+        this.list = result.playSongCount
+        for(let key in this.list){
+          this.worddata.push(
+            {
+              name:key,
+              value:this.list[key]
+            })
+        }
+        this.initChart();
+      })
     },
     methods: {
       initChart() {
+
         this.chart = echarts.init(document.getElementById("mywordcloud"));
         console.log('lll');
         const option = {

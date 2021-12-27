@@ -6,6 +6,7 @@
 import * as echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
+import {getCount, queryStasticOfHome} from "@/api/home"
 
 export default {
   mixins: [resize],
@@ -25,12 +26,19 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      femaleNum:0,
+      maleNum:0,
     }
   },
+
   mounted() {
     this.$nextTick(() => {
-      this.initChart()
+      queryStasticOfHome().then(result=>{
+        this.femaleNum = result.maleUserCount
+        this.maleNum = result.femaleUserCount
+        this.initChart()
+      })
     })
   },
   beforeDestroy() {
@@ -62,8 +70,8 @@ export default {
             radius: [15, 95],
             center: ['50%', '38%'],
             data: [
-              { value: 15, name: '男性' },
-              { value: 24, name: '女性' },
+              { value: this.maleNum, name: '男性' },
+              { value: this.femaleNum, name: '女性' },
             ],
             animationEasing: 'cubicInOut',
             animationDuration: 2600

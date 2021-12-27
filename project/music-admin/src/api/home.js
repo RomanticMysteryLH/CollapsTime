@@ -7,3 +7,12 @@ export function getCount(query) {
     params: query
   })
 }
+
+export function queryStasticOfHome(query) {
+  return request({
+    url: '/admin/home/queryStasticOfHome',
+    method: 'get',
+    params: query
+  })
+}
+
