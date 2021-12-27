@@ -32,7 +32,7 @@
       <el-col :xs="24" :sm="24" :lg="8">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>热门歌手词云</span>
+            <span>热门歌曲词云</span>
           </div>
           <div class="chart-wrapper">
             <word-cloud />
