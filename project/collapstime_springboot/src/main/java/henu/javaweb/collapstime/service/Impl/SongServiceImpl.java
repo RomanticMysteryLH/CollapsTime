@@ -314,6 +314,8 @@ public class SongServiceImpl implements SongService {
             songShowInList.setCover(searchSong.get(i).getPicture());
             songShowInList.setSingerId(searchSong.get(i).getSingerId());
             songShowInList.setId(searchSong.get(i).getId());
+            songShowInList.setIntroduction(searchSong.get(i).getIntroduction());
+            songShowInList.setLyric(searchSong.get(i).getLyric());
             songShowInList.setName(searchSong.get(i).getName().split("-")[1]);
             songShowInList.setSingerName(singerMapper.getSingerNameById(searchSong.get(i).getSingerId()));
             path+=searchSong.get(i).getUrl();

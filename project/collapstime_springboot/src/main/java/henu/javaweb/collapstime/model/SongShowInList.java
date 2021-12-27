@@ -14,10 +14,14 @@ public class SongShowInList {
     private String singerName;
     //歌手id
     private Integer singerId;
+    //歌手简介
+    private String introduction;
     //歌曲路径
     private String url;
     //歌曲图片
     private String cover;
+    //歌词
+    private String lyric;
     //用户收藏状态  0为未收藏1为收藏
     private Integer collectStatus;
 
@@ -83,5 +87,20 @@ public class SongShowInList {
 
     public void setCollectStatus(Integer collectStatus) {
         this.collectStatus = collectStatus;
+    }
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public String getLyric() {
+        return lyric;
+    }
+
+    public void setLyric(String lyric) {
+        this.lyric = lyric;
     }
 }
