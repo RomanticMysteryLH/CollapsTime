@@ -148,4 +148,11 @@ public interface SongListMapper extends BaseMapper<SongList> {
      * @return
      */
     public int deleteSongListSong(String songListId,String songId);
+
+    /**
+     * 根据歌单风格获取歌单数量
+     * @param style
+     * @return
+     */
+    public Integer getCountByStyle(String style);
 }

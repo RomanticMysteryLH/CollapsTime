@@ -84,4 +84,7 @@
             select song_list_id from collect where type = 1 and user_id = #{userId}
         );
     </select>
+    <select id="getCountByStyle" resultType="java.lang.Integer">
+        select count(distinct id) from song_list where style = #{style};
+    </select>
 </mapper>

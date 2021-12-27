@@ -134,4 +134,16 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     Integer deleteUser(String account);
+
+    /**
+     * 获取男性会员数量
+     * @return
+     */
+    Integer getUserCountOfmale();
+
+    /**
+     * 获取女性会员数量
+     * @return
+     */
+    Integer getUserCountOfFemale();
 }

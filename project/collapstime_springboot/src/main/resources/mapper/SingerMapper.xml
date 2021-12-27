@@ -49,5 +49,14 @@
             select singer_id from collect where type = 2 and user_id = #{userId}
         );
     </select>
+    <select id="getSingerCountOfFemale" resultType="java.lang.Integer">
+        select count(id) from  singer where sex = 0;
+    </select>
+    <select id="getSingerCountOfMale" resultType="java.lang.Integer">
+        select count(id) from  singer where sex = 1;
+    </select>
+    <select id="getBandCount" resultType="java.lang.Integer">
+        select count(id) from singer where sex = 2;
+    </select>
 
 </mapper>

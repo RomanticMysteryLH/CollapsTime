@@ -96,4 +96,21 @@ public interface SingerMapper extends BaseMapper<Singer>{
      */
     public LinkedList<Singer> getUserCollectSinger(Integer userId);
 
+    /**
+     * 获取男性歌手数量
+     * @return
+     */
+    public Integer getSingerCountOfMale();
+
+    /**
+     * 获取女性歌手数量
+     * @return
+     */
+    public Integer getSingerCountOfFemale();
+
+    /**
+     * 获取乐队数量
+     * @return
+     */
+    public Integer getBandCount();
 }

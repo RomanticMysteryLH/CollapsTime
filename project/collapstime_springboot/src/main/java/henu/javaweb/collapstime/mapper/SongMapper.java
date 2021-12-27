@@ -183,4 +183,11 @@ public interface SongMapper extends BaseMapper<Song> {
      */
     public int deleteCollectSongById(Integer songId,Integer userId);
 
+    /**
+     * 根据歌曲id获取播放量
+     * @param songId
+     * @return
+     */
+    public Integer getPlayCountById(Integer songId);
+
 }

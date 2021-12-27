@@ -110,6 +110,12 @@
   <select id="queryUserByAccount" resultType="henu.javaweb.collapstime.model.User">
     select * from user where account = #{account};
   </select>
+    <select id="getUserCountOfmale" resultType="java.lang.Integer">
+      select count(id) from user where sex = 1;
+    </select>
+  <select id="getUserCountOfFemale" resultType="java.lang.Integer">
+    select count(id) from user where sex = 0;
+  </select>
   <update id="updateUserdata" parameterType="henu.javaweb.collapstime.model.User">
     update user
     set username=#{username},account=#{account},sex=#{sex},avator=#{avator},location=#{location},email=#{email},introduction=#{introduction},topping=#{topping}
