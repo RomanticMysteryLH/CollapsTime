@@ -30,12 +30,17 @@ export default {
       chart: null,
       list:null,
       dataList:[],
+      nameList:[],
     }
   },
   mounted() {
     this.$nextTick(() => {
       queryStasticOfHome().then(result=>{
         this.list=result.songListCountByStyle
+        for(let key in this.list){
+          this.dataList.push(this.list[key])
+          this.nameList.push(key)
+        }
         this.initChart()
       })
     })
@@ -70,7 +75,7 @@ export default {
         },
         xAxis: [{
           type: 'category',
-          data: ['欧美', 'BGM', '粤语', '日韩', '乐器', '轻音乐', '华语'],
+          data: this.nameList,
           axisTick: {
             alignWithLabel: true
           }
@@ -82,11 +87,11 @@ export default {
           }
         }],
         series: [{
-          name: 'pageA',
+          name: '数量',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [this.list['欧美'], this.list['BGM'], this.list['粤语'], this.list['日韩'], this.list['乐器'], this.list['轻音乐'], this.list['华语']],
+          data: this.dataList,
 
           animationDuration
         }]

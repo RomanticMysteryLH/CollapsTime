@@ -105,3 +105,16 @@ export function deleteSingerSong(data) {
     params:{idstr:data}
   })
 }
+
+/**
+ * 搜索功能加获取歌手、歌曲、歌单列表
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function search(query) {
+  return request({
+    url: '/user/searchInfo',
+    method: 'post',
+    params:query
+  })
+}

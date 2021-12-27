@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="请输入搜索条件" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.key" placeholder="请输入歌曲名" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -20,9 +20,12 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
+      <div slot="empty">
+        <span>没有搜索到该歌曲</span>
+      </div>
       <el-table-column label="封面" width="200px" align="center" class="coverPic">
         <template slot-scope="{row}" >
-          <el-avatar shape="square" :size="100" fit="cover" :src="row.pictureshow" />
+          <el-avatar shape="square" :size="100" fit="cover" :src="row.covershow" />
         </template>
       </el-table-column>
       <el-table-column label="歌曲名" min-width="200px" align="center">
@@ -32,7 +35,7 @@
       </el-table-column>
       <el-table-column label="歌手名" width="200px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.singername }}</span>
+          <span>{{ row.singerName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="简介" min-width="300px" align="center">
@@ -91,8 +94,8 @@
                        ref="myUpload"
                        img-format="png">
             </my-upload>
-            <img :src="temp.pictureshow" class="avatar">
-              <el-button type="primary" @click="uploadimg">上传头像</el-button>
+            <img :src="temp.covershow" class="avatar">
+              <el-button type="primary" @click="uploadimg">上传封面</el-button>
             </el-form-item>
             <el-form-item label="音频文件">
               <el-upload
@@ -150,6 +153,7 @@
   import Pagination from '@/components/Pagination' // 分页操作
   import qs from 'qs'
   import myUpload from 'vue-image-crop-upload/upload-2.vue'
+  import {search} from "@/api/singer";
 
 
   export default {
@@ -182,14 +186,16 @@
           current: 1,
           size: 10,
           total:undefined,
+          key:'',
+          type:'song',
           dataList:{
             id:undefined,
             name: undefined,
             singerId:undefined,
-            singername:undefined,
+            singerName:undefined,
             introduction:undefined,
-            picture:undefined,
-            pictureshow:undefined,
+            cover:undefined,
+            covershow:undefined,
             lyric:undefined,
             url:undefined
           },
@@ -201,10 +207,10 @@
           id:'',
           name: '',
           singerId:'',
-          singername:'',
+          singerName:'',
           introduction:'',
-          picture:'',
-          pictureshow:'',
+          cover:'',
+          covershow:'',
           lyric:'',
           lyricshow:'',
           value:'',
@@ -237,7 +243,6 @@
             label:item.singerId+"-"+item.name.split("-")[0]
           })
         })
-        // console.log(typeof this.stempData[0].value)
         this.stempData=this.unique(this.stempData)
       })
     },
@@ -249,17 +254,15 @@
        */
       getList() {
         this.listLoading = true
-        fetchSong(this.listQuery).then(response => {
+        search(this.listQuery).then(response => {
           this.list = response.dataList
           this.list.map(item=>{
-            item.singername=item.name.split("-")[0];
-            item.name=item.name.split("-")[1];
-            if(item.picture=='')
+            if(item.cover=='')
             {
-              item.pictureshow="/logo.png";
+              item.covershow="/logo.png";
             }
             else {
-              item.pictureshow=this.backApi+item.picture;
+              item.covershow=this.backApi+item.cover;
             }
           })
           this.total = response.total
@@ -396,12 +399,13 @@
           id:'',
           name: '',
           singerId:'',
-          singername:'',
+          singerName:'',
           introduction:'',
-          picture:'',
-          pictureshow:'',
+          cover:'',
+          covershow:'',
           lyric:'',
           lyricshow:'',
+          picture:'',
           url:''
         }
       },
@@ -448,12 +452,12 @@
         this.$refs['dataForm'].validate((valid) => {
           if(valid){
             //从选项中分出来歌手名存到数据库中
-            this.temp.singername=this.Option.find(item=>{
+            this.temp.singerName=this.Option.find(item=>{
               return item.value=== this.temp.singerId
             }).label.split('-')[1]
 
             const tempData = Object.assign({}, this.temp)
-            tempData.name=this.temp.singername+"-"+this.temp.name
+            tempData.name=this.temp.singerName+"-"+this.temp.name
             const addData = qs.stringify(tempData)
             addSong(addData).then(result=>{
               this.deletePicFlag=false//如果点击保存则重置删除标记
@@ -475,6 +479,7 @@
                   duration: 2000
                 })
               }
+              this.getList()
             })
           }
         })
@@ -487,12 +492,12 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             //从选项中分出来歌手名存到数据库中
-            this.temp.singername=this.Option.find(item=>{
+            this.temp.singerName=this.Option.find(item=>{
               return item.value=== this.temp.singerId
             }).label.split('-')[1]
 
             const tempData = Object.assign({}, this.temp)
-            tempData.name=this.temp.singername+"-"+this.temp.name
+            tempData.name=this.temp.singerName+"-"+this.temp.name
             const upData = qs.stringify(tempData)
             //删除已经有的文件
             if(this.deletePicFlag&&this.deleteSongFlag){
@@ -522,9 +527,11 @@
                 type: result,
                 duration: 2000
               })
+              this.getList()
             })
           }
         })
+
       },
 
       /**
@@ -532,12 +539,12 @@
        */
       checkDelete(type){
         if(this.deletePicFlag&&this.deleteSongFlag&&type=="both"){
-          deleteProFile(this.temp.picture,this.temp.url).then(result=>{
+          deleteProFile(this.temp.cover,this.temp.url).then(result=>{
             console.log(result)
           })
         }
         else if(this.deletePicFlag&&(type=="img"||type=="both")){
-          deleteProFile(this.temp.picture,null).then(result=>{
+          deleteProFile(this.temp.cover,null).then(result=>{
             console.log(result)
           })
         }
@@ -567,8 +574,9 @@
           if(result.msg=="上传成功")
           {
             this.checkDelete("img")
-            this.temp.picture=result.filePath;
-            this.temp.pictureshow=this.backApi+this.temp.picture;
+            this.temp.cover=result.filePath;
+            this.temp.picture = this.temp.cover
+            this.temp.covershow=this.backApi+this.temp.cover;
             this.$message.success('上传成功')
             this.deletePicFlag=true//上传成功后把删除标志置为可删除状态。
           }

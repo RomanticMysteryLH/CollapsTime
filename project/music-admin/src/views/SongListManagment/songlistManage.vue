@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="请输入搜索条件" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.key" placeholder="请输入歌单名称" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -20,6 +20,9 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
+      <div slot="empty">
+        <span>没有搜索到该歌单</span>
+      </div>
       <el-table-column label="封面" width="200px" align="center" class="coverPic">
         <template slot-scope="{row}">
           <el-image style="width:100px;height: 100px;border-radius: 5px" fit="cover" :src="row.pictureshow" />
@@ -215,7 +218,7 @@
   import Pagination from '@/components/Pagination' // 分页操作
   import qs from 'qs'
   import myUpload from 'vue-image-crop-upload/upload-2.vue'
-  import {deleteSingerSong} from "@/api/singer";
+  import {search} from "@/api/singer";
 
   export default {
     name: 'ComplexTable',
@@ -251,6 +254,8 @@
           current: 1,
           size: 10,
           total:undefined,
+          key:'',
+          type:'songList',
           dataList:{
             id:undefined,
             title: undefined,
@@ -302,7 +307,7 @@
        */
       getList() {
         this.listLoading = true
-        fetchSongList(this.listQuery).then(response => {
+        search(this.listQuery).then(response => {
           this.list = response.dataList
           this.list.map(item=>{
             if(item.picture=='')
@@ -517,6 +522,7 @@
                   duration: 2000
                 })
               }
+              this.getList()
             })
           }
         })
@@ -547,6 +553,7 @@
                 type: result,
                 duration: 2000
               })
+              this.getList()
             })
           }
         })

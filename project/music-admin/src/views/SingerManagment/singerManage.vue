@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="请输入搜索条件" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.key" placeholder="请输入歌手名" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -19,6 +19,9 @@
       highlight-current-row
       style="width: 100%;"
     >
+      <div slot="empty">
+        <span>没有搜索到该歌手</span>
+      </div>
       <el-table-column label="头像" width="200px" align="center" class="coverPic">
         <template slot-scope="{row}">
           <el-image style="width:100px;height: 100px;border-radius: 5px" fit="cover" :src="row.pictureshow" />
@@ -105,43 +108,43 @@
             <!-- span决定大小 -->
             <el-col :span="5" v-for="item in this.Songs" :key="item.id" >
               <div @click="HandleDoCheck(item)">
-              <el-card
-                :body-style="{ padding: '0px' }"
-                class="card"
-                style="cursor: pointer"
-              >
-                <el-image :src="targetApi+item.cover" fit="cover" class="myimage">
-                  <!-- 加载前占位 -->
-                  <div slot="placeholder">
-                    <img src="@/assets/default/loading1.gif" class="image" />
-                  </div>
-                  <!-- 加载后占位 -->
-                  <div slot="error">
-                    <img
-                      src="@/assets/default/defaultPlayList.jpg"
-                      slot="error"
-                      class="image"
-                    />
-                  </div>
-                </el-image>
-                <div style="display:flex;padding:14px 0px 0px; justify-content: center; overflow: hidden">
-                  <p
-                    style="font-weight: 600;
+                <el-card
+                  :body-style="{ padding: '0px' }"
+                  class="card"
+                  style="cursor: pointer"
+                >
+                  <el-image :src="targetApi+item.cover" fit="cover" class="myimage">
+                    <!-- 加载前占位 -->
+                    <div slot="placeholder">
+                      <img src="@/assets/default/loading1.gif" class="image" />
+                    </div>
+                    <!-- 加载后占位 -->
+                    <div slot="error">
+                      <img
+                        src="@/assets/default/defaultPlayList.jpg"
+                        slot="error"
+                        class="image"
+                      />
+                    </div>
+                  </el-image>
+                  <div style="display:flex;padding:14px 0px 0px; justify-content: center; overflow: hidden">
+                    <p
+                      style="font-weight: 600;
                 font-size: 14px;
                 margin: 0;
                 height: 40px;
                 ">
-                    {{item.name}}
-                  </p>
-                </div>
-                <div style="height: 19px">
-                  <el-checkbox ref="checkbox" v-if="showCheck" v-model="checkList" :label="item.id"  @click.stop.native="()=>{}" style="float: right;width: 16px;overflow: hidden"></el-checkbox>
-      </div>
-      </el-card>
-      </div>
-      </el-col>
-      </el-row>
-      </el-tab-pane>
+                      {{item.name}}
+                    </p>
+                  </div>
+                  <div style="height: 19px">
+                    <el-checkbox ref="checkbox" v-if="showCheck" v-model="checkList" :label="item.id"  @click.stop.native="()=>{}" style="float: right;width: 16px;overflow: hidden"></el-checkbox>
+                  </div>
+                </el-card>
+              </div>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
 
       </el-tabs>
 
@@ -171,7 +174,7 @@
         </template>
 
         <script>
-      import {fetchSinger,addSinger,sendPic,overridePic,updateSinger,deleteSinger,fetchSingerSong,deleteSingerSong} from '@/api/singer'
+      import {fetchSinger,addSinger,sendPic,overridePic,updateSinger,deleteSinger,fetchSingerSong,deleteSingerSong,search} from '@/api/singer'
       import waves from '@/directive/waves' // waves directive
       import { parseTime } from '@/utils'
       import Pagination from '@/components/Pagination' // 分页操作
@@ -212,15 +215,17 @@
               current: 1,
               size: 10,
               total:undefined,
+              key:'',
+              type:'singer',
               dataList:{
                 id:undefined,
                 name: undefined,
                 sex:undefined,
-            birth:undefined,
-            introduction:undefined,
-            picture:undefined,
-            pictureshow:undefined,
-            location:undefined,
+                birth:undefined,
+                introduction:undefined,
+                picture:undefined,
+                pictureshow:undefined,
+                location:undefined,
           },
           sort: '+id'
         },
@@ -266,7 +271,7 @@
        */
       getList() {
         this.listLoading = true
-        fetchSinger(this.listQuery).then(response => {
+        search(this.listQuery).then(response => {
           this.list = response.dataList
           this.list.map(item=>{
             if(item.picture=='')
@@ -286,7 +291,7 @@
       },
 
       handleFilter() {
-        this.listQuery.page = 1
+        this.listQuery.current = 1
         this.getList()
       },
 
@@ -458,6 +463,7 @@
                   duration: 2000
                 })
               }
+              this.getList()
             })
           }
         })
@@ -488,6 +494,7 @@
                 type: result,
                 duration: 2000
               })
+              this.getList()
             })
           }
         })

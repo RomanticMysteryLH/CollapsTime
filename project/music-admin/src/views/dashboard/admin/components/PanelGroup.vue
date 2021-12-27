@@ -80,12 +80,9 @@ export default {
     })
   },
   methods: {
-    handleSetLineChartData(type) {
-      this.$emit('handleSetLineChartData', type)
-    },
-    getNum(){
-
-    }
+    // handleSetLineChartData(type) {
+    //   this.$emit('handleSetLineChartData', type)
+    // },
   }
 }
 </script>
