@@ -1,11 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="账号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.useraccount" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select>
+      <el-input v-model="listQuery.username" placeholder="请输入搜索条件" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -74,7 +70,7 @@
               <el-input v-model="temp.style" />
             </el-form-item>
             <el-form-item label="创建时间" prop="createTime">
-              <el-date-picker v-model="temp.createTime" type="date" placeholder="请选择日期" />
+              <el-date-picker v-model="temp.createTime" type="date" placeholder="请选择日期" :disabled="dialogStatus=='update'"/>
             </el-form-item>
             <el-form-item label="简介">
               <el-input v-model="temp.introduction" :rows="5" type="textarea" />
@@ -98,7 +94,7 @@
           <el-row style="padding: 20px 0px 0px 0px" :gutter="20">
 
             <!-- span决定大小 -->
-            <el-col :span="4" v-for="item in this.Songs" :key="item.id" >
+            <el-col :span="5" v-for="item in this.Songs" :key="item.id" >
               <div @click="HandleDoCheck(item)">
                 <el-card
                   :body-style="{ padding: '0px' }"
@@ -119,11 +115,12 @@
                       />
                     </div>
                   </el-image>
-                  <div style="display:flex;padding:14px 0px 0px; justify-content: center; overflow: hidden">
+                  <div style="display:flex;padding:14px 0px 0px; justify-content: center; align-items: center; overflow: hidden">
                     <p
                       style="font-weight: 600;
                 font-size: 14px;
                 margin: 0;
+                height: 40px;
                 ">
                       {{item.name}}
                     </p>

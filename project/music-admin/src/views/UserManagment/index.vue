@@ -1,11 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="账号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.useraccount" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select>
+      <el-input v-model="listQuery.username" placeholder="请输入搜索条件" style="width: 500px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -89,7 +85,7 @@
         <el-tab-pane label="会员基本信息" name="first">
           <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
             <el-form-item label="账号" prop="account">
-              <el-input v-model="temp.account" />
+              <el-input v-model="temp.account" disabled/>
             </el-form-item>
             <el-form-item label="用户名" prop="username">
               <el-input v-model="temp.username" />
@@ -157,6 +153,7 @@
                       style="font-weight: 600;
                 font-size: 14px;
                 margin: 0;
+                height: 40px;
                 ">
                       {{item.name}}
                     </p>
@@ -199,6 +196,7 @@
                       style="font-weight: 600;
                 font-size: 14px;
                 margin: 0;
+                height: 40px;
                 ">
                       {{item.name}}
                     </p>
@@ -241,6 +239,7 @@
                       style="font-weight: 600;
                 font-size: 14px;
                 margin: 0;
+                height: 40px;
                 ">
                       {{item.title}}
                     </p>
@@ -428,7 +427,6 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        account: [{ required: true, message: '必须填写账号', trigger: 'change' }],
         username: [{ required: true, message: '必须填写用户名', trigger: 'change' }],
         email: [{ required: true, message: '必须填写邮箱', trigger: 'blur' }],
         location: [{ required: true, message: '必须填写所在地', trigger: 'change' }],
