@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard-editor-container">
-
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
       <el-card class="box-card" style="margin-bottom: 20px">
         <div slot="header" class="clearfix">

@@ -201,6 +201,13 @@
           },
           sort: '+id'
         },
+        singerQuery: {
+          current: 1,
+          size: 1,
+          total:undefined,
+          key:'',
+          type:'singer',
+        },
         sortOptions: [{ label: 'ID 升序', key: '+id' }, { label: 'ID 降序', key: '-id' }],
         showReviewer: false,
         temp: {
@@ -235,13 +242,17 @@
     },
     created() {
       this.getList()
-      getSinger(this.listQuery).then(result=>{
-        this.sallData=result
-        this.sallData.map(item=>{
-          this.stempData.push({
-            value:item.singerId,
-            label:item.singerId+"-"+item.name.split("-")[0]
-          })
+      search(this.singerQuery).then(result=>{
+        let size = result.total
+        this.singerQuery.size=size
+          search(this.singerQuery).then(result=>{
+            this.sallData=result.dataList
+            this.sallData.map(item=> {
+              this.stempData.push({
+                value: item.id,
+                label: item.id + "-" + item.name
+              })
+            })
         })
         this.stempData=this.unique(this.stempData)
       })
