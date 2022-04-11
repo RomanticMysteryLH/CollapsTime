@@ -16,4 +16,7 @@ public interface UserService {
     public User selectByAccount(String account);
     public int updateUser(User user);
     public HashMap<String, Object> search(String key);
+    //搜索与该歌曲风格相同的其他歌曲
+    public HashMap<String,Object> similarSearch(String key);
+
 }

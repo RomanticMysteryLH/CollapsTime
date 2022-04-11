@@ -251,6 +251,14 @@ public class UserController {
     }
 
     /**
+     * 输入歌曲名称显示与该歌曲相同类型的歌曲
+     * @param key
+     * @return
+     */
+    @PostMapping("/similarSearch")
+    @ResponseBody
+    public HashMap<String,Object> similarSearch(String key){return userService.similarSearch(key);}
+    /**
      * 根据id获取用户信息
      * @param account
      * @return

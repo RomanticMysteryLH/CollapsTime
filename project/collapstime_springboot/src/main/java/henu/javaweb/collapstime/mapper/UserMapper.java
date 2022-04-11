@@ -146,4 +146,26 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     Integer getUserCountOfFemale();
+
+    /**
+     * 根据歌曲名字获取所属歌单的id
+     * @param songName
+     * @return
+     */
+    Integer getSongListIdBySongName(String songName);
+
+    /**
+     * 根据歌单id获取歌单类型
+     * @param id
+     * @return
+     */
+    String getSongListTypeById(Integer id);
+
+    /**
+     * 根据歌单类型获取歌单id
+     * @param style
+     * @return
+     */
+    LinkedList<Integer> getSongListIdByStyle(String style);
+
 }

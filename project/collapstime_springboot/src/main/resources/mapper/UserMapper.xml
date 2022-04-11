@@ -116,6 +116,17 @@
   <select id="getUserCountOfFemale" resultType="java.lang.Integer">
     select count(id) from user where sex = 0;
   </select>
+  <select id="getSongListIdBySongName" resultType="java.lang.Integer">
+    select song_list_id from list_song where song_id = (
+        select id from song where SUBSTRING_INDEX(name,'-',-1) like CONCAT('%',#{key},'%')
+    );
+  </select>
+  <select id="getSongListTypeById" resultType="java.lang.String">
+    select style from song_list where id = #{id};
+  </select>
+  <select id="getSongListIdByStyle" resultType="java.lang.Integer">
+    select id from song_list where style like CONCAT('%',#{style},'%');
+  </select>
   <update id="updateUserdata" parameterType="henu.javaweb.collapstime.model.User">
     update user
     set username=#{username},account=#{account},sex=#{sex},avator=#{avator},location=#{location},email=#{email},introduction=#{introduction},topping=#{topping}
