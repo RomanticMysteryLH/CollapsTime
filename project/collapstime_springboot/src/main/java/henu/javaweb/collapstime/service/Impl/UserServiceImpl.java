@@ -2,12 +2,17 @@ package henu.javaweb.collapstime.service.Impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import henu.javaweb.collapstime.mapper.SingerMapper;
 import henu.javaweb.collapstime.mapper.SongListMapper;
+import henu.javaweb.collapstime.mapper.SongMapper;
 import henu.javaweb.collapstime.mapper.UserMapper;
 import henu.javaweb.collapstime.model.PageVo;
 import henu.javaweb.collapstime.model.Song;
+import henu.javaweb.collapstime.model.SongShowInList;
 import henu.javaweb.collapstime.model.User;
 import henu.javaweb.collapstime.service.UserService;
+import henu.javaweb.collapstime.utils.Cons;
+import henu.javaweb.collapstime.utils.MusicUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +28,10 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private SongListMapper songListMapper;
+    @Autowired
+    private SongMapper songMapper;
+    @Autowired
+    private SingerMapper singerMapper;
 
     @Override
     public int register(User user) {
@@ -108,6 +117,78 @@ public class UserServiceImpl implements UserService {
         }
         result.put("songs",songs);
         return result;
+    }
+
+    @Override
+    public PageVo<SongShowInList> similarSearchInfo(Integer current, Integer size, String key, Integer userId) {
+        //根据歌曲名称获取所属歌单id
+        Integer songListId = userMapper.getSongListIdBySongName(key);
+        //根据歌单id获取歌单类型
+        String type = userMapper.getSongListTypeById(songListId);
+        //根据歌单类型获取歌单id
+        LinkedList<Integer> songListIds = userMapper.getSongListIdByStyle(type);
+        LinkedList<Integer> ids = new LinkedList<>();
+        //根据歌单id获取歌曲
+        for(int i = 0;i < songListIds.size();i++) {
+            LinkedList<Song> song = songListMapper.getSongOfSongList(songListIds.get(i));
+            for (int j = 0; j < song.size(); j++) {
+                if (!ids.contains(song.get(j).getId())) {
+                    ids.add(song.get(j).getId());
+                }
+            }
+        }
+        LinkedList<Song> songs = new LinkedList<>();
+        for(int i = 0;i < ids.size();i++)
+        {
+            songs.add(songMapper.getSongById(ids.get(i)));
+        }
+
+        LinkedList<SongShowInList> list = new LinkedList<>();
+        String os = System.getProperty("os.name");
+        LinkedList<Integer> songOfUserCollect = songMapper.getSongOfUserCollect(userId);
+        int end = 0;
+        if((current*size) > songs.size())
+        {
+            end = songs.size();
+        }else {
+            end = current*size;
+        }
+        for(int i = (current-1)*size;i < end; i++){
+            String path = null;
+            if (os.toLowerCase().startsWith("win")){
+                path = Cons.RESOURCE_WIN_PATH;
+            }else {
+                path = Cons.RESOURCE_MAC_PATH;
+            }
+            SongShowInList songShowInList = new SongShowInList();
+            Integer collectStatus = 0;
+            for (int j = 0; j < songOfUserCollect.size(); j++) {
+                if(songs.get(i).getId().equals(songOfUserCollect.get(j))){
+                    collectStatus = 1;
+                    break;
+                }else {
+                    continue;
+                }
+            }
+            songShowInList.setCollectStatus(collectStatus);
+            songShowInList.setUrl(songs.get(i).getUrl());
+            songShowInList.setCover(songs.get(i).getPicture());
+            songShowInList.setSingerId(songs.get(i).getSingerId());
+            songShowInList.setId(songs.get(i).getId());
+            songShowInList.setIntroduction(songs.get(i).getIntroduction());
+            songShowInList.setLyric(songs.get(i).getLyric());
+            songShowInList.setName(songs.get(i).getName().split("-")[1]);
+            songShowInList.setSingerName(singerMapper.getSingerNameById(songs.get(i).getSingerId()));
+            path+=songs.get(i).getUrl();
+            songShowInList.setDuration(MusicUtils.getDuration(path));
+            list.add(songShowInList);
+        }
+        PageVo<SongShowInList> songShowInListPageVo = new PageVo<>();
+        songShowInListPageVo.setTotal((long) songs.size());
+        songShowInListPageVo.setCurrent(current);
+        songShowInListPageVo.setSize(size);
+        songShowInListPageVo.setDataList(list);
+        return songShowInListPageVo;
     }
 
 

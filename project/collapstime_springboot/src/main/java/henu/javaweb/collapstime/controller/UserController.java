@@ -295,7 +295,12 @@ public class UserController {
             return singerService.searchSingerInfo(current, size, key);
         }
     }
-
+    @PostMapping("/similarSearchInfo")
+    @ResponseBody
+    public Object similarSearchInfo(Integer current,Integer size,String key,Integer userId)
+    {
+        return userService.similarSearchInfo(current, size, key, userId);
+    }
     /**
      * 验证token
      * @param request
