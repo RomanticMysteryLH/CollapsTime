@@ -185,6 +185,15 @@ export default {
         this.$message.error("请先登录！");
         return;
       }
+      if (
+        this.$root.downloadProgress != "100%" ||
+        this.$root.downloadProgress != "0%" ||
+        this.$root.downloadProgress != "" ||
+        this.$root.downloadProgress != null
+      ) {
+        this.$message.error("有文件正在下载！");
+        return;
+      }
       let axiosThis = this;
       // axiosThis.$notify.closeAll();
       // axiosThis.$notify({

@@ -108,7 +108,7 @@ export default new VueRouter({
         },
         {
             name:'searchResult',
-            path: '/searchResult/:searchText',
+            path: '/searchResult/:searchText/:searchMode',
             component: searchResult
         },
     ]

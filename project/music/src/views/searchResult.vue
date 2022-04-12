@@ -19,7 +19,7 @@
           </el-pagination>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="歌单" name="songList">
+      <el-tab-pane label="歌单" name="songList" :disabled="searchMode==1">
         <el-tag type="success" effect="plain"
           >共{{ this.playlistPage.totalResult }}条</el-tag
         >
@@ -34,7 +34,7 @@
         >
         </el-pagination>
       </el-tab-pane>
-      <el-tab-pane label="歌手" name="singer">
+      <el-tab-pane label="歌手" name="singer" :disabled="searchMode==1">
         <el-tag type="success" effect="plain"
           >共{{ this.singerPage.totalResult }}条</el-tag
         >
@@ -62,6 +62,7 @@ export default {
     return {
       searchText: "",
       activeName: "",
+      searchMode:0,
       songPage: {
         //当前总条数
         totalResult: 0,
@@ -103,8 +104,12 @@ export default {
         userId: this.$root.userData.userId,
       };
       let data = Qs.stringify(dataObj);
+      let requestUrl='/user/searchInfo'
+      if(this.searchMode==1){
+        requestUrl='/user/similarSearchInfo'
+      }
       this.$axios
-        .post(`/user/searchInfo`, data)
+        .post(requestUrl, data)
         .then((res) => {
           // console.log(res);
           //请求成功
@@ -129,6 +134,7 @@ export default {
   },
   created() {
     this.searchText = this.$route.params.searchText;
+    this.searchMode=this.$route.params.searchMode;
     this.activeName = "song";
   },
   components: {

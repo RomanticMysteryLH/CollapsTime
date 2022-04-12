@@ -98,7 +98,7 @@
         v-if="musicianList.length == 0"
         style="min-height: 240px; padding-top: 100px"
       >
-        <p style="text-align: center; font-size: 14px; color: gray">暂无</p>
+        <p style="text-align: center; font-size: 14px; color: gray">没有内容≧﹏≦</p>
       </el-col>
     </el-row>
   </div>

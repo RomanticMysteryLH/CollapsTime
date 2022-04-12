@@ -81,7 +81,28 @@
               @click="search()"
             ></el-button>
           </el-autocomplete>
-
+          <!-- 切换模式 -->
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="相似搜索可以匹配与您搜索的歌曲相似的歌曲"
+            placement="bottom-start"
+            :enterable="false"
+          >
+            <el-switch
+              class="searchSwitch"
+              v-model="searchMode"
+              active-text="相似搜索"
+              inactive-text="普通搜索"
+              :width="35"
+              :active-value="1"
+              :inactive-value="0"
+              inactive-color="#409EFF"
+              active-color="#13ce66"
+              style="margin-left: 30px"
+            >
+            </el-switch>
+          </el-tooltip>
           <el-button
             v-if="!this.$root.userData.login_ed"
             type="primary"
@@ -221,6 +242,8 @@ export default {
     return {
       //搜索框文本
       searchBar: "",
+      //搜索模式，0为普通搜索，1为相似搜索
+      searchMode: 0,
       //搜索建议
       search_suggestions: [],
       //当前路由
@@ -258,7 +281,9 @@ export default {
         this.$message.error("您还没有输入要搜索的内容");
       } else {
         // console.log(this.searchBar);
-        this.$router.push({ path: `/searchResult/${this.searchBar}` });
+        this.$router.push({
+          path: `/searchResult/${this.searchBar}/${this.searchMode}`,
+        });
         this.$refs.myAutocomplete.suggestions = [];
         this.reload();
       }
@@ -266,39 +291,51 @@ export default {
     //搜索建议
     querySearch(queryString, cb) {
       // console.log(queryString);
-      // let axiosThis = this;
+      let axiosThis = this;
       let data = Qs.stringify({
         key: queryString,
       });
       this.timeout = setTimeout(() => {
         // cb(results);
+        let requestURL = "/user/search";
+        if (axiosThis.searchMode == 0) {
+          requestURL = "/user/search";
+        } else {
+          requestURL = "/user/similarSearch";
+        }
         this.$axios
-          .post(`/user/search`, data)
+          .post(requestURL, data)
           .then((res) => {
             let response = res.data;
             // console.log(response);
             let cbArray = [];
-            cbArray.push.apply(
-              cbArray,
-              response.songs.map((item) => {
-                // console.log(item);
-                return { name: item.name, id: item.id, type: "-歌曲-" };
-              })
-            );
-            cbArray.push.apply(
-              cbArray,
-              response.singers.map((item) => {
-                // console.log(item);
-                return { name: item.name, id: item.id, type: "-歌手-" };
-              })
-            );
-            cbArray.push.apply(
-              cbArray,
-              response.songLists.map((item) => {
-                // console.log(item);
-                return { name: item.title, id: item.id, type: "-歌单-" };
-              })
-            );
+            if (response.songs) {
+              cbArray.push.apply(
+                cbArray,
+                response.songs.map((item) => {
+                  // console.log(item);
+                  return { name: item.name, id: item.id, type: "-歌曲-" };
+                })
+              );
+            }
+            if (response.singers) {
+              cbArray.push.apply(
+                cbArray,
+                response.singers.map((item) => {
+                  // console.log(item);
+                  return { name: item.name, id: item.id, type: "-歌手-" };
+                })
+              );
+            }
+            if (response.songLists) {
+              cbArray.push.apply(
+                cbArray,
+                response.songLists.map((item) => {
+                  // console.log(item);
+                  return { name: item.title, id: item.id, type: "-歌单-" };
+                })
+              );
+            }
             cb(cbArray);
           })
           .catch((err) => {
@@ -626,5 +663,11 @@ body .el-popup-parent--hidden {
 }
 .el-message {
   top: 60px !important;
+}
+.searchSwitch .el-switch__label span {
+  font-size: 10px;
+}
+.searchSwitch .is-active span {
+  color: rgb(255, 208, 75);
 }
 </style>
