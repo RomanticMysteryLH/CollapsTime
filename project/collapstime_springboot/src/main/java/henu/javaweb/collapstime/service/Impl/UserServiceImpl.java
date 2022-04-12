@@ -92,14 +92,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public HashMap<String, Object> similarSearch(String key) {
         HashMap<String,Object> result = new HashMap<>();
+        //根据歌曲名称获取歌曲id
+        LinkedList<Integer> songIdByName = songMapper.getSongIdByName(key);
         LinkedList<HashMap<String,Object>> songs = new LinkedList<>();
         //根据歌曲名称获取所属歌单id
-        Integer songListId = userMapper.getSongListIdBySongName(key);
+        LinkedList<Integer> songListId = userMapper.getSongListIdBySongName(key);
         //根据歌单id获取歌单类型
-        String type = userMapper.getSongListTypeById(songListId);
+        LinkedList<String> types = new LinkedList<>();
+        for(int i = 0;i < songListId.size();i++)
+        {
+            String type = userMapper.getSongListTypeById(songListId.get(i));
+            types.add(type);
+        }
         //根据歌单类型获取歌单id
-        LinkedList<Integer> songListIds = userMapper.getSongListIdByStyle(type);
+        LinkedList<Integer> songListIds = new LinkedList<>();
+        for (int i = 0; i < types.size(); i++) {
+            songListIds.addAll(userMapper.getSongListIdByStyle(types.get(i)));
+        }
         LinkedList<Integer> ids = new LinkedList<>();
+        ids.addAll(songIdByName);
+        for (int i = 0; i < ids.size(); i++) {
+            HashMap<String,Object> temp = new HashMap<>();
+            Song song = songMapper.getSongById(ids.get(i));
+            temp.put("id",song.getId());
+            temp.put("name",song.getName());
+            songs.add(temp);
+        }
         //根据歌单id获取歌曲
         for(int i = 0;i < songListIds.size();i++)
         {
@@ -121,18 +139,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageVo<SongShowInList> similarSearchInfo(Integer current, Integer size, String key, Integer userId) {
+        //根据歌曲名称获取歌曲id
+        LinkedList<Integer> songIdByName = songMapper.getSongIdByName(key);
         //根据歌曲名称获取所属歌单id
-        Integer songListId = userMapper.getSongListIdBySongName(key);
+        LinkedList<Integer> songListId = userMapper.getSongListIdBySongName(key);
         //根据歌单id获取歌单类型
-        String type = userMapper.getSongListTypeById(songListId);
+        LinkedList<String> types = new LinkedList<>();
+        for(int i = 0;i < songListId.size();i++)
+        {
+            String type = userMapper.getSongListTypeById(songListId.get(i));
+            types.add(type);
+        }
         //根据歌单类型获取歌单id
-        LinkedList<Integer> songListIds = userMapper.getSongListIdByStyle(type);
+        LinkedList<Integer> songListIds = new LinkedList<>();
+        for (int i = 0; i < types.size(); i++) {
+            songListIds.addAll(userMapper.getSongListIdByStyle(types.get(i)));
+        }
         LinkedList<Integer> ids = new LinkedList<>();
+        ids.addAll(songIdByName);
         //根据歌单id获取歌曲
-        for(int i = 0;i < songListIds.size();i++) {
+        for(int i = 0;i < songListIds.size();i++)
+        {
             LinkedList<Song> song = songListMapper.getSongOfSongList(songListIds.get(i));
-            for (int j = 0; j < song.size(); j++) {
-                if (!ids.contains(song.get(j).getId())) {
+            for(int j = 0;j < song.size();j++) {
+                if(!ids.contains(song.get(j).getId()))
+                {
                     ids.add(song.get(j).getId());
                 }
             }

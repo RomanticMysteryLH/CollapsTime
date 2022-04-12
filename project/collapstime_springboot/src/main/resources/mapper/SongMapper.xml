@@ -109,5 +109,14 @@
     <select id="getPlayCountById" resultType="java.lang.Integer">
         select sum(play_count) from play where song_id = #{songId};
     </select>
+    <select id="getSongIdByName" resultType="java.lang.Integer">
+        select id from song where name like CONCAT('%',#{key},'%');
+    </select>
+    <select id="getAllEmotion" resultType="java.lang.String">
+        select group_concat(distinct emotion) 'emotion' from song;
+    </select>
+    <select id="getSongByEmotion" resultType="henu.javaweb.collapstime.model.Song">
+        select * from song where emotion = #{key};
+    </select>
 
 </mapper>

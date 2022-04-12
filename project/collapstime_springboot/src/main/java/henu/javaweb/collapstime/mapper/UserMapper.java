@@ -152,7 +152,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param songName
      * @return
      */
-    Integer getSongListIdBySongName(String songName);
+    LinkedList<Integer> getSongListIdBySongName(String songName);
 
     /**
      * 根据歌单id获取歌单类型

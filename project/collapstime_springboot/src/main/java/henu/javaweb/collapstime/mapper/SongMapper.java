@@ -190,4 +190,18 @@ public interface SongMapper extends BaseMapper<Song> {
      */
     public Integer getPlayCountById(Integer songId);
 
+    public LinkedList<Integer> getSongIdByName(String key);
+
+    /**
+     * 获取所有歌曲表达的心情
+     * @return
+     */
+    public String getAllEmotion();
+
+    /**
+     * 根据心情查询相应歌曲
+     * @param key
+     * @return
+     */
+    LinkedList<Song> getSongByEmotion(String key);
 }

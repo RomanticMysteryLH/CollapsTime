@@ -63,4 +63,20 @@ public interface SongService {
     public PageVo<SongShowInList> queryCollectSong(Integer current,Integer size,Integer userId);
 
     public PageVo<SongShowInList> searchSongInfo(Integer current,Integer size,String key,Integer userId);
+
+    /**
+     * 获取所有歌曲表达的心情
+     * @return
+     */
+    public LinkedList<String> getAllEmotion();
+
+    /**
+     * 给定相应心情，筛选出相应的歌曲
+     * @param current
+     * @param size
+     * @param key
+     * @param userId
+     * @return
+     */
+    public PageVo<SongShowInList> getSongByEmotion(Integer current,Integer size,String key,Integer userId);
 }

@@ -16,6 +16,15 @@ public class Song {
     private String picture;
     private String lyric;
     private String url;
+    private String emotion;
+
+    public String getEmotion() {
+        return emotion;
+    }
+
+    public void setEmotion(String emotion) {
+        this.emotion = emotion;
+    }
 
     public Integer getId() {
         return id;

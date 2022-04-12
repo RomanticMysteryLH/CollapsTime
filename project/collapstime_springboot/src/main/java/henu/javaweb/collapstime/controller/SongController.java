@@ -263,6 +263,26 @@ public class SongController {
         }
         return result;
     }
+
+    /**
+     * 获取所有心情分类
+     * @return
+     */
+    @PostMapping("/getAllEmotion")
+    @ResponseBody
+    public LinkedList<String> getAllEmotion(){
+        return songService.getAllEmotion();
+    }
+
+    /**
+     * 根据心情获取相应歌曲
+     */
+    @PostMapping("/getSongByEmotion")
+    @ResponseBody
+    public PageVo<SongShowInList> getSongByEmotion(Integer current, Integer size, String key, Integer userId)
+    {
+        return songService.getSongByEmotion(current, size, key, userId);
+    }
 }
 
 
