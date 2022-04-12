@@ -18,6 +18,7 @@ import collectedSong from '@/views/collectedSong'
 import collectedPlaylist from '@/views/collectedPlaylist'
 import followingSinger from '@/views/followingSinger'
 import searchResult from '@/views/searchResult'
+import songs from '@/views/songs'
 export default new VueRouter({
     routes: [{
             path: '/home',
@@ -43,6 +44,10 @@ export default new VueRouter({
         {
             path: '/musician',
             component: musician
+        },
+        {
+            path:'/songs',
+            component: songs
         },
         {
             path: '/myMusic',

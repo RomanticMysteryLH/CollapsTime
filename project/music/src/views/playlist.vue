@@ -160,7 +160,7 @@ export default {
       //当前页面所有歌单信息
       nowPageList: [],
       //所有流派
-      allGenres: "",
+      allGenres: [],
       //选择的流派
       selectedGenre: "",
       //是否被初始化，用来避免初次加载时create中getPage和watch中getPage重复执行

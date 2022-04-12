@@ -369,7 +369,7 @@ export default {
     //   this.$refs.aplayer.play();
     // }
     goBackToTop() {
-      // console.log("goBackToTop");
+      console.log("goBackToTop");
       this.$refs.goBackButton.$el.click();
     },
     detailSongOpened() {
@@ -484,6 +484,11 @@ export default {
               key: "2-2",
               path: "/musician",
             },
+            {
+              title:"歌曲",
+              key:"2-3",
+              path:"/songs",
+            }
           ],
         },
         {
