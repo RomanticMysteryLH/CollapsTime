@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <!-- 指定连接数据库的 JDBC 驱动包所在位置，指定到你本机的完整路径 -->
-    <classPathEntry location="D:\maven\apache-maven-3.6.3-bin\apache-maven-3.6.3\repository\mysql\mysql-connector-java\5.1.35\mysql-connector-java-5.1.35.jar"/>
+<!--    <classPathEntry location="D:\maven\apache-maven-3.6.3-bin\apache-maven-3.6.3\repository\mysql\mysql-connector-java\5.1.35\mysql-connector-java-5.1.35.jar"/>-->
     <!-- 配置 table 表信息内容体，targetRuntime 指定采用 MyBatis3 的版本 -->
     <context id="tables" targetRuntime="MyBatis3">
         <!-- 抑制生成注释，由于生成的注释都是英文的，可以不让它生成 -->
@@ -15,7 +15,7 @@
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/music"
                         userId="root"
-                        password="zbf2312306353">
+                        password="123456">
         </jdbcConnection>
         <!-- 生成 model 类，targetPackage 指定 model 类的包名， targetProject 指定
        生成的 model 放在 idea 的哪个工程下面-->

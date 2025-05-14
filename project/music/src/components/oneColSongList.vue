@@ -25,7 +25,7 @@
               />
             </div>
           </el-image>
-          <div style="padding: 14px; height: 50px; overflow: hidden">
+          <div style="padding: 14px; height: 50px; overflow: hidden; position: relative">
             <p
               style="
                 font-weight: 600;
@@ -33,23 +33,25 @@
                 overflow: hidden;
                 height: 32px;
               "
+              :title="item.name"
             >
               {{ item.name }}
             </p>
-            <p style="font-size:12px;color:gray;position;bottom:5px">
+            <p style="font-size:12px;color:gray;">
               {{ item.singerName }}
-              <el-button
-                :icon="
-                  item.collectStatus == 0
-                    ? 'el-icon-star-off'
-                    : 'el-icon-star-on'
-                "
-                type="text"
-                size="medium"
-                style="color: orange; float: right"
-                @click.stop="collectSong(item)"
-              ></el-button>
+
             </p>
+            <el-button
+              :icon="
+                item.collectStatus == 0
+                  ? 'el-icon-star-off'
+                  : 'el-icon-star-on'
+              "
+              type="text"
+              size="medium"
+              style="color: orange; float: right; position :absolute; right:8px; bottom: 5px;padding:0px"
+              @click.stop="collectSong(item)"
+            ></el-button>
           </div>
         </el-card>
       </el-col>
