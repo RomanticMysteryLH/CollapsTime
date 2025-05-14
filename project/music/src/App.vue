@@ -42,7 +42,7 @@
               :key="item.key"
               :show-timeout="100"
             >
-              <template v-slot:title>{{ item.title }}</template>
+              <template slot="title">{{ item.title }}</template>
               <el-menu-item
                 v-for="(items1, key1) in item.items"
                 :key="key1"
@@ -70,12 +70,12 @@
               class="el-input__icon el-icon-search search_button"
               @click="search()"
             ></i> -->
-            <template v-slot:default="{ item }">
+            <template slot-scope="{ item }">
               <div class="name">{{ item.name }}</div>
               <span class="type">{{ item.type }}</span>
             </template>
             <!-- suffix表示在搜索框尾部 -->
-            <template v-slot:append>
+            <template slot="append">
               <el-button
                 class="search_button"
                 icon="el-icon-search"
@@ -128,7 +128,7 @@
               width="200"
               trigger="hover"
               content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-              style="margin-left: 4%; cursor: pointer"
+              style="margin-left: 4%; cursor: pointer;"
             >
               <p>您好，{{ this.$root.userData.username }}！</p>
               <div style="text-align: right; margin: 0">
@@ -140,12 +140,12 @@
                 >
               </div>
               <!-- reference确定触发hover的对象 -->
+              
               <el-avatar
-                :key="this.$root.userData.avator"
                 :src="$RequestUrl + this.$root.userData.avator"
                 icon="el-icon-user-solid"
                 :size="30"
-                v-slot:reference
+                slot="reference"
               >
               </el-avatar>
             </el-popover>
@@ -453,6 +453,7 @@ export default {
           } else {
             axiosThis.$message.error(responseData.msg + "，请重新登陆！");
           }
+          console.log(axiosThis.$root.userData);
           this.reload();
         })
         .catch((err) => {
@@ -574,6 +575,7 @@ export default {
     //   this.$root.audio.push(this.$refs.aplayer.currentMusic)
     // }
     // console.log(this.$root.audio)
+    console.log("Login status:", this.$root.userData.login_ed);  // 确认值为 true
   },
   created() {
     // myToken=localStorage.getItem("musicUser");

@@ -12,7 +12,7 @@
     "axios": "^0.24.0",
     "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.5",
-    "element-ui": "^2.15.6",
+    "element-ui": "2.15.6",
     "vue": "2.6.11",
     "vue-cookies": "^1.7.4",
     "vue-image-crop-upload": "^3.0.3",
