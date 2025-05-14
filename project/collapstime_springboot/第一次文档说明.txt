@@ -1,0 +1,43 @@
+1.  登录
+    请求方式:POST
+    URL:http://localhost:8080/user/login
+    参数:
+        String account, 账号 
+        String password, 密码
+        String code 验证码
+    返回值: 如果用户输入的验证码不对则后端返回给前端字符串"验证码错误",如果验证码正确并且账号和密码也正确则后端返回给前端字符串"登录成功",然后前端页面跳转到主页,
+            如果账号或者密码不正确，则后端返回给前端字符串"账号或者密码错误";
+
+2.  登录时获取验证码:
+    描述：当点击登录按钮进入登录界面时要发送一下该请求获取验证码，当用户点击该图文验证码时刷新验证码这个时候也要发一次请求获取新的验证码
+    请求方式:GET
+    URL:http://localhost:8080/user/getImage
+    返回值:图片
+
+3.  账号重复检测
+    描述:当用户输入账号完成之后离开输入框触发离焦事件然后发送请求检测账号是否已经存在
+    请求方式:POST
+    参数:
+        String account  账号
+    URL:http://localhost:8080/user/accountDetection
+    返回值:如果账号可用没有重复的则返回字符串"ok",如果账号已经被注册了则返回字符串"exist"
+
+4.  注册时向邮箱里发送注册验证码
+    描述:用户点击"向邮箱发送验证码"按钮时发送该请求
+    请求方式:POST
+    URL:http://localhost:8080/getCheckCode
+    返回值:生成的验证码
+
+5.  注册
+    描述:用户点击注册按钮时首先根据后端返给前端的注册验证码和用户输入的验证码进行比对如果相同则给后端发送请求然后后端给前端返回信息，如果不同则提示用户验证码错误
+    请求方式:POST
+    URL:http://localhost:8080/user/register
+    参数:
+        String username, 用户名
+        String password, 密码
+        String account, 账号
+        String email,  邮箱
+        String sex,  性别
+        Date birth,  出生日期
+        String location 所在地
+    返回值:如果用户提供信息符合要求则返回字符串"success"，否则返回字符串"fail"

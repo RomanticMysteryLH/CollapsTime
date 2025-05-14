@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="henu.javaweb.collapstime.mapper.UserMapper">
+  <insert id="insertSelective" parameterType="henu.javaweb.collapstime.model.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="avator != null">
+        avator,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="introduction != null">
+        introduction,
+      </if>
+      <if test="topping != null">
+        topping,
+      </if>
+      <if test="frozen != null">
+        frozen,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="avator != null">
+        #{avator,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null">
+        #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="topping != null">
+        #{topping,jdbcType=TINYINT},
+      </if>
+      <if test="frozen != null">
+        #{frozen,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <delete id="deleteUser">
+    delete from user where account = #{account};
+  </delete>
+
+
+  <select id="selectByAccount" parameterType="java.lang.String" resultType="henu.javaweb.collapstime.model.User">
+    select * from user where account = #{account};
+  </select>
+
+  <select id="queryAllUser" resultType="henu.javaweb.collapstime.model.User">
+    select * from user;
+  </select>
+    <select id="searchSong" resultType="java.util.HashMap">
+      select id,name from song where SUBSTRING_INDEX(name,'-',-1) like CONCAT('%',#{key},'%');
+    </select>
+  <select id="searchSinger" resultType="java.util.HashMap">
+    select id,name from singer where name like CONCAT('%',#{key},'%');
+  </select>
+  <select id="searchSongList" resultType="java.util.HashMap">
+    select id,title,style from song_list where title like CONCAT('%',#{key},'%');
+  </select>
+  <select id="searchSongInfo" resultType="henu.javaweb.collapstime.model.Song">
+    select * from song where SUBSTRING_INDEX(name,'-',-1) like CONCAT('%',#{key},'%');
+  </select>
+  <select id="searchSongListInfo" resultType="henu.javaweb.collapstime.model.SongList">
+    select * from song_list where title like CONCAT('%',#{key},'%');
+  </select>
+  <select id="searchSingerInfo" resultType="henu.javaweb.collapstime.model.Singer">
+    select * from singer where name like CONCAT('%',#{key},'%');
+  </select>
+  <select id="queryUserAvatorOfPast" resultType="java.lang.String">
+    select avator from user where account = #{account};
+  </select>
+  <select id="queryUserByAccount" resultType="henu.javaweb.collapstime.model.User">
+    select * from user where account = #{account};
+  </select>
+    <select id="getUserCountOfmale" resultType="java.lang.Integer">
+      select count(id) from user where sex = 1;
+    </select>
+  <select id="getUserCountOfFemale" resultType="java.lang.Integer">
+    select count(id) from user where sex = 0;
+  </select>
+  <select id="getSongListIdBySongName" resultType="java.lang.Integer">
+    select song_list_id from list_song where song_id = (
+        select id from song where SUBSTRING_INDEX(name,'-',-1) like CONCAT('%',#{key},'%')
+    );
+  </select>
+  <select id="getSongListTypeById" resultType="java.lang.String">
+    select style from song_list where id = #{id};
+  </select>
+  <select id="getSongListIdByStyle" resultType="java.lang.Integer">
+    select id from song_list where style like CONCAT('%',#{style},'%');
+  </select>
+  <update id="updateUserdata" parameterType="henu.javaweb.collapstime.model.User">
+    update user
+    set username=#{username},account=#{account},sex=#{sex},avator=#{avator},location=#{location},email=#{email},introduction=#{introduction},topping=#{topping}
+    where id=#{id}
+  </update>
+    <update id="updateUserBaseInfo">
+      update user set username=#{username},sex = #{sex},location=#{location},introduction = #{introduction} where account = #{account};
+    </update>
+  <update id="updatePwd">
+    update user set password = #{password} where account = #{account};
+  </update>
+  <update id="updateAvator">
+    update user set avator = #{filePath} where account = #{account};
+  </update>
+</mapper>
