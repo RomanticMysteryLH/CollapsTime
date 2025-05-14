@@ -8,12 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@moefe/vue-aplayer": "^2.0.0-beta.5",
+    "@moefe/vue-aplayer": "^2.0.0-beta.3",
     "axios": "^0.24.0",
     "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.6",
-    "vue": "^2.6.11",
+    "vue": "2.6.11",
     "vue-cookies": "^1.7.4",
     "vue-image-crop-upload": "^3.0.3",
     "vue-router": "^3.5.3"
@@ -25,7 +25,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "2.6.11"
   },
   "eslintConfig": {
     "root": true,

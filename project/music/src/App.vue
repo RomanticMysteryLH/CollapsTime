@@ -31,7 +31,7 @@
             <el-menu-item
               v-if="item.items.length == 0"
               :index="item.path"
-              :key="item.key"
+              :key="item.key + '-menu-item'"
               :disabled="item.disabled"
               >{{ item.title }}
             </el-menu-item>
@@ -42,7 +42,7 @@
               :key="item.key"
               :show-timeout="100"
             >
-              <template slot="title">{{ item.title }}</template>
+              <template v-slot:title>{{ item.title }}</template>
               <el-menu-item
                 v-for="(items1, key1) in item.items"
                 :key="key1"
@@ -70,16 +70,23 @@
               class="el-input__icon el-icon-search search_button"
               @click="search()"
             ></i> -->
-            <template slot-scope="{ item }">
+            <template v-slot:default="{ item }">
               <div class="name">{{ item.name }}</div>
               <span class="type">{{ item.type }}</span>
             </template>
             <!-- suffix表示在搜索框尾部 -->
-            <el-button
-              slot="append"
+            <template v-slot:append>
+              <el-button
+                class="search_button"
+                icon="el-icon-search"
+                @click="search()"
+              ></el-button>
+            </template>
+            <!-- <el-button
+              v-slot:append
               icon="el-icon-search"
               @click="search()"
-            ></el-button>
+            ></el-button> -->
           </el-autocomplete>
           <!-- 切换模式 -->
           <el-tooltip
@@ -138,7 +145,7 @@
                 :src="$RequestUrl + this.$root.userData.avator"
                 icon="el-icon-user-solid"
                 :size="30"
-                slot="reference"
+                v-slot:reference
               >
               </el-avatar>
             </el-popover>
@@ -190,7 +197,7 @@
     </el-drawer>
     <aplayer
       ref="aplayer"
-      :audio="this.$root.audio"
+      :audio="this.audio"
       :fixed="true"
       style="z-index: 9999"
       :lrcType="1"
@@ -529,7 +536,11 @@ export default {
     // },
     audio() {
       //audio值改变时播放
-      this.$refs.aplayer.play();
+      setTimeout(() => {
+        this.$refs.aplayer.skipForward();
+        this.$refs.aplayer.skipBack();
+        this.$refs.aplayer.play();
+      }, 300);
       // console.log(this.audio);
     },
   },
